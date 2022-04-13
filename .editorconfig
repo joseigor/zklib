@@ -16,7 +16,7 @@ space_redirects = true
 spaces_around_operators = true
 trim_trailing_whitespace = true
 
-[{*.py,Dockerfile*,meson.build}]
+[{*.py,Dockerfile*,meson.build,*.json}]
 indent_size = 4
 indent_style = space
 

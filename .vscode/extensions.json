@@ -1,0 +1,8 @@
+{
+    "recommendations": [
+        "editorconfig.editorconfig",
+        "ms-vscode.cpptools",
+        "gruntfuggly.todo-tree",
+        "donjayamanne.githistory"
+    ]
+}
