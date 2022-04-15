@@ -1,0 +1,37 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "create_builder_container",
+            "type": "shell",
+            "command": "./docker-runner.sh -b"
+        },
+        {
+            "label": "create_debugger_container",
+            "type": "shell",
+            "command": "./docker-runner.sh -d"
+        },
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "docker exec zklib-builder-container ./build.sh",
+            "dependsOn": [
+                "create_builder_container",
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "setup_remote_debugging",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "build",
+                "create_debugger_container"
+            ]
+        }
+    ]
+}

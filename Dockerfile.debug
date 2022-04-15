@@ -1,6 +1,4 @@
-
-
-FROM ubuntu:latest
+FROM zklib:latest
 
 LABEL maintainer="zklib"
 
@@ -11,13 +9,5 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN \
     apt-get update && apt-get install -y \
-        clang-format \
-        ninja-build \
-        pmccabe \
-        python3-pip \
+        gdb \
     && rm -rf /var/lib/apt/lists/*
-
-RUN \
-     pip3 install --no-cache-dir \
-        meson
-
