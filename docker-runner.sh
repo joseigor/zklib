@@ -2,7 +2,6 @@
 
 set -eu
 
-
 BUILD_IMAGE_NAME=${BUILD_IMAGE_NAME:-"zklib"}
 BUILD_CONTAINER_NAME=${BUILD_CONTAINER_NAME:-"zklib-builder-container"}
 

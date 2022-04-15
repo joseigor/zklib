@@ -11,7 +11,9 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN \
     apt-get update && apt-get install -y \
+        clang-format \
         ninja-build \
+        pmccabe \
         python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
