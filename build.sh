@@ -6,6 +6,7 @@ BUILDDIR=${BUILDDIR:-"./.build"}
 BUILDTYPE=${BUILDTYPE:-"debug"}
 
 fast_build=0
+build_gcov="false"
 
 usage()
 {
@@ -14,6 +15,7 @@ usage()
 	echo "Available options:"
 	echo "    -h   Print this help (usage)."
 	echo "    -f   Incremental build."
+	echo "    -g   Build with Gcov."
 }
 
 cleanup() {
@@ -24,7 +26,7 @@ main()
 {
 	_start_time="$(date "+%s")"
 
-	while getopts ":hf" _options; do
+	while getopts ":hfg" _options; do
 		case "${_options}" in
 		h)
 			usage
@@ -32,7 +34,11 @@ main()
 			;;
 		f)
 			fast_build=1
-			echo "info" "Using lightening speed..."
+			echo "info" "Fast building..."
+			;;
+		g)
+			build_gcov="true"
+			echo "info" "Build with Gcov"
 			;;
 		:)
 			echo "Option -${OPTARG} requires an argument."
@@ -47,10 +53,12 @@ main()
 
 	if [ $fast_build = 0 ]; then
 		rm -rf "${BUILDDIR}"
-		meson setup	--buildtype "${BUILDTYPE}" "${BUILDDIR}"
+		meson setup \
+			-Db_coverage=${build_gcov} \
+			--buildtype "${BUILDTYPE}" "${BUILDDIR}"
 	fi
 
-	meson compile -C "${BUILDDIR}"
+	meson  compile -C "${BUILDDIR}"
 
 	cleanup
 

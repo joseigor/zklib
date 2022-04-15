@@ -71,6 +71,7 @@ create_debugger_container() {
 	echo "info" "Will create debugger contianer and run in detached mode."
 
 	docker build -t "${BUILD_IMAGE_NAME}" .
+
 	docker build -t "${DEBUGGER_IMAGE_NAME}" -f Dockerfile.debug .
 
 	if [ "$(docker ps -q -f name="${DEBUGGER_CONTAINER_NAME}")" ]; then

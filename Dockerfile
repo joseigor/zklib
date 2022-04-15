@@ -13,11 +13,14 @@ RUN \
     apt-get update && apt-get install -y \
         clang-format \
         ninja-build \
+        pkg-config \
         pmccabe \
         python3-pip \
+        valgrind \
     && rm -rf /var/lib/apt/lists/*
 
 RUN \
      pip3 install --no-cache-dir \
-        meson
+        meson \
+        gcovr
 
