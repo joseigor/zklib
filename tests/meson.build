@@ -3,11 +3,12 @@ unity_dep = dependency('unity', method : 'pkg-config' , fallback : ['unity', 'un
 test_zk_slist = \
     executable(
         'test_zk_slist',
-        sources: [src_files, 'test_zk_slist.c'],
+        sources: ['test_zk_slist.c'],
         dependencies: [
             unity_dep,
-            zk_slist_lib_dep
-        ]
+            zklib_dep
+        ],
+        include_directories : inc_dir
     )
 
 test('test_zk_slist', test_zk_slist)

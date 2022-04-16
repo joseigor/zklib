@@ -1,7 +1,7 @@
 #include <stdlib.h>
 
 #include "unity.h"
-#include "zk_slist.h"
+#include "zk/zklib.h"
 
 void setUp(void)
 {
@@ -16,7 +16,7 @@ void tearDown(void)
 void test_zk_slist_append_data_to_empty_list(void)
 {
 	zk_slist_append(NULL, NULL);
-	TEST_PASS();
+	TEST_ASSERT_EQUAL(2, 2);
 }
 
 int main(void)

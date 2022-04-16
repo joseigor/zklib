@@ -1,11 +1,12 @@
+src_files = []
+inc_dir = []
+
 inc_dir += include_directories('.')
 
-src_files += files([
-    'zk_slist.c',
-])
+subdir('zk_common')
 
-# FIXME: change from static library to shared library
+subdir('zk_slist')
 
-zk_slist_lib = static_library('runtime', sources: src_files, include_directories: inc_dir , install : true)
+subdir('zk')
 
-zk_slist_lib_dep = declare_dependency(link_with: zk_slist_lib, include_directories: inc_dir)
+

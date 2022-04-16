@@ -43,7 +43,7 @@ run_tests() {
 
 	gcovr \
 		-r ./src \
-		./.build/tests \
+		./.build/src \
 		--html-details "${UNIT_TEST_REPORT_PATH_DEF}/unit_test_coverage_results.html" \
 		--txt
 
@@ -53,7 +53,7 @@ run_tests() {
 	fi
 
 	echo "******************************************************************************************"
-	echo "Please open file: ${UNIT_TEST_REPORT_PATH}/test_coverage_report/unit_test_coverage_results.html to see actual unit test report."
+	echo "Please open file: ${UNIT_TEST_REPORT_PATH}test_coverage_report/unit_test_coverage_results.html to see actual unit test report."
 	echo "******************************************************************************************"
 
 

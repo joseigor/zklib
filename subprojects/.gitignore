@@ -1,0 +1,5 @@
+# general idea - ignore everything apart of *.wrap and packagefiles/
+/*/
+!*.wrap
+!.gitignore
+!packagefiles
