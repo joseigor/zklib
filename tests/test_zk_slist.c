@@ -4,6 +4,17 @@
 #include "unity.h"
 #include "zk/zklib.h"
 
+struct dummy_node_data {
+	int value;
+	char *string;
+};
+
+static void dummy_node_data_free(void *data)
+{
+	struct dummy_node_data *node_data = data;
+	free(node_data->string);
+}
+
 void setUp(void)
 {
 	// set stuff up here
@@ -357,6 +368,64 @@ void test_zk_slist_concat_when_source_list_is_null_should_return_null(void)
 	zk_slist_free(&slist_src);
 }
 
+void test_zk_slist_copy_when_source_list_is_null(void)
+{
+	zk_slist_t *slist_src = NULL;
+	TEST_ASSERT_NULL(zk_slist_copy(slist_src));
+}
+
+void test_zk_slist_copy_when_source_list_node_data_is_a_pointer_to_data_only_the_pointer_is_copied(void)
+{
+	zk_slist_t *slist_src = NULL;
+	zk_slist_t *slist_copy = NULL;
+
+	struct dummy_node_data *node_1_data = &(struct dummy_node_data){ .value = 1, .string = strdup("node_1") };
+	struct dummy_node_data *node_2_data = &(struct dummy_node_data){ .value = 2, .string = strdup("node_2") };
+	struct dummy_node_data *node_3_data = &(struct dummy_node_data){ .value = 3, .string = strdup("node_2") };
+
+	slist_src = zk_slist_append(slist_src, node_1_data);
+	slist_src = zk_slist_append(slist_src, node_2_data);
+	slist_src = zk_slist_append(slist_src, node_3_data);
+
+	// Print slist
+	for (zk_slist_t *node_i = slist_src;; node_i = node_i->next) {
+		struct dummy_node_data *node_data = node_i->data;
+		printf("### Node ###\n");
+		printf("Value: %d\n", node_data->value);
+		printf("String: %s\n", node_data->string);
+		if (node_i->next == NULL) {
+			break;
+		}
+	}
+
+	slist_copy = zk_slist_copy(slist_src);
+
+	zk_slist_t *node_i_src = slist_src;
+	zk_slist_t *node_i_cp = slist_copy;
+	while (1) {
+		struct dummy_node_data *node_data_src = node_i_src->data;
+		struct dummy_node_data *node_data_cp = node_i_cp->data;
+
+		// as zk_slist_copy is a shallow copy, data pointer  of both source and data list should pointer to the
+		// same memory addresses
+		TEST_ASSERT_EQUAL(node_i_src->data, node_i_cp->data);
+
+		// check that node data holds the same data
+		TEST_ASSERT_EQUAL(node_data_src->value, node_data_cp->value);
+		TEST_ASSERT_EQUAL_STRING(node_data_src->string, node_data_cp->string);
+
+		node_i_cp = node_i_cp->next;
+		node_i_src = node_i_src->next;
+		if (node_i_cp->next == NULL) {
+			break;
+		}
+	}
+
+	zk_slist_free_full(&slist_src, dummy_node_data_free);
+	// data of the nodes were already freed with the above call to zk_slist_free_full
+	zk_slist_free(&slist_copy);
+}
+
 int main(void)
 {
 	UNITY_BEGIN();
@@ -368,10 +437,18 @@ int main(void)
 	RUN_TEST(test_zk_slist_append_n_items_to_slist);
 	RUN_TEST(test_zk_slist_append_null_data_to_slist);
 
-	// tests for zk_slist_prepend function
-	RUN_TEST(test_zk_slist_prepend_n_items_to_slist);
-	RUN_TEST(test_zk_slist_prepend_null_data_to_slist);
+	// test for zk_slist_concat
+	RUN_TEST(test_zk_slist_concat_lists_of_strings);
+	RUN_TEST(test_zk_slist_concat_when_destination_list_is_null_should_return_null);
+	RUN_TEST(test_zk_slist_concat_when_source_list_is_null_should_return_null);
 
+	// test for zk_slist_copy
+	RUN_TEST(test_zk_slist_copy_when_source_list_is_null);
+	RUN_TEST(test_zk_slist_copy_when_source_list_node_data_is_a_pointer_to_data_only_the_pointer_is_copied);
+
+	// test for zk_slist_copy_deep
+
+	// test for zk_slist_free
 	RUN_TEST(test_zk_slist_free_a_null_list_should_just_return);
 
 	// tests for zk_slist_free_full function
@@ -379,10 +456,9 @@ int main(void)
 	RUN_TEST(test_zk_slist_free_full_for_a_null_list_should_just_return);
 	RUN_TEST(test_zk_slist_free_full_for_a_null_destructor_should_just_return);
 
-	// test for zk_slist_concat
-	RUN_TEST(test_zk_slist_concat_lists_of_strings);
-	RUN_TEST(test_zk_slist_concat_when_destination_list_is_null_should_return_null);
-	RUN_TEST(test_zk_slist_concat_when_source_list_is_null_should_return_null);
+	// tests for zk_slist_prepend function
+	RUN_TEST(test_zk_slist_prepend_n_items_to_slist);
+	RUN_TEST(test_zk_slist_prepend_null_data_to_slist);
 
 	return UNITY_END();
 }

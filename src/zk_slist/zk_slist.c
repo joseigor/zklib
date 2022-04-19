@@ -5,26 +5,6 @@
 
 // SECTION: Private functions
 
-static void _zk_slist_free(zk_slist_t **list_p, zk_destructor_t destructor)
-{
-	if (list_p == NULL || *list_p == NULL) {
-		return;
-	}
-
-	// free all nodes and its data if destructor is passed by the user
-	while (1) {
-		zk_slist_t *node = *list_p;
-		*list_p = (*list_p)->next;
-		if (destructor != NULL) {
-			destructor(node->data);
-		}
-		free(node);
-		if ((*list_p) == NULL) {
-			return;
-		}
-	}
-}
-
 static zk_slist_t *_zk_slist_new_node(void)
 {
 	zk_slist_t *list = malloc(sizeof(zk_slist_t));
@@ -48,14 +28,14 @@ zk_slist_t *zk_slist_append(zk_slist_t *list, void *data)
 	}
 
 	// add new node to end of the list
-	for (zk_slist_t *node_i = list;; node_i = node_i->next) {
-		// checks end of the list
+	zk_slist_t *node_i = list;
+	while (node_i != NULL) {
 		if (node_i->next == NULL) {
 			node_i->next = node;
 			break;
 		}
+		node_i = node_i->next;
 	}
-
 	return list;
 }
 
@@ -65,19 +45,47 @@ zk_slist_t *zk_slist_concat(zk_slist_t *list_dest, zk_slist_t *list_src)
 		return NULL;
 	}
 
-	for (zk_slist_t *node_i = list_dest;; node_i = node_i->next) {
+	zk_slist_t *node_i = list_dest;
+	while (node_i != NULL) {
 		if (node_i->next == NULL) {
 			node_i->next = list_src;
 			break;
 		}
+		node_i = node_i->next;
 	}
 
 	return list_dest;
 }
 
+zk_slist_t *zk_slist_copy(const zk_slist_t *list)
+{
+	if (list == NULL) {
+		return NULL;
+	}
+
+	zk_slist_t *cp = NULL;
+
+	while (list != NULL) {
+		cp = zk_slist_append(cp, list->data);
+		list = list->next;
+	}
+
+	return cp;
+}
+
 void zk_slist_free(zk_slist_t **list_p)
 {
-	_zk_slist_free(list_p, NULL);
+	if (list_p == NULL || *list_p == NULL) {
+		return;
+	}
+
+	while ((*list_p) != NULL) {
+		zk_slist_t *node = *list_p;
+		*list_p = (*list_p)->next;
+		free(node);
+	}
+
+	return;
 }
 
 void zk_slist_free_full(zk_slist_t **list_p, zk_destructor_t destructor)
@@ -86,7 +94,14 @@ void zk_slist_free_full(zk_slist_t **list_p, zk_destructor_t destructor)
 		return;
 	}
 
-	_zk_slist_free(list_p, destructor);
+	while ((*list_p) != NULL) {
+		zk_slist_t *node = *list_p;
+		*list_p = (*list_p)->next;
+		destructor(node->data);
+		free(node);
+	}
+
+	return;
 }
 
 zk_slist_t *zk_slist_prepend(zk_slist_t *list, void *data)
