@@ -3,6 +3,7 @@
 
 #include "unity.h"
 #include "zk/zklib.h"
+#include "zk_common/zk_utils.h"
 
 struct dummy_node_data {
 	int value;
@@ -13,6 +14,17 @@ static void dummy_node_data_free(void *data)
 {
 	struct dummy_node_data *node_data = data;
 	free(node_data->string);
+	free(node_data);
+}
+
+static void *copy_node_data(ZK_GNUC_UNUSED const void *const data, ZK_GNUC_UNUSED void *user_data)
+{
+	const struct dummy_node_data *const node_data = data;
+	struct dummy_node_data *node_data_copy = malloc(sizeof(struct dummy_node_data));
+	node_data_copy->value = node_data->value;
+	node_data_copy->string = strdup(node_data->string);
+
+	return node_data_copy;
 }
 
 void setUp(void)
@@ -379,9 +391,17 @@ void test_zk_slist_copy_when_source_list_node_data_is_a_pointer_to_data_only_the
 	zk_slist_t *slist_src = NULL;
 	zk_slist_t *slist_copy = NULL;
 
-	struct dummy_node_data *node_1_data = &(struct dummy_node_data){ .value = 1, .string = strdup("node_1") };
-	struct dummy_node_data *node_2_data = &(struct dummy_node_data){ .value = 2, .string = strdup("node_2") };
-	struct dummy_node_data *node_3_data = &(struct dummy_node_data){ .value = 3, .string = strdup("node_2") };
+	struct dummy_node_data *node_1_data = malloc(sizeof(struct dummy_node_data));
+	node_1_data->value = 1;
+	node_1_data->string = strdup("node_1");
+
+	struct dummy_node_data *node_2_data = malloc(sizeof(struct dummy_node_data));
+	node_2_data->value = 2;
+	node_2_data->string = strdup("node_2");
+
+	struct dummy_node_data *node_3_data = malloc(sizeof(struct dummy_node_data));
+	node_3_data->value = 3;
+	node_3_data->string = strdup("node_3");
 
 	slist_src = zk_slist_append(slist_src, node_1_data);
 	slist_src = zk_slist_append(slist_src, node_2_data);
@@ -426,6 +446,89 @@ void test_zk_slist_copy_when_source_list_node_data_is_a_pointer_to_data_only_the
 	zk_slist_free(&slist_copy);
 }
 
+void test_zk_slist_copy_full_should_return_null_when_source_list_is_null(void)
+{
+	zk_slist_t *slist_src = NULL;
+	TEST_ASSERT_NULL(zk_slist_copy_deep(slist_src, copy_node_data, NULL));
+}
+
+void test_zk_slist_copy_full_should_return_null_when_copy_function_is_null(void)
+{
+	zk_slist_t *slist_src = NULL;
+	int data = 1;
+	slist_src = zk_slist_prepend(slist_src, &data);
+	TEST_ASSERT_NULL(zk_slist_copy_deep(slist_src, NULL, NULL));
+	zk_slist_free(&slist_src);
+}
+
+void test_zk_slist_copy_deep_should_perform_a_deep_copy_of_source_list_nodes_data(void)
+{
+	zk_slist_t *slist_src = NULL;
+	zk_slist_t *slist_dest = NULL;
+
+	struct dummy_node_data *node_1_data = malloc(sizeof(struct dummy_node_data));
+	node_1_data->value = 1;
+	node_1_data->string = strdup("node_1");
+
+	struct dummy_node_data *node_2_data = malloc(sizeof(struct dummy_node_data));
+	node_2_data->value = 2;
+	node_2_data->string = strdup("node_2");
+
+	struct dummy_node_data *node_3_data = malloc(sizeof(struct dummy_node_data));
+	node_3_data->value = 3;
+	node_3_data->string = strdup("node_3");
+
+	slist_src = zk_slist_append(slist_src, node_1_data);
+	slist_src = zk_slist_append(slist_src, node_2_data);
+	slist_src = zk_slist_append(slist_src, node_3_data);
+
+	slist_dest = zk_slist_copy_deep(slist_src, copy_node_data, NULL);
+
+	zk_slist_t *node_i_src = slist_src;
+	zk_slist_t *node_i_dest = slist_dest;
+	while (node_i_src != NULL || node_i_dest != NULL) {
+		struct dummy_node_data *node_data_src = node_i_src->data;
+		struct dummy_node_data *node_data_dest = node_i_dest->data;
+
+		// as zk_slist_dest_deep performs a deep copy the data pointer of the destination slit should pointer to
+		// a different memory address
+		TEST_ASSERT_NOT_EQUAL(node_i_src->data, node_i_dest->data);
+
+		// check that node data holds the same data
+		TEST_ASSERT_EQUAL(node_data_src->value, node_data_dest->value);
+		TEST_ASSERT_EQUAL_STRING(node_data_src->string, node_data_dest->string);
+
+		node_i_dest = node_i_dest->next;
+		node_i_src = node_i_src->next;
+	}
+
+	zk_slist_free_full(&slist_src, dummy_node_data_free);
+
+	// create a temporary array to check against the values of slit_dest
+	struct dummy_node_data *node_data_arr[] = {
+		&(struct dummy_node_data){ .value = 1, .string = "node_1" },
+		&(struct dummy_node_data){ .value = 2, .string = "node_2" },
+		&(struct dummy_node_data){ .value = 3, .string = "node_3" },
+	};
+
+	node_i_dest = slist_dest;
+	int i = 0;
+	while (node_i_dest != NULL) {
+		struct dummy_node_data *node_data_dest = node_i_dest->data;
+
+		TEST_ASSERT_NOT_NULL(node_i_dest->data);
+
+		// check that node data holds the same data
+		TEST_ASSERT_EQUAL(node_data_arr[i]->value, node_data_dest->value);
+		TEST_ASSERT_EQUAL_STRING(node_data_arr[i]->string, node_data_dest->string);
+
+		node_i_dest = node_i_dest->next;
+		i++;
+	}
+
+	zk_slist_free_full(&slist_dest, dummy_node_data_free);
+}
+
 int main(void)
 {
 	UNITY_BEGIN();
@@ -447,6 +550,9 @@ int main(void)
 	RUN_TEST(test_zk_slist_copy_when_source_list_node_data_is_a_pointer_to_data_only_the_pointer_is_copied);
 
 	// test for zk_slist_copy_deep
+	RUN_TEST(test_zk_slist_copy_full_should_return_null_when_source_list_is_null);
+	RUN_TEST(test_zk_slist_copy_full_should_return_null_when_copy_function_is_null);
+	RUN_TEST(test_zk_slist_copy_deep_should_perform_a_deep_copy_of_source_list_nodes_data);
 
 	// test for zk_slist_free
 	RUN_TEST(test_zk_slist_free_a_null_list_should_just_return);

@@ -16,6 +16,8 @@ zk_slist_t *zk_slist_concat(zk_slist_t *list_dest, zk_slist_t *list_src);
 
 zk_slist_t *zk_slist_copy(const zk_slist_t *list);
 
+zk_slist_t *zk_slist_copy_deep(const zk_slist_t *list, zk_copy_data_t func, void *user_data);
+
 void zk_slist_free(zk_slist_t **list_p);
 
 void zk_slist_free_full(zk_slist_t **list_p, zk_destructor_t destructor);

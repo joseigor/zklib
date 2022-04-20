@@ -1,6 +1,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 
+#include "zk_common/zk_utils.h"
 #include "zk_slist/zk_slist.h"
 
 // SECTION: Private functions
@@ -67,6 +68,23 @@ zk_slist_t *zk_slist_copy(const zk_slist_t *list)
 
 	while (list != NULL) {
 		cp = zk_slist_append(cp, list->data);
+		list = list->next;
+	}
+
+	return cp;
+}
+
+zk_slist_t *zk_slist_copy_deep(const zk_slist_t *list, zk_copy_data_t func, void *user_data)
+{
+	if (list == NULL || func == NULL) {
+		return NULL;
+	}
+
+	zk_slist_t *cp = NULL;
+
+	while (list != NULL) {
+		void *data = func(list->data, user_data);
+		cp = zk_slist_append(cp, data);
 		list = list->next;
 	}
 
