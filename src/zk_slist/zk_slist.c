@@ -93,8 +93,11 @@ zk_slist_t *zk_slist_copy_deep(const zk_slist_t *list, zk_copy_data_t func, void
 
 zk_slist_t *zk_slist_delete_node(zk_slist_t *list, zk_slist_t *node, zk_destructor_t func)
 {
-	if (list == NULL || node == NULL) {
+	if (list == NULL) {
 		return NULL;
+	}
+	if (node == NULL) {
+		return list;
 	}
 
 	zk_slist_t *head = list;
@@ -119,6 +122,17 @@ zk_slist_t *zk_slist_delete_node(zk_slist_t *list, zk_slist_t *node, zk_destruct
 	}
 
 	return head;
+}
+
+zk_slist_t *zk_slist_find_by_data(zk_slist_t *list, const void *const data)
+{
+	while (list != NULL) {
+		if (list->data == data) {
+			break;
+		}
+		list = list->next;
+	}
+	return list;
 }
 
 void zk_slist_free(zk_slist_t **list_p)

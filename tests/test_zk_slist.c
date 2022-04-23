@@ -201,104 +201,6 @@ void test_zk_slist_append_null_data_to_slist(void)
 	TEST_ASSERT_NULL(slist);
 }
 
-void test_zk_slist_prepend_n_items_to_slist(void)
-{
-	int number_of_nodes = 100;
-	int nodes_data[number_of_nodes];
-	zk_slist_t *slist = NULL;
-
-	for (int i = 0; i < number_of_nodes; i++) {
-		nodes_data[i] = i;
-		slist = zk_slist_prepend(slist, &nodes_data[i]);
-		TEST_ASSERT_NOT_NULL(slist);
-	}
-
-	int node_idx = 1;
-	for (zk_slist_t *node_i = slist;; node_i = node_i->next) {
-		TEST_ASSERT_NOT_NULL(node_i);
-		TEST_ASSERT_EQUAL_PTR(node_i->data, &nodes_data[number_of_nodes - node_idx]);
-		TEST_ASSERT_EQUAL_PTR(*((int *)node_i->data), nodes_data[number_of_nodes - node_idx]);
-		printf("%d", *((int *)node_i->data));
-		if (node_i->next == NULL) {
-			printf("\n");
-			break;
-		}
-		printf("->");
-		node_idx++;
-	}
-
-	zk_slist_free(&slist);
-	TEST_ASSERT_NULL(slist);
-}
-
-void test_zk_slist_prepend_null_data_to_slist(void)
-{
-	int number_of_nodes = 100;
-	zk_slist_t *slist = NULL;
-
-	for (int i = 0; i < number_of_nodes; i++) {
-		slist = zk_slist_prepend(slist, NULL);
-		TEST_ASSERT_NOT_NULL(slist);
-	}
-
-	for (zk_slist_t *node_i = slist;; node_i = node_i->next) {
-		TEST_ASSERT_NOT_NULL(node_i);
-		TEST_ASSERT_EQUAL_PTR(node_i->data, NULL);
-		printf("%s", node_i->data ? "NOT_NULL" : "NULL");
-		if (node_i->next == NULL) {
-			printf("\n");
-			break;
-		}
-		printf("->");
-	}
-
-	zk_slist_free(&slist);
-	TEST_ASSERT_NULL(slist);
-}
-
-void test_zk_slist_free_a_null_list_should_just_return(void)
-{
-	zk_slist_t *slist = NULL;
-	zk_slist_free(&slist);
-	TEST_ASSERT_NULL(slist);
-}
-
-void test_zk_slist_free_full_for_list_of_strings(void)
-{
-	int number_of_nodes = 100;
-	zk_slist_t *slist = NULL;
-
-	for (int i = 0; i < number_of_nodes; i++) {
-		slist = zk_slist_append(slist, strdup("a"));
-		TEST_ASSERT_NOT_NULL(slist);
-	}
-
-	zk_slist_free_full(&slist, free);
-	TEST_ASSERT_NULL(slist);
-}
-
-void test_zk_slist_free_full_for_a_null_list_should_just_return(void)
-{
-	zk_slist_t *slist = NULL;
-	zk_slist_free_full(&slist, free);
-	TEST_ASSERT_NULL(slist);
-}
-
-void test_zk_slist_free_full_for_a_null_destructor_should_just_return(void)
-{
-	zk_slist_t *slist = NULL;
-	slist = zk_slist_append(slist, strdup("a"));
-	// As destructor argument is NULL, list should not be freed and function should just return
-	zk_slist_free_full(&slist, NULL);
-	TEST_ASSERT_NOT_NULL(slist);
-	TEST_ASSERT_NOT_NULL(slist->data);
-	TEST_ASSERT_EQUAL_STRING("a", (char *)slist->data);
-
-	// Now list is freed
-	zk_slist_free_full(&slist, free);
-	TEST_ASSERT_NULL(slist);
-}
-
 void test_zk_slist_concat_lists_of_strings(void)
 {
 	zk_slist_t *slist_dest = NULL;
@@ -548,7 +450,7 @@ void test_zk_slist_delete_node_when_node_is_null(void)
 	slist = zk_slist_append(slist, NULL);
 
 	TEST_ASSERT_NOT_NULL(slist);
-	TEST_ASSERT_NULL(zk_slist_delete_node(slist, slist_node, NULL));
+	TEST_ASSERT_EQUAL(slist, zk_slist_delete_node(slist, slist_node, NULL));
 
 	zk_slist_free(&slist);
 }
@@ -768,6 +670,137 @@ void test_zk_slist_delete_node_when_node_is_not_in_the_list(void)
 	zk_slist_free(&slist_node);
 }
 
+void test_zk_slist_find_by_data(void)
+{
+	zk_slist_t *slist = NULL;
+	zk_slist_t *slist_found = NULL;
+
+	int node_1_data = 1;
+	int node_2_data = 2;
+	int node_3_data = 3;
+	int node_4_data = 4;
+	int node_5_data = 5;
+	int node_6_data = 6;
+	int node_7_data = 7;
+
+	slist = zk_slist_append(slist, &node_1_data);
+	slist = zk_slist_append(slist, &node_2_data);
+	slist = zk_slist_append(slist, &node_3_data);
+	slist = zk_slist_append(slist, &node_4_data);
+	slist = zk_slist_append(slist, &node_5_data);
+	slist = zk_slist_append(slist, &node_6_data);
+	slist = zk_slist_append(slist, &node_7_data);
+
+	slist_found = zk_slist_find_by_data(slist, &node_5_data);
+
+	TEST_ASSERT_NOT_NULL(slist_found);
+	TEST_ASSERT_EQUAL(node_5_data, *((int *)(slist_found->data)));
+	TEST_ASSERT_EQUAL(node_6_data, *((int *)(slist_found->next->data)));
+	TEST_ASSERT_EQUAL(node_7_data, *((int *)(slist_found->next->next->data)));
+	TEST_ASSERT_NULL(slist_found->next->next->next);
+
+	// There is no nedd to free slist_found as it is part slist
+	zk_slist_free(&slist);
+}
+
+void test_zk_slist_free_a_null_list_should_just_return(void)
+{
+	zk_slist_t *slist = NULL;
+	zk_slist_free(&slist);
+	TEST_ASSERT_NULL(slist);
+}
+
+void test_zk_slist_free_full_for_list_of_strings(void)
+{
+	int number_of_nodes = 100;
+	zk_slist_t *slist = NULL;
+
+	for (int i = 0; i < number_of_nodes; i++) {
+		slist = zk_slist_append(slist, strdup("a"));
+		TEST_ASSERT_NOT_NULL(slist);
+	}
+
+	zk_slist_free_full(&slist, free);
+	TEST_ASSERT_NULL(slist);
+}
+
+void test_zk_slist_free_full_for_a_null_list_should_just_return(void)
+{
+	zk_slist_t *slist = NULL;
+	zk_slist_free_full(&slist, free);
+	TEST_ASSERT_NULL(slist);
+}
+
+void test_zk_slist_free_full_for_a_null_destructor_should_just_return(void)
+{
+	zk_slist_t *slist = NULL;
+	slist = zk_slist_append(slist, strdup("a"));
+	// As destructor argument is NULL, list should not be freed and function should just return
+	zk_slist_free_full(&slist, NULL);
+	TEST_ASSERT_NOT_NULL(slist);
+	TEST_ASSERT_NOT_NULL(slist->data);
+	TEST_ASSERT_EQUAL_STRING("a", (char *)slist->data);
+
+	// Now list is freed
+	zk_slist_free_full(&slist, free);
+	TEST_ASSERT_NULL(slist);
+}
+
+void test_zk_slist_prepend_n_items_to_slist(void)
+{
+	int number_of_nodes = 100;
+	int nodes_data[number_of_nodes];
+	zk_slist_t *slist = NULL;
+
+	for (int i = 0; i < number_of_nodes; i++) {
+		nodes_data[i] = i;
+		slist = zk_slist_prepend(slist, &nodes_data[i]);
+		TEST_ASSERT_NOT_NULL(slist);
+	}
+
+	int node_idx = 1;
+	for (zk_slist_t *node_i = slist;; node_i = node_i->next) {
+		TEST_ASSERT_NOT_NULL(node_i);
+		TEST_ASSERT_EQUAL_PTR(node_i->data, &nodes_data[number_of_nodes - node_idx]);
+		TEST_ASSERT_EQUAL_PTR(*((int *)node_i->data), nodes_data[number_of_nodes - node_idx]);
+		printf("%d", *((int *)node_i->data));
+		if (node_i->next == NULL) {
+			printf("\n");
+			break;
+		}
+		printf("->");
+		node_idx++;
+	}
+
+	zk_slist_free(&slist);
+	TEST_ASSERT_NULL(slist);
+}
+
+void test_zk_slist_prepend_null_data_to_slist(void)
+{
+	int number_of_nodes = 100;
+	zk_slist_t *slist = NULL;
+
+	for (int i = 0; i < number_of_nodes; i++) {
+		slist = zk_slist_prepend(slist, NULL);
+		TEST_ASSERT_NOT_NULL(slist);
+	}
+
+	for (zk_slist_t *node_i = slist;; node_i = node_i->next) {
+		TEST_ASSERT_NOT_NULL(node_i);
+		TEST_ASSERT_EQUAL_PTR(node_i->data, NULL);
+		printf("%s", node_i->data ? "NOT_NULL" : "NULL");
+		if (node_i->next == NULL) {
+			printf("\n");
+			break;
+		}
+		printf("->");
+	}
+
+	zk_slist_free(&slist);
+	TEST_ASSERT_NULL(slist);
+}
+
 int main(void)
 {
 	UNITY_BEGIN();
@@ -802,6 +835,9 @@ int main(void)
 	RUN_TEST(test_zk_slist_delete_node_when_list_has_multiple_nodes);
 	RUN_TEST(test_zk_slist_delete_node_and_use_external_function_to_free_node_data);
 	RUN_TEST(test_zk_slist_delete_node_when_node_is_not_in_the_list);
+
+	// test zk_slist_find_by_data
+	RUN_TEST(test_zk_slist_find_by_data);
 
 	// test for zk_slist_free
 	RUN_TEST(test_zk_slist_free_a_null_list_should_just_return);
