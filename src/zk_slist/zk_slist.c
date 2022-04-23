@@ -135,6 +135,21 @@ zk_slist_t *zk_slist_find_by_data(zk_slist_t *list, const void *const data)
 	return list;
 }
 
+zk_slist_t *zk_slist_find_by_data_custom(zk_slist_t *list, const void *const data, zk_compare_t func)
+{
+	if (func == NULL) {
+		return NULL;
+	}
+
+	while (list != NULL) {
+		if (func(list->data, data) == 0) {
+			break;
+		}
+		list = list->next;
+	}
+	return list;
+}
+
 void zk_slist_free(zk_slist_t **list_p)
 {
 	if (list_p == NULL || *list_p == NULL) {

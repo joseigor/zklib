@@ -22,6 +22,8 @@ zk_slist_t *zk_slist_delete_node(zk_slist_t *list, zk_slist_t *node, zk_destruct
 
 zk_slist_t *zk_slist_find_by_data(zk_slist_t *list, const void *const data);
 
+zk_slist_t *zk_slist_find_by_data_custom(zk_slist_t *list, const void *const data, zk_compare_t func);
+
 void zk_slist_free(zk_slist_t **list_p);
 
 void zk_slist_free_full(zk_slist_t **list_p, zk_destructor_t destructor);

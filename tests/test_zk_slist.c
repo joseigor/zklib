@@ -10,6 +10,22 @@ struct dummy_node_data {
 	char *string;
 };
 
+static int slist_compare_data_custom(const void *const node_data, const void *const user_data)
+{
+	const int a = *((int *)node_data);
+	const int b = *((int *)user_data);
+
+	if (a < b) {
+		return -1;
+	}
+
+	if (a > b) {
+		return 1;
+	}
+
+	return 0;
+}
+
 static void dummy_node_data_free(void *data)
 {
 	struct dummy_node_data *node_data = data;
@@ -247,7 +263,8 @@ void test_zk_slist_concat_lists_of_strings(void)
 	TEST_ASSERT_EQUAL_STRING("list_src_node_3", (char *)node->data);
 	TEST_ASSERT_NULL(node->next);
 
-	// as slist_src was concatenated to the end of slist_dest by freeing slist_dest the slist_src is also freed.
+	// as slist_src was concatenated to the end of slist_dest by freeing slist_dest the slist_src is also
+	// freed.
 	zk_slist_free_full(&slist_dest, free);
 	TEST_ASSERT_NULL(slist_dest);
 	// Now slist_src is a dangling pointer
@@ -328,8 +345,8 @@ void test_zk_slist_copy_when_source_list_node_data_is_a_pointer_to_data_only_the
 		struct dummy_node_data *node_data_src = node_i_src->data;
 		struct dummy_node_data *node_data_cp = node_i_cp->data;
 
-		// as zk_slist_copy is a shallow copy, data pointer  of both source and data list should pointer to the
-		// same memory addresses
+		// as zk_slist_copy is a shallow copy, data pointer  of both source and data list should pointer
+		// to the same memory addresses
 		TEST_ASSERT_EQUAL(node_i_src->data, node_i_cp->data);
 
 		// check that node data holds the same data
@@ -392,8 +409,8 @@ void test_zk_slist_copy_deep_should_perform_a_deep_copy_of_source_list_nodes_dat
 		struct dummy_node_data *node_data_src = node_i_src->data;
 		struct dummy_node_data *node_data_dest = node_i_dest->data;
 
-		// as zk_slist_dest_deep performs a deep copy the data pointer of the destination slit should pointer to
-		// a different memory address
+		// as zk_slist_dest_deep performs a deep copy the data pointer of the destination slit should
+		// pointer to a different memory address
 		TEST_ASSERT_NOT_EQUAL(node_i_src->data, node_i_dest->data);
 
 		// check that node data holds the same data
@@ -703,6 +720,68 @@ void test_zk_slist_find_by_data(void)
 	zk_slist_free(&slist);
 }
 
+void test_zk_slist_find_by_data_custom_when_comparison_func_is_null(void)
+{
+	zk_slist_t *slist = NULL;
+	zk_slist_t *slist_found = NULL;
+
+	int node_1_data = 1;
+	int node_2_data = 2;
+	int node_3_data = 3;
+	int node_4_data = 4;
+	int node_5_data = 5;
+	int node_6_data = 6;
+	int node_7_data = 7;
+
+	slist = zk_slist_append(slist, &node_1_data);
+	slist = zk_slist_append(slist, &node_2_data);
+	slist = zk_slist_append(slist, &node_3_data);
+	slist = zk_slist_append(slist, &node_4_data);
+	slist = zk_slist_append(slist, &node_5_data);
+	slist = zk_slist_append(slist, &node_6_data);
+	slist = zk_slist_append(slist, &node_7_data);
+
+	slist_found = zk_slist_find_by_data_custom(slist, &node_5_data, NULL);
+
+	TEST_ASSERT_NULL(slist_found);
+
+	// There is no nedd to free slist_found as it is part slist
+	zk_slist_free(&slist);
+}
+
+void test_zk_slist_find_by_data_custom(void)
+{
+	zk_slist_t *slist = NULL;
+	zk_slist_t *slist_found = NULL;
+
+	int node_1_data = 1;
+	int node_2_data = 2;
+	int node_3_data = 3;
+	int node_4_data = 4;
+	int node_5_data = 5;
+	int node_6_data = 6;
+	int node_7_data = 7;
+
+	slist = zk_slist_append(slist, &node_1_data);
+	slist = zk_slist_append(slist, &node_2_data);
+	slist = zk_slist_append(slist, &node_3_data);
+	slist = zk_slist_append(slist, &node_4_data);
+	slist = zk_slist_append(slist, &node_5_data);
+	slist = zk_slist_append(slist, &node_6_data);
+	slist = zk_slist_append(slist, &node_7_data);
+
+	slist_found = zk_slist_find_by_data_custom(slist, &node_5_data, slist_compare_data_custom);
+
+	TEST_ASSERT_NOT_NULL(slist_found);
+	TEST_ASSERT_EQUAL(node_5_data, *((int *)(slist_found->data)));
+	TEST_ASSERT_EQUAL(node_6_data, *((int *)(slist_found->next->data)));
+	TEST_ASSERT_EQUAL(node_7_data, *((int *)(slist_found->next->next->data)));
+	TEST_ASSERT_NULL(slist_found->next->next->next);
+
+	// There is no nedd to free slist_found as it is part slist
+	zk_slist_free(&slist);
+}
+
 void test_zk_slist_free_a_null_list_should_just_return(void)
 {
 	zk_slist_t *slist = NULL;
@@ -838,6 +917,10 @@ int main(void)
 
 	// test zk_slist_find_by_data
 	RUN_TEST(test_zk_slist_find_by_data);
+
+	// test zk_slist_find_by_data_custom
+	RUN_TEST(test_zk_slist_find_by_data_custom_when_comparison_func_is_null);
+	RUN_TEST(test_zk_slist_find_by_data_custom);
 
 	// test for zk_slist_free
 	RUN_TEST(test_zk_slist_free_a_null_list_should_just_return);
