@@ -91,6 +91,36 @@ zk_slist_t *zk_slist_copy_deep(const zk_slist_t *list, zk_copy_data_t func, void
 	return cp;
 }
 
+zk_slist_t *zk_slist_delete_node(zk_slist_t *list, zk_slist_t *node, zk_destructor_t func)
+{
+	if (list == NULL || node == NULL) {
+		return NULL;
+	}
+
+	zk_slist_t *head = list;
+	zk_slist_t *node_prev = NULL;
+	while (list != NULL) {
+		if (list == node) {
+			// node to be deleted is the head of the list
+			if (node_prev == NULL) {
+				head = list->next;
+			} else {
+				node_prev->next = list->next;
+			}
+
+			if (func != NULL) {
+				func(list->data);
+			}
+			free(list);
+			break;
+		}
+		node_prev = list;
+		list = list->next;
+	}
+
+	return head;
+}
+
 void zk_slist_free(zk_slist_t **list_p)
 {
 	if (list_p == NULL || *list_p == NULL) {

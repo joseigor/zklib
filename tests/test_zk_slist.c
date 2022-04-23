@@ -529,6 +529,245 @@ void test_zk_slist_copy_deep_should_perform_a_deep_copy_of_source_list_nodes_dat
 	zk_slist_free_full(&slist_dest, dummy_node_data_free);
 }
 
+void test_zk_slist_delete_node_when_list_is_null(void)
+{
+	zk_slist_t *slist = NULL;
+	zk_slist_t *slist_node = NULL;
+	slist_node = zk_slist_append(slist_node, NULL);
+
+	TEST_ASSERT_NOT_NULL(slist_node);
+	TEST_ASSERT_NULL(zk_slist_delete_node(slist, slist_node, NULL));
+
+	zk_slist_free(&slist_node);
+}
+
+void test_zk_slist_delete_node_when_node_is_null(void)
+{
+	zk_slist_t *slist = NULL;
+	zk_slist_t *slist_node = NULL;
+	slist = zk_slist_append(slist, NULL);
+
+	TEST_ASSERT_NOT_NULL(slist);
+	TEST_ASSERT_NULL(zk_slist_delete_node(slist, slist_node, NULL));
+
+	zk_slist_free(&slist);
+}
+
+void test_zk_slist_delete_node_when_list_has_only_one_node(void)
+{
+	zk_slist_t *slist = NULL;
+	zk_slist_t *slist_node = NULL;
+	slist = zk_slist_append(slist, NULL);
+
+	slist_node = slist;
+
+	// slist has only one link that once deletec slist should be null
+	TEST_ASSERT_NOT_NULL(slist);
+	TEST_ASSERT_NOT_NULL(slist_node);
+	TEST_ASSERT_NULL(zk_slist_delete_node(slist, slist_node, NULL));
+
+	// In this point slist and slist_node are dangling pointers
+	TEST_ASSERT_NOT_NULL(slist);
+	TEST_ASSERT_NOT_NULL(slist_node);
+
+	// There is no need to free slist nor slist_node the only lint slist had was deleted
+}
+
+void test_zk_slist_delete_first_node_when_list_has_mutiple_nodes(void)
+{
+	zk_slist_t *slist = NULL;
+	zk_slist_t *slist_node = NULL;
+
+	int node_1_data = 1;
+	int node_2_data = 2;
+	int node_3_data = 3;
+
+	slist = zk_slist_append(slist, &node_1_data);
+	slist = zk_slist_append(slist, &node_2_data);
+	slist = zk_slist_append(slist, &node_3_data);
+
+	// slist_node points to first node
+	slist_node = slist;
+
+	TEST_ASSERT_NOT_NULL(slist);
+	TEST_ASSERT_NOT_NULL(slist_node);
+	TEST_ASSERT_EQUAL(node_1_data, *(int *)(slist_node->data));
+
+	slist = zk_slist_delete_node(slist, slist_node, NULL);
+
+	TEST_ASSERT_NOT_NULL(slist);
+	TEST_ASSERT_EQUAL(node_2_data, *(int *)(slist->data));
+	TEST_ASSERT_EQUAL(node_3_data, *(int *)(slist->next->data));
+	TEST_ASSERT_NULL(slist->next->next);
+
+	// slist_node is dangling pointers no need to free it
+	TEST_ASSERT_NOT_NULL(slist_node);
+
+	zk_slist_free(&slist);
+}
+
+void test_zk_slist_delete_last_node(void)
+{
+	zk_slist_t *slist = NULL;
+	zk_slist_t *slist_node = NULL;
+
+	int node_1_data = 1;
+	int node_2_data = 2;
+	int node_3_data = 3;
+
+	slist = zk_slist_append(slist, &node_1_data);
+	slist = zk_slist_append(slist, &node_2_data);
+	slist = zk_slist_append(slist, &node_3_data);
+
+	// slist_node points to third/last node
+	slist_node = slist->next->next;
+
+	// slist has only one link that once deletec slist should be null
+	TEST_ASSERT_NOT_NULL(slist);
+	TEST_ASSERT_NOT_NULL(slist_node);
+	TEST_ASSERT_EQUAL(node_3_data, *(int *)(slist_node->data));
+
+	slist = zk_slist_delete_node(slist, slist_node, NULL);
+
+	TEST_ASSERT_NOT_NULL(slist);
+	TEST_ASSERT_EQUAL(node_1_data, *(int *)(slist->data));
+	TEST_ASSERT_EQUAL(node_2_data, *(int *)(slist->next->data));
+	TEST_ASSERT_NULL(slist->next->next);
+
+	// slist_node is dangling pointers no need to free it
+	TEST_ASSERT_NOT_NULL(slist_node);
+
+	zk_slist_free(&slist);
+}
+
+void test_zk_slist_delete_node_when_list_has_multiple_nodes(void)
+{
+	zk_slist_t *slist = NULL;
+	zk_slist_t *slist_node = NULL;
+
+	int node_1_data = 1;
+	int node_2_data = 2;
+	int node_3_data = 3;
+
+	slist = zk_slist_append(slist, &node_1_data);
+	slist = zk_slist_append(slist, &node_2_data);
+	slist = zk_slist_append(slist, &node_3_data);
+
+	// slist_node points to second node
+	slist_node = slist->next;
+
+	// slist has only one link that once deletec slist should be null
+	TEST_ASSERT_NOT_NULL(slist);
+	TEST_ASSERT_NOT_NULL(slist_node);
+	TEST_ASSERT_EQUAL(node_2_data, *(int *)(slist_node->data));
+
+	slist = zk_slist_delete_node(slist, slist_node, NULL);
+
+	TEST_ASSERT_NOT_NULL(slist);
+	TEST_ASSERT_EQUAL(node_1_data, *(int *)(slist->data));
+	TEST_ASSERT_EQUAL(node_3_data, *(int *)(slist->next->data));
+	TEST_ASSERT_NULL(slist->next->next);
+
+	// slist_node is dangling pointers no need to free it
+	TEST_ASSERT_NOT_NULL(slist_node);
+
+	zk_slist_free(&slist);
+}
+
+void test_zk_slist_delete_node_and_use_external_function_to_free_node_data(void)
+{
+	zk_slist_t *slist = NULL;
+	zk_slist_t *slist_node = NULL;
+
+	struct dummy_node_data *node_1_data = malloc(sizeof(struct dummy_node_data));
+	node_1_data->value = 1;
+	node_1_data->string = strdup("node_1");
+
+	struct dummy_node_data *node_2_data = malloc(sizeof(struct dummy_node_data));
+	node_2_data->value = 2;
+	node_2_data->string = strdup("node_2");
+
+	struct dummy_node_data *node_3_data = malloc(sizeof(struct dummy_node_data));
+	node_3_data->value = 3;
+	node_3_data->string = strdup("node_3");
+
+	slist = zk_slist_append(slist, node_1_data);
+	slist = zk_slist_append(slist, node_2_data);
+	slist = zk_slist_append(slist, node_3_data);
+
+	// slist_node points to second node
+	slist_node = slist->next;
+
+	// slist has only one link that once deletec slist should be null
+	TEST_ASSERT_NOT_NULL(slist);
+	TEST_ASSERT_NOT_NULL(slist_node);
+
+	// checks that node to be deleted points to correct node and has coreect data
+	TEST_ASSERT_EQUAL(node_2_data, (struct dummy_node_data *)(slist_node->data));
+	TEST_ASSERT_EQUAL(node_2_data->value, ((struct dummy_node_data *)(slist_node->data))->value);
+	TEST_ASSERT_EQUAL(node_2_data->string, ((struct dummy_node_data *)(slist_node->data))->string);
+	TEST_ASSERT_EQUAL(*(node_2_data->string), *(((struct dummy_node_data *)(slist_node->data))->string));
+
+	slist = zk_slist_delete_node(slist, slist_node, dummy_node_data_free);
+
+	// checks that list has correct number of node and data after the node was removedS
+	TEST_ASSERT_NOT_NULL(slist);
+
+	TEST_ASSERT_EQUAL(node_1_data, (struct dummy_node_data *)(slist->data));
+	TEST_ASSERT_EQUAL(node_1_data->value, ((struct dummy_node_data *)(slist->data))->value);
+	TEST_ASSERT_EQUAL(node_1_data->string, ((struct dummy_node_data *)(slist->data))->string);
+	TEST_ASSERT_EQUAL(*(node_1_data->string), *(((struct dummy_node_data *)(slist->data))->string));
+
+	TEST_ASSERT_EQUAL(node_3_data, (struct dummy_node_data *)(slist->next->data));
+	TEST_ASSERT_EQUAL(node_3_data->value, ((struct dummy_node_data *)(slist->next->data))->value);
+	TEST_ASSERT_EQUAL(node_3_data->string, ((struct dummy_node_data *)(slist->next->data))->string);
+	TEST_ASSERT_EQUAL(*(node_3_data->string), *(((struct dummy_node_data *)(slist->next->data))->string));
+
+	TEST_ASSERT_NULL(slist->next->next);
+
+	// slist_node is dangling pointers no need to free it
+	TEST_ASSERT_NOT_NULL(slist_node);
+
+	zk_slist_free_full(&slist, dummy_node_data_free);
+}
+
+void test_zk_slist_delete_node_when_node_is_not_in_the_list(void)
+{
+	zk_slist_t *slist = NULL;
+	zk_slist_t *slist_node = NULL;
+
+	int node_1_data = 1;
+	int node_2_data = 2;
+	int node_3_data = 3;
+
+	slist = zk_slist_append(slist, &node_1_data);
+	slist = zk_slist_append(slist, &node_2_data);
+	slist = zk_slist_append(slist, &node_3_data);
+
+	// node has the same data of the third node of slist, but still this node is not part of slist
+	slist_node = zk_slist_append(slist_node, &node_3_data);
+
+	// slist has only one link that once deletec slist should be null
+	TEST_ASSERT_NOT_NULL(slist);
+	TEST_ASSERT_NOT_NULL(slist_node);
+	TEST_ASSERT_EQUAL(node_3_data, *(int *)(slist_node->data));
+
+	slist = zk_slist_delete_node(slist, slist_node, NULL);
+
+	TEST_ASSERT_NOT_NULL(slist);
+	TEST_ASSERT_EQUAL(node_1_data, *(int *)(slist->data));
+	TEST_ASSERT_EQUAL(node_2_data, *(int *)(slist->next->data));
+	TEST_ASSERT_EQUAL(node_3_data, *(int *)(slist->next->next->data));
+	TEST_ASSERT_NULL(slist->next->next->next);
+
+	TEST_ASSERT_NOT_NULL(slist_node);
+	TEST_ASSERT_EQUAL(node_3_data, *(int *)(slist_node->data));
+	TEST_ASSERT_NULL(slist_node->next);
+
+	zk_slist_free(&slist);
+	zk_slist_free(&slist_node);
+}
+
 int main(void)
 {
 	UNITY_BEGIN();
@@ -553,6 +792,16 @@ int main(void)
 	RUN_TEST(test_zk_slist_copy_full_should_return_null_when_source_list_is_null);
 	RUN_TEST(test_zk_slist_copy_full_should_return_null_when_copy_function_is_null);
 	RUN_TEST(test_zk_slist_copy_deep_should_perform_a_deep_copy_of_source_list_nodes_data);
+
+	// test zk_slist_delete_node
+	RUN_TEST(test_zk_slist_delete_node_when_list_is_null);
+	RUN_TEST(test_zk_slist_delete_node_when_node_is_null);
+	RUN_TEST(test_zk_slist_delete_node_when_list_has_only_one_node);
+	RUN_TEST(test_zk_slist_delete_first_node_when_list_has_mutiple_nodes);
+	RUN_TEST(test_zk_slist_delete_last_node);
+	RUN_TEST(test_zk_slist_delete_node_when_list_has_multiple_nodes);
+	RUN_TEST(test_zk_slist_delete_node_and_use_external_function_to_free_node_data);
+	RUN_TEST(test_zk_slist_delete_node_when_node_is_not_in_the_list);
 
 	// test for zk_slist_free
 	RUN_TEST(test_zk_slist_free_a_null_list_should_just_return);
