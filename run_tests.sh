@@ -34,7 +34,24 @@ run_tests() {
 	meson \
 		test \
 		-v \
-		 --wrap='valgrind --leak-check=full --show-leak-kinds=all --error-exitcode=1' \
+		 --wrap='
+		 	valgrind
+				--leak-check=full
+				--show-leak-kinds=all
+				--errors-for-leak-kinds=all
+				--keep-stacktraces=alloc-and-free
+				--read-var-info=yes
+				--track-origins=yes
+				--errors-for-leak-kinds=definite,possible
+				--leak-resolution=high
+				--num-callers=40
+				--expensive-definedness-checks=yes
+				--show-mismatched-frees=yes
+				--xtree-memory=full
+				--xtree-leak=yes
+				--xtree-leak-file=xtleak.kcg.%p
+				--error-exitcode=1
+			' \
 		 -C "${BUILDDIR}" "${TEST_NAME:-}"
 
 	if [ ! -d "$UNIT_TEST_REPORT_PATH_DEF" ]; then
