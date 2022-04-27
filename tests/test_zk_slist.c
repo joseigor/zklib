@@ -186,12 +186,9 @@ void test_zk_slist_append_n_items_to_slist(void)
 		TEST_ASSERT_NOT_NULL(node_i);
 		TEST_ASSERT_EQUAL_PTR(node_i->data, &nodes_data[node_idx]);
 		TEST_ASSERT_EQUAL(*((int *)node_i->data), nodes_data[node_idx]);
-		printf("%d", *((int *)node_i->data));
 		if (node_i->next == NULL) {
-			printf("\n");
 			break;
 		}
-		printf("->");
 		node_idx++;
 	}
 
@@ -212,12 +209,9 @@ void test_zk_slist_append_null_data_to_slist(void)
 	for (zk_slist_t *node_i = slist;; node_i = node_i->next) {
 		TEST_ASSERT_NOT_NULL(node_i);
 		TEST_ASSERT_EQUAL_PTR(node_i->data, NULL);
-		printf("%s", node_i->data ? "NOT_NULL" : "NULL");
 		if (node_i->next == NULL) {
-			printf("\n");
 			break;
 		}
-		printf("->");
 	}
 
 	zk_slist_free(&slist);
@@ -332,17 +326,6 @@ void test_zk_slist_copy_when_source_list_node_data_is_a_pointer_to_data_only_the
 	slist_src = zk_slist_append(slist_src, node_1_data);
 	slist_src = zk_slist_append(slist_src, node_2_data);
 	slist_src = zk_slist_append(slist_src, node_3_data);
-
-	// Print slist
-	for (zk_slist_t *node_i = slist_src;; node_i = node_i->next) {
-		struct dummy_node_data *node_data = node_i->data;
-		printf("### Node ###\n");
-		printf("Value: %d\n", node_data->value);
-		printf("String: %s\n", node_data->string);
-		if (node_i->next == NULL) {
-			break;
-		}
-	}
 
 	slist_copy = zk_slist_copy(slist_src);
 
@@ -1003,12 +986,9 @@ void test_zk_slist_prepend_n_items_to_slist(void)
 		TEST_ASSERT_NOT_NULL(node_i);
 		TEST_ASSERT_EQUAL_PTR(node_i->data, &nodes_data[number_of_nodes - node_idx]);
 		TEST_ASSERT_EQUAL_PTR(*((int *)node_i->data), nodes_data[number_of_nodes - node_idx]);
-		printf("%d", *((int *)node_i->data));
 		if (node_i->next == NULL) {
-			printf("\n");
 			break;
 		}
-		printf("->");
 		node_idx++;
 	}
 
@@ -1029,12 +1009,9 @@ void test_zk_slist_prepend_null_data_to_slist(void)
 	for (zk_slist_t *node_i = slist;; node_i = node_i->next) {
 		TEST_ASSERT_NOT_NULL(node_i);
 		TEST_ASSERT_EQUAL_PTR(node_i->data, NULL);
-		printf("%s", node_i->data ? "NOT_NULL" : "NULL");
 		if (node_i->next == NULL) {
-			printf("\n");
 			break;
 		}
-		printf("->");
 	}
 
 	zk_slist_free(&slist);
