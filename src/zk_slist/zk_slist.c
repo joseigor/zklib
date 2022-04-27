@@ -25,18 +25,11 @@ zk_slist_t *zk_slist_append(zk_slist_t *list, void *data)
 
 	if (list == NULL) {
 		list = node;
-		return list;
+	} else {
+		zk_slist_t *last_node = zk_slist_last(list);
+		last_node->next = node;
 	}
 
-	// add new node to end of the list
-	zk_slist_t *node_i = list;
-	while (node_i != NULL) {
-		if (node_i->next == NULL) {
-			node_i->next = node;
-			break;
-		}
-		node_i = node_i->next;
-	}
 	return list;
 }
 
@@ -46,14 +39,8 @@ zk_slist_t *zk_slist_concat(zk_slist_t *list_dest, zk_slist_t *list_src)
 		return NULL;
 	}
 
-	zk_slist_t *node_i = list_dest;
-	while (node_i != NULL) {
-		if (node_i->next == NULL) {
-			node_i->next = list_src;
-			break;
-		}
-		node_i = node_i->next;
-	}
+	zk_slist_t *last_node = zk_slist_last(list_dest);
+	last_node->next = list_src;
 
 	return list_dest;
 }
@@ -150,6 +137,12 @@ zk_slist_t *zk_slist_find_by_data_custom(zk_slist_t *list, const void *const dat
 	return list;
 }
 
+// TODO: implement
+void zk_slist_foreach(ZK_GNUC_UNUSED zk_slist_t *list, ZK_GNUC_UNUSED zk_foreach_t func, ZK_GNUC_UNUSED void *user_data)
+{
+	return;
+}
+
 void zk_slist_free(zk_slist_t **list_p)
 {
 	if (list_p == NULL || *list_p == NULL) {
@@ -179,6 +172,27 @@ void zk_slist_free_full(zk_slist_t **list_p, zk_destructor_t destructor)
 	}
 
 	return;
+}
+
+// TODO: implement
+int zk_slist_get_index(ZK_GNUC_UNUSED zk_slist_t *list, ZK_GNUC_UNUSED const void *const data)
+{
+	return 0;
+}
+
+// TODO: implement
+zk_slist_t *zk_slist_insert(ZK_GNUC_UNUSED zk_slist_t *list, ZK_GNUC_UNUSED void *data, ZK_GNUC_UNUSED int position)
+{
+	return NULL;
+}
+
+zk_slist_t *zk_slist_last(ZK_GNUC_UNUSED zk_slist_t *list)
+{
+	while (list != NULL && list->next != NULL) {
+		list = list->next;
+	}
+
+	return list;
 }
 
 zk_slist_t *zk_slist_prepend(zk_slist_t *list, void *data)

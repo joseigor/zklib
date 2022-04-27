@@ -24,8 +24,16 @@ zk_slist_t *zk_slist_find_by_data(zk_slist_t *list, const void *const data);
 
 zk_slist_t *zk_slist_find_by_data_custom(zk_slist_t *list, const void *const data, zk_compare_t func);
 
+void zk_slist_foreach(zk_slist_t *list, zk_foreach_t func, void *user_data);
+
 void zk_slist_free(zk_slist_t **list_p);
 
 void zk_slist_free_full(zk_slist_t **list_p, zk_destructor_t destructor);
+
+int zk_slist_get_index(zk_slist_t *list, const void *const data);
+
+zk_slist_t *zk_slist_insert(zk_slist_t *list, void *data, int position);
+
+zk_slist_t *zk_slist_last(zk_slist_t *list);
 
 zk_slist_t *zk_slist_prepend(zk_slist_t *list, void *data);
