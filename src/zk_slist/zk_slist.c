@@ -35,7 +35,7 @@ zk_slist_t *zk_slist_append(zk_slist_t *list, void *data)
 
 zk_slist_t *zk_slist_concat(zk_slist_t *list_dest, zk_slist_t *list_src)
 {
-	if (list_dest == NULL || list_src == NULL) {
+	if (list_dest == NULL) {
 		return NULL;
 	}
 
@@ -194,13 +194,28 @@ int zk_slist_get_index(zk_slist_t *list, const void *const data)
 	return -1;
 }
 
-// TODO: implement
-zk_slist_t *zk_slist_insert(ZK_GNUC_UNUSED zk_slist_t *list, ZK_GNUC_UNUSED void *data, ZK_GNUC_UNUSED int position)
+zk_slist_t *zk_slist_insert(zk_slist_t *list, void *data, int position)
 {
-	return NULL;
+	if (position <= 0 || list == NULL) {
+		list = zk_slist_prepend(list, data);
+		return list;
+	}
+
+	zk_slist_t *head = list;
+	int index = 0;
+	while (list->next != NULL && index < position - 1) {
+		list = list->next;
+		index++;
+	}
+
+	zk_slist_t *temp = zk_slist_append(NULL, data);
+	temp = zk_slist_concat(temp, list->next);
+	list->next = temp;
+
+	return head;
 }
 
-zk_slist_t *zk_slist_last(ZK_GNUC_UNUSED zk_slist_t *list)
+zk_slist_t *zk_slist_last(zk_slist_t *list)
 {
 	while (list != NULL && list->next != NULL) {
 		list = list->next;
