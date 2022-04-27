@@ -180,10 +180,18 @@ void zk_slist_free_full(zk_slist_t **list_p, zk_destructor_t destructor)
 	return;
 }
 
-// TODO: implement
-int zk_slist_get_index(ZK_GNUC_UNUSED zk_slist_t *list, ZK_GNUC_UNUSED const void *const data)
+int zk_slist_get_index(zk_slist_t *list, const void *const data)
 {
-	return 0;
+	int index = 0;
+	while (list != NULL) {
+		if (list->data == data) {
+			return index;
+		}
+		index++;
+		list = list->next;
+	}
+
+	return -1;
 }
 
 // TODO: implement

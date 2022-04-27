@@ -885,6 +885,63 @@ void test_zk_slist_free_full_for_a_null_destructor_should_just_return(void)
 	TEST_ASSERT_NULL(slist);
 }
 
+void test_zk_slist_get_index_when_list_is_null(void)
+{
+	zk_slist_t *slist = NULL;
+	int node_1_data = 1;
+
+	TEST_ASSERT_EQUAL(-1, zk_slist_get_index(slist, &node_1_data));
+}
+
+void test_zk_slist_get_index_when_data_is_null(void)
+{
+	zk_slist_t *slist = NULL;
+	int node_1_data = 1;
+	// int node_2_data = 2;
+	int node_3_data = 3;
+
+	slist = zk_slist_append(slist, &node_1_data);
+	slist = zk_slist_append(slist, NULL);
+	slist = zk_slist_append(slist, &node_3_data);
+
+	TEST_ASSERT_EQUAL(1, zk_slist_get_index(slist, NULL));
+
+	zk_slist_free(&slist);
+}
+
+void test_zk_slist_get_index_when_data_is_on_list(void)
+{
+	zk_slist_t *slist = NULL;
+	int node_1_data = 1;
+	int node_2_data = 2;
+	int node_3_data = 3;
+
+	slist = zk_slist_append(slist, &node_1_data);
+	slist = zk_slist_append(slist, &node_2_data);
+	slist = zk_slist_append(slist, &node_3_data);
+
+	TEST_ASSERT_EQUAL(2, zk_slist_get_index(slist, &node_3_data));
+
+	zk_slist_free(&slist);
+}
+
+void test_zk_slist_get_index_when_data_is_not_on_list(void)
+{
+	zk_slist_t *slist = NULL;
+	int node_1_data = 1;
+	int node_2_data = 2;
+	int node_3_data = 3;
+	int node_4_data = 3;
+
+	slist = zk_slist_append(slist, &node_1_data);
+	slist = zk_slist_append(slist, &node_2_data);
+	slist = zk_slist_append(slist, &node_3_data);
+
+	TEST_ASSERT_EQUAL(-1, zk_slist_get_index(slist, &node_4_data));
+
+	zk_slist_free(&slist);
+}
+
 void test_zk_slist_last_when_list_is_null(void)
 {
 	TEST_ASSERT_NULL(zk_slist_last(NULL));
@@ -1038,6 +1095,12 @@ int main(void)
 	RUN_TEST(test_zk_slist_free_full_for_list_of_strings);
 	RUN_TEST(test_zk_slist_free_full_for_a_null_list_should_just_return);
 	RUN_TEST(test_zk_slist_free_full_for_a_null_destructor_should_just_return);
+
+	// test zk_slist_get_index
+	RUN_TEST(test_zk_slist_get_index_when_list_is_null);
+	RUN_TEST(test_zk_slist_get_index_when_data_is_null);
+	RUN_TEST(test_zk_slist_get_index_when_data_is_on_list);
+	RUN_TEST(test_zk_slist_get_index_when_data_is_not_on_list);
 
 	// test zk_slist_last
 	RUN_TEST(test_zk_slist_last_when_list_is_null);
