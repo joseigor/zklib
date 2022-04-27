@@ -33,7 +33,14 @@ static void dummy_node_data_free(void *data)
 	free(node_data);
 }
 
-static void *copy_node_data(ZK_GNUC_UNUSED const void *const data, ZK_GNUC_UNUSED void *user_data)
+static void dummy_node_data_free_foreach(void *data, ZK_GNUC_UNUSED void *user_data)
+{
+	struct dummy_node_data *node_data = data;
+	free(node_data->string);
+	free(node_data);
+}
+
+static void *copy_node_data(const void *const data, ZK_GNUC_UNUSED void *user_data)
 {
 	const struct dummy_node_data *const node_data = data;
 	struct dummy_node_data *node_data_copy = malloc(sizeof(struct dummy_node_data));
@@ -782,6 +789,59 @@ void test_zk_slist_find_by_data_custom(void)
 	zk_slist_free(&slist);
 }
 
+void test_zk_slist_foreach_when_func_is_null(void)
+{
+	struct dummy_node_data *node_1_data = malloc(sizeof(struct dummy_node_data));
+	node_1_data->value = 1;
+	node_1_data->string = strdup("node_1");
+	zk_slist_t *slist = NULL;
+
+	slist = zk_slist_append(slist, node_1_data);
+	TEST_ASSERT_NOT_NULL(slist);
+
+	// Func is null, it will just return
+	zk_slist_foreach(slist, NULL, NULL);
+
+	zk_slist_free_full(&slist, dummy_node_data_free);
+	TEST_ASSERT_NULL(slist);
+}
+
+void test_zk_slist_foreach_when_list_is_null(void)
+{
+	zk_slist_t *slist = NULL;
+
+	// list is null, it will just return
+	zk_slist_foreach(slist, dummy_node_data_free_foreach, NULL);
+
+	TEST_ASSERT_NULL(slist);
+}
+
+void test_zk_slist_foreach_when_func_is_not_null(void)
+{
+	struct dummy_node_data *node_1_data = malloc(sizeof(struct dummy_node_data));
+	node_1_data->value = 1;
+	node_1_data->string = strdup("node_1");
+
+	struct dummy_node_data *node_2_data = malloc(sizeof(struct dummy_node_data));
+	node_2_data->value = 2;
+	node_2_data->string = strdup("node_2");
+
+	struct dummy_node_data *node_3_data = malloc(sizeof(struct dummy_node_data));
+	node_3_data->value = 3;
+	node_3_data->string = strdup("node_3");
+
+	zk_slist_t *slist = NULL;
+	slist = zk_slist_append(slist, node_1_data);
+	slist = zk_slist_append(slist, node_2_data);
+	slist = zk_slist_append(slist, node_3_data);
+
+	// Use foreach to clean each node data
+	zk_slist_foreach(slist, dummy_node_data_free_foreach, NULL);
+
+	// As nodes data were freed, we just need to call zk_slist_free.
+	zk_slist_free(&slist);
+}
+
 void test_zk_slist_free_a_null_list_should_just_return(void)
 {
 	zk_slist_t *slist = NULL;
@@ -965,6 +1025,11 @@ int main(void)
 	// test zk_slist_find_by_data_custom
 	RUN_TEST(test_zk_slist_find_by_data_custom_when_comparison_func_is_null);
 	RUN_TEST(test_zk_slist_find_by_data_custom);
+
+	// test zk_slist_foreach
+	RUN_TEST(test_zk_slist_foreach_when_func_is_null);
+	RUN_TEST(test_zk_slist_foreach_when_list_is_null);
+	RUN_TEST(test_zk_slist_foreach_when_func_is_not_null);
 
 	// tes zk_slist_free
 	RUN_TEST(test_zk_slist_free_a_null_list_should_just_return);

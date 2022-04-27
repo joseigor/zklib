@@ -137,10 +137,16 @@ zk_slist_t *zk_slist_find_by_data_custom(zk_slist_t *list, const void *const dat
 	return list;
 }
 
-// TODO: implement
-void zk_slist_foreach(ZK_GNUC_UNUSED zk_slist_t *list, ZK_GNUC_UNUSED zk_foreach_t func, ZK_GNUC_UNUSED void *user_data)
+void zk_slist_foreach(zk_slist_t *list, zk_foreach_t func, void *user_data)
 {
-	return;
+	if (list == NULL || func == NULL) {
+		return;
+	}
+
+	while (list != NULL) {
+		func(list->data, user_data);
+		list = list->next;
+	}
 }
 
 void zk_slist_free(zk_slist_t **list_p)
