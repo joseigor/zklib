@@ -51,7 +51,6 @@ zk_slist_t *zk_slist_insert_sorted_with_data(zk_slist_t *list, void *data, zk_co
 
 zk_slist_t *zk_slist_last(zk_slist_t *list);
 
-// TODO: to implement
 unsigned int zk_slist_length(zk_slist_t *list);
 
 // TODO: to implement

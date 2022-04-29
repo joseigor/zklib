@@ -215,6 +215,29 @@ zk_slist_t *zk_slist_insert(zk_slist_t *list, void *data, int position)
 	return head;
 }
 
+zk_slist_t *zk_slist_insert_before(zk_slist_t *list, zk_slist_t *sibling, void *data)
+{
+	if (list == NULL) {
+		return NULL;
+	}
+
+	// sibling is the head of the list
+	if (list == sibling) {
+		list = zk_slist_prepend(list, data);
+		return list;
+	}
+
+	// if sibling == NULL or is not part of the list, a new link with data is appended to list
+	zk_slist_t *temp = list;
+	while (temp->next != sibling && temp->next != NULL) {
+		temp = temp->next;
+	}
+
+	temp->next = zk_slist_prepend(temp->next, data);
+
+	return list;
+}
+
 zk_slist_t *zk_slist_last(zk_slist_t *list)
 {
 	while (list != NULL && list->next != NULL) {
@@ -222,6 +245,18 @@ zk_slist_t *zk_slist_last(zk_slist_t *list)
 	}
 
 	return list;
+}
+
+unsigned int zk_slist_length(zk_slist_t *list)
+{
+	unsigned int count = 0;
+
+	while (list != NULL) {
+		count++;
+		list = list->next;
+	}
+
+	return count;
 }
 
 zk_slist_t *zk_slist_prepend(zk_slist_t *list, void *data)
