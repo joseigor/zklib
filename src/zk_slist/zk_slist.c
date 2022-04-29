@@ -15,6 +15,28 @@ static zk_slist_t *_zk_slist_new_node(void)
 	return list;
 }
 
+static void _zk_slist_free_1(zk_slist_t **node)
+{
+	if (node == NULL || *node == NULL) {
+		return;
+	}
+	free(*node);
+	*node = NULL;
+}
+
+static void _zk_slist_free_1_full(zk_slist_t **node, zk_destructor_t func)
+{
+	if (node == NULL || *node == NULL) {
+		return;
+	}
+
+	if (func != NULL) {
+		func((*node)->data);
+	}
+	free(*node);
+	*node = NULL;
+}
+
 // SECTION END: Private functions
 
 zk_slist_t *zk_slist_append(zk_slist_t *list, void *data)
@@ -83,32 +105,29 @@ zk_slist_t *zk_slist_delete_node(zk_slist_t *list, zk_slist_t *node, zk_destruct
 	if (list == NULL) {
 		return NULL;
 	}
+
 	if (node == NULL) {
 		return list;
 	}
 
-	zk_slist_t *head = list;
-	zk_slist_t *node_prev = NULL;
-	while (list != NULL) {
-		if (list == node) {
-			// node to be deleted is the head of the list
-			if (node_prev == NULL) {
-				head = list->next;
-			} else {
-				node_prev->next = list->next;
-			}
-
-			if (func != NULL) {
-				func(list->data);
-			}
-			free(list);
-			break;
-		}
-		node_prev = list;
+	// node is head of the list
+	if (list == node) {
 		list = list->next;
+		_zk_slist_free_1_full(&node, func);
+		return list;
 	}
 
-	return head;
+	zk_slist_t *temp = list;
+	while (temp != NULL) {
+		if (temp->next == node) {
+			temp->next = node->next;
+			_zk_slist_free_1_full(&node, func);
+			break;
+		}
+		temp = temp->next;
+	}
+
+	return list;
 }
 
 zk_slist_t *zk_slist_find_by_data(zk_slist_t *list, const void *const data)
@@ -158,26 +177,21 @@ void zk_slist_free(zk_slist_t **list_p)
 	while ((*list_p) != NULL) {
 		zk_slist_t *node = *list_p;
 		*list_p = (*list_p)->next;
-		free(node);
+		_zk_slist_free_1(&node);
 	}
-
-	return;
 }
 
-void zk_slist_free_full(zk_slist_t **list_p, zk_destructor_t destructor)
+void zk_slist_free_full(zk_slist_t **list_p, zk_destructor_t func)
 {
-	if (list_p == NULL || *list_p == NULL || destructor == NULL) {
+	if (list_p == NULL || *list_p == NULL || func == NULL) {
 		return;
 	}
 
 	while ((*list_p) != NULL) {
 		zk_slist_t *node = *list_p;
 		*list_p = (*list_p)->next;
-		destructor(node->data);
-		free(node);
+		_zk_slist_free_1_full(&node, func);
 	}
-
-	return;
 }
 
 int zk_slist_get_index(zk_slist_t *list, const void *const data)
@@ -201,18 +215,15 @@ zk_slist_t *zk_slist_insert(zk_slist_t *list, void *data, int position)
 		return list;
 	}
 
-	zk_slist_t *head = list;
+	zk_slist_t *temp = list;
 	int index = 0;
-	while (list->next != NULL && index < position - 1) {
-		list = list->next;
+	while (temp->next != NULL && index < position - 1) {
+		temp = temp->next;
 		index++;
 	}
+	temp->next = zk_slist_prepend(temp->next, data);
 
-	zk_slist_t *temp = zk_slist_append(NULL, data);
-	temp = zk_slist_concat(temp, list->next);
-	list->next = temp;
-
-	return head;
+	return list;
 }
 
 zk_slist_t *zk_slist_insert_before(zk_slist_t *list, zk_slist_t *sibling, void *data)
@@ -257,6 +268,17 @@ unsigned int zk_slist_length(zk_slist_t *list)
 	}
 
 	return count;
+}
+
+zk_slist_t *zk_slist_nth(zk_slist_t *list, unsigned int n)
+{
+	unsigned index = 0;
+	while (list != NULL && index != n) {
+		index++;
+		list = list->next;
+	}
+
+	return list;
 }
 
 zk_slist_t *zk_slist_prepend(zk_slist_t *list, void *data)

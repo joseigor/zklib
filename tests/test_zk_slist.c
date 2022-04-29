@@ -932,7 +932,7 @@ void test_zk_slist_insert_when_list_is_null(void)
 	zk_slist_t *slist = NULL;
 	int node_1_data = 1;
 
-	slist = zk_slist_insert(slist, &node_1_data, 0);
+	slist = zk_slist_insert(slist, &node_1_data, 1);
 
 	TEST_ASSERT_NOT_NULL(slist);
 	TEST_ASSERT_EQUAL(&node_1_data, slist->data);
@@ -1297,6 +1297,61 @@ void test_zk_slist_length_when_list_has_3_elements(void)
 	zk_slist_free(&slist);
 }
 
+void test_zk_slist_nth_when_list_is_null(void)
+{
+	TEST_ASSERT_NULL(zk_slist_nth(NULL, 0));
+}
+
+void test_zk_slist_nth_when_index_is_zero(void)
+{
+	zk_slist_t *slist = NULL;
+	int node_1_data = 1;
+	int node_2_data = 2;
+	int node_3_data = 3;
+
+	slist = zk_slist_append(slist, &node_1_data);
+	slist = zk_slist_append(slist, &node_2_data);
+	slist = zk_slist_append(slist, &node_3_data);
+
+	TEST_ASSERT_EQUAL(3, zk_slist_length(slist));
+	TEST_ASSERT_EQUAL(slist, zk_slist_nth(slist, 0));
+
+	zk_slist_free(&slist);
+}
+
+void test_zk_slist_nth_when_index_is_greater_than_list_length(void)
+{
+	zk_slist_t *slist = NULL;
+	int node_1_data = 1;
+	int node_2_data = 2;
+	int node_3_data = 3;
+
+	slist = zk_slist_append(slist, &node_1_data);
+	slist = zk_slist_append(slist, &node_2_data);
+	slist = zk_slist_append(slist, &node_3_data);
+
+	TEST_ASSERT_EQUAL(3, zk_slist_length(slist));
+	TEST_ASSERT_NULL(zk_slist_nth(NULL, 4));
+
+	zk_slist_free(&slist);
+}
+
+void test_zk_slist_nth_when_index_is_less_than_or_equal_to_list_length(void)
+{
+	zk_slist_t *slist = NULL;
+	int node_1_data = 1;
+	int node_2_data = 2;
+	int node_3_data = 3;
+
+	slist = zk_slist_append(slist, &node_1_data);
+	slist = zk_slist_append(slist, &node_2_data);
+	slist = zk_slist_append(slist, &node_3_data);
+
+	TEST_ASSERT_EQUAL(3, zk_slist_length(slist));
+	TEST_ASSERT_EQUAL(slist->next, zk_slist_nth(slist, 1));
+	zk_slist_free(&slist);
+}
+
 void test_zk_slist_prepend_n_items_to_slist(void)
 {
 	int number_of_nodes = 100;
@@ -1459,6 +1514,14 @@ int main(void)
 		RUN_TEST(test_zk_slist_length_when_list_is_null);
 		RUN_TEST(test_zk_slist_length_when_list_has_one_element);
 		RUN_TEST(test_zk_slist_length_when_list_has_3_elements);
+	}
+
+	{ // test zk_slist_nth
+
+		RUN_TEST(test_zk_slist_nth_when_list_is_null);
+		RUN_TEST(test_zk_slist_nth_when_index_is_zero);
+		RUN_TEST(test_zk_slist_nth_when_index_is_greater_than_list_length);
+		RUN_TEST(test_zk_slist_nth_when_index_is_less_than_or_equal_to_list_length);
 	}
 
 	{ // test zk_slist_prepend function

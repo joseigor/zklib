@@ -30,14 +30,13 @@ void zk_slist_foreach(zk_slist_t *list, zk_foreach_t func, void *user_data);
 
 void zk_slist_free(zk_slist_t **list_p);
 
-void zk_slist_free_full(zk_slist_t **list_p, zk_destructor_t destructor);
+void zk_slist_free_full(zk_slist_t **list_p, zk_destructor_t func);
 
 // FIXME: rename to zk_slist_index
 int zk_slist_get_index(zk_slist_t *list, const void *const data);
 
 zk_slist_t *zk_slist_insert(zk_slist_t *list, void *data, int position);
 
-// TODO: to implement
 zk_slist_t *zk_slist_insert_before(zk_slist_t *list, zk_slist_t *sibling, void *data);
 
 // TODO: to implement
@@ -53,7 +52,6 @@ zk_slist_t *zk_slist_last(zk_slist_t *list);
 
 unsigned int zk_slist_length(zk_slist_t *list);
 
-// TODO: to implement
 zk_slist_t *zk_slist_nth(zk_slist_t *list, unsigned int n);
 
 // TODO: to implement
