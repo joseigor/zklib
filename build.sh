@@ -7,6 +7,7 @@ BUILDTYPE=${BUILDTYPE:-"debug"}
 
 fast_build=0
 build_gcov="false"
+unit_test="false"
 
 usage()
 {
@@ -38,6 +39,7 @@ main()
 			;;
 		g)
 			build_gcov="true"
+			unit_test="true"
 			echo "info" "Build with Gcov"
 			;;
 		:)
@@ -54,6 +56,7 @@ main()
 	if [ $fast_build = 0 ]; then
 		rm -rf "${BUILDDIR}"
 		meson setup \
+			-Dunit_test=${unit_test} \
 			-Db_coverage=${build_gcov} \
 			--buildtype "${BUILDTYPE}" "${BUILDDIR}"
 	fi

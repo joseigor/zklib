@@ -10,6 +10,10 @@ typedef struct _zk_slist_t {
 // TODO: add comments and description for all methods
 // TODO: generate documentation from the code comments
 
+#if UNIT_TEST
+void _zk_slist_front_back_split(zk_slist_t *list, zk_slist_t **front, zk_slist_t **back);
+#endif
+
 zk_slist_t *zk_slist_append(zk_slist_t *list, void *data);
 
 zk_slist_t *zk_slist_concat(zk_slist_t *list_dest, zk_slist_t *list_src);

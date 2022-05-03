@@ -4,6 +4,8 @@
 #include "zk_common/zk_utils.h"
 #include "zk_slist/zk_slist.h"
 
+// FIXME: check function where const apply to arguments, like append ...
+
 // SECTION: Private functions
 
 static zk_slist_t *_zk_slist_new_node(void)
@@ -24,7 +26,7 @@ static void _zk_slist_free_1(zk_slist_t **node)
 	*node = NULL;
 }
 
-static void _zk_slist_free_1_full(zk_slist_t **node, zk_destructor_t func)
+PRIVATE void _zk_slist_free_1_full(zk_slist_t **node, zk_destructor_t func)
 {
 	if (node == NULL || *node == NULL) {
 		return;
@@ -35,6 +37,26 @@ static void _zk_slist_free_1_full(zk_slist_t **node, zk_destructor_t func)
 	}
 	free(*node);
 	*node = NULL;
+}
+
+void _zk_slist_front_back_split(zk_slist_t *list, zk_slist_t **front, zk_slist_t **back)
+{
+	if (list == NULL) {
+		*front = NULL;
+		*back = NULL;
+		return;
+	}
+	zk_slist_t *slow = list;
+	zk_slist_t *fast = list->next;
+
+	while (fast != NULL && fast->next != NULL) {
+		slow = slow->next;
+		fast = fast->next->next;
+	}
+
+	*front = list;
+	*back = slow->next;
+	slow->next = NULL;
 }
 
 // SECTION END: Private functions
@@ -292,6 +314,15 @@ zk_slist_t *zk_slist_prepend(zk_slist_t *list, void *data)
 	} else {
 		node->next = list;
 		list = node;
+	}
+
+	return list;
+}
+
+zk_slist_t *zk_slist_sort(zk_slist_t *list, zk_compare_t func)
+{
+	if (list == NULL || func == NULL) {
+		return NULL;
 	}
 
 	return list;

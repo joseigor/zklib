@@ -1401,6 +1401,254 @@ void test_zk_slist_prepend_null_data_to_slist(void)
 	TEST_ASSERT_NULL(slist);
 }
 
+void test_zk_slist_sort_when_list_is_null(void)
+{
+	TEST_ASSERT_NULL(zk_slist_sort(NULL, slist_compare_data_custom));
+}
+
+void test_zk_slist_sort_when_compare_func_is_null(void)
+{
+	zk_slist_t *slist = NULL;
+	int node_1_data = 1;
+	int node_2_data = 2;
+	int node_3_data = 3;
+
+	slist = zk_slist_append(slist, &node_1_data);
+	slist = zk_slist_append(slist, &node_2_data);
+	slist = zk_slist_append(slist, &node_3_data);
+
+	TEST_ASSERT_NULL(zk_slist_sort(slist, NULL));
+
+	zk_slist_free(&slist);
+}
+
+void test_zk_slist_sort_when_list_has_one_link(void)
+{
+	zk_slist_t *slist = NULL;
+	int node_1_data = 1;
+
+	slist = zk_slist_append(slist, &node_1_data);
+
+	zk_slist_t *slist_sorted = zk_slist_sort(slist, slist_compare_data_custom);
+
+	TEST_ASSERT_NOT_NULL(slist_sorted);
+	TEST_ASSERT_EQUAL(slist, slist_sorted);
+	TEST_ASSERT_EQUAL(&node_1_data, slist_sorted->data);
+
+	zk_slist_free(&slist);
+}
+
+void test_zk_slist_sort_when_list_number_of_links_is_even(void)
+{
+	// const int number_of_nodes = 10;
+	// int nodes_data[] = { 4, 1, 3, 8, 0, 6, 5, 9, 7, 2 };
+	// const int nodes_data_sorted[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+	// zk_slist_t *slist = NULL;
+
+	// for (int i = 0; i < number_of_nodes; i++) {
+	// 	slist = zk_slist_append(slist, &nodes_data[i]);
+	// 	TEST_ASSERT_NOT_NULL(slist);
+	// }
+
+	// TEST_ASSERT_EQUAL(number_of_nodes, zk_slist_length(slist));
+
+	// slist = zk_slist_sort(slist, slist_compare_data_custom);
+
+	// TEST_ASSERT_EQUAL(number_of_nodes, zk_slist_length(slist));
+
+	// int node_idx = 0;
+	// const zk_slist_t *node_i = slist;
+	// while (node_i != NULL) {
+	// 	TEST_ASSERT_NOT_NULL(node_i);
+	// 	TEST_ASSERT_EQUAL(nodes_data_sorted[node_idx], *((int *)node_i->data));
+	// 	TEST_ASSERT_EQUAL_PTR(&nodes_data_sorted[node_idx], node_i->data);
+	// 	printf("%d->", *((int *)node_i->data));
+	// 	node_i = node_i->next;
+	// 	node_idx++;
+	// }
+
+	// zk_slist_free(&slist);
+	// TEST_ASSERT_NULL(slist);
+	TEST_IGNORE();
+}
+
+void test_zk_slist_sort_when_list_number_of_links_is_odd(void)
+{
+	TEST_IGNORE();
+}
+
+/**
+ * TEST PRIVATE FUNCTIONS
+ */
+
+void test_zk_slist_front_back_split_when_list_is_null(void)
+{
+	zk_slist_t *front = NULL;
+	zk_slist_t *back = NULL;
+
+	_zk_slist_front_back_split(NULL, &front, &back);
+
+	TEST_ASSERT_NULL(front);
+	TEST_ASSERT_NULL(back);
+}
+
+void test_zk_slist_front_back_split_when_list_has_one_link(void)
+{
+	int node_data = 1;
+	zk_slist_t *slist = NULL;
+	zk_slist_t *front = NULL;
+	zk_slist_t *back = NULL;
+
+	slist = zk_slist_append(slist, &node_data);
+	TEST_ASSERT_NOT_NULL(slist);
+
+	_zk_slist_front_back_split(slist, &front, &back);
+
+	TEST_ASSERT_NOT_NULL(front);
+	TEST_ASSERT_EQUAL_PTR(&node_data, front->data);
+	TEST_ASSERT_EQUAL(node_data, *((int *)front->data));
+
+	TEST_ASSERT_NULL(back);
+
+	zk_slist_free(&front);
+}
+
+void test_zk_slist_front_back_split_when_list_has_two_links(void)
+{
+	int node_data_0 = 0;
+	int node_data_1 = 1;
+	zk_slist_t *slist = NULL;
+	zk_slist_t *front = NULL;
+	zk_slist_t *back = NULL;
+
+	slist = zk_slist_append(slist, &node_data_0);
+	slist = zk_slist_append(slist, &node_data_1);
+	TEST_ASSERT_NOT_NULL(slist);
+
+	_zk_slist_front_back_split(slist, &front, &back);
+
+	TEST_ASSERT_NOT_NULL(front);
+	TEST_ASSERT_EQUAL_PTR(&node_data_0, front->data);
+	TEST_ASSERT_EQUAL(node_data_0, *((int *)front->data));
+
+	TEST_ASSERT_NOT_NULL(back);
+	TEST_ASSERT_EQUAL_PTR(&node_data_1, back->data);
+	TEST_ASSERT_EQUAL(node_data_1, *((int *)back->data));
+
+	zk_slist_free(&front);
+	zk_slist_free(&back);
+}
+
+void test_zk_slist_front_back_split_when_list_has_three_links(void)
+{
+	int node_data_0 = 0;
+	int node_data_1 = 1;
+	int node_data_2 = 3;
+	zk_slist_t *slist = NULL;
+	zk_slist_t *front = NULL;
+	zk_slist_t *back = NULL;
+
+	slist = zk_slist_append(slist, &node_data_0);
+	slist = zk_slist_append(slist, &node_data_1);
+	slist = zk_slist_append(slist, &node_data_2);
+	TEST_ASSERT_NOT_NULL(slist);
+
+	_zk_slist_front_back_split(slist, &front, &back);
+
+	TEST_ASSERT_NOT_NULL(front);
+	TEST_ASSERT_EQUAL_PTR(&node_data_0, front->data);
+	TEST_ASSERT_EQUAL(node_data_0, *((int *)front->data));
+	TEST_ASSERT_EQUAL_PTR(&node_data_1, front->next->data);
+	TEST_ASSERT_EQUAL(node_data_1, *((int *)front->next->data));
+
+	TEST_ASSERT_NOT_NULL(back);
+	TEST_ASSERT_EQUAL_PTR(&node_data_2, back->data);
+	TEST_ASSERT_EQUAL(node_data_2, *((int *)back->data));
+
+	zk_slist_free(&front);
+	zk_slist_free(&back);
+}
+
+void test_zk_slist_front_back_split_when_number_of_links_is_even(void)
+{
+	const int number_of_nodes = 10;
+	int nodes_data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+	zk_slist_t *slist = NULL;
+	zk_slist_t *front = NULL;
+	zk_slist_t *back = NULL;
+
+	for (int i = 0; i < number_of_nodes; i++) {
+		slist = zk_slist_append(slist, &nodes_data[i]);
+		TEST_ASSERT_NOT_NULL(slist);
+	}
+
+	_zk_slist_front_back_split(slist, &front, &back);
+
+	const zk_slist_t *node_i = front;
+	int node_idx = 0;
+
+	while (node_i != NULL) {
+		TEST_ASSERT_NOT_NULL(node_i);
+		TEST_ASSERT_EQUAL(nodes_data[node_idx], *((int *)node_i->data));
+		TEST_ASSERT_EQUAL_PTR(&nodes_data[node_idx], node_i->data);
+		node_i = node_i->next;
+		node_idx++;
+	}
+
+	node_i = back;
+	while (node_i != NULL) {
+		TEST_ASSERT_NOT_NULL(node_i);
+		TEST_ASSERT_EQUAL(nodes_data[node_idx], *((int *)node_i->data));
+		TEST_ASSERT_EQUAL_PTR(&nodes_data[node_idx], node_i->data);
+		node_i = node_i->next;
+		node_idx++;
+	}
+
+	zk_slist_free(&front);
+	zk_slist_free(&back);
+}
+
+void test_zk_slist_front_back_split_when_number_of_links_is_odd(void)
+{
+	const int number_of_nodes = 9;
+	int nodes_data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+	zk_slist_t *slist = NULL;
+	zk_slist_t *front = NULL;
+	zk_slist_t *back = NULL;
+
+	for (int i = 0; i < number_of_nodes; i++) {
+		slist = zk_slist_append(slist, &nodes_data[i]);
+		TEST_ASSERT_NOT_NULL(slist);
+	}
+
+	_zk_slist_front_back_split(slist, &front, &back);
+
+	const zk_slist_t *node_i = front;
+	int node_idx = 0;
+
+	while (node_i != NULL) {
+		TEST_ASSERT_NOT_NULL(node_i);
+		TEST_ASSERT_EQUAL(nodes_data[node_idx], *((int *)node_i->data));
+		TEST_ASSERT_EQUAL_PTR(&nodes_data[node_idx], node_i->data);
+
+		node_i = node_i->next;
+		node_idx++;
+	}
+
+	node_i = back;
+	while (node_i != NULL) {
+		TEST_ASSERT_NOT_NULL(node_i);
+		TEST_ASSERT_EQUAL(nodes_data[node_idx], *((int *)node_i->data));
+		TEST_ASSERT_EQUAL_PTR(&nodes_data[node_idx], node_i->data);
+
+		node_i = node_i->next;
+		node_idx++;
+	}
+
+	zk_slist_free(&front);
+	zk_slist_free(&back);
+}
+
 int main(void)
 {
 	UNITY_BEGIN();
@@ -1528,6 +1776,25 @@ int main(void)
 
 		RUN_TEST(test_zk_slist_prepend_n_items_to_slist);
 		RUN_TEST(test_zk_slist_prepend_null_data_to_slist);
+	}
+
+	{ // test_zk_slit_sort
+		RUN_TEST(test_zk_slist_sort_when_list_is_null);
+		RUN_TEST(test_zk_slist_sort_when_compare_func_is_null);
+		RUN_TEST(test_zk_slist_sort_when_list_has_one_link);
+		RUN_TEST(test_zk_slist_sort_when_list_number_of_links_is_even);
+		RUN_TEST(test_zk_slist_sort_when_list_number_of_links_is_odd);
+	}
+
+	{ // TEST PRIVATE FUNCTIONS
+		{ // test _zk_slist_front_back_split
+			RUN_TEST(test_zk_slist_front_back_split_when_list_is_null);
+			RUN_TEST(test_zk_slist_front_back_split_when_list_has_one_link);
+			RUN_TEST(test_zk_slist_front_back_split_when_list_has_two_links);
+			RUN_TEST(test_zk_slist_front_back_split_when_list_has_three_links);
+			RUN_TEST(test_zk_slist_front_back_split_when_number_of_links_is_even);
+			RUN_TEST(test_zk_slist_front_back_split_when_number_of_links_is_odd);
+		}
 	}
 
 	return UNITY_END();
