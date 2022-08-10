@@ -65,7 +65,6 @@ zk_slist_t *zk_slist_append(zk_slist_t *list, void *data)
 {
 	zk_slist_t *node = _zk_slist_new_node();
 	node->data = data;
-	node->next = NULL;
 
 	if (list == NULL) {
 		list = node;
@@ -96,7 +95,6 @@ zk_slist_t *zk_slist_copy(const zk_slist_t *list)
 	}
 
 	zk_slist_t *cp = NULL;
-
 	while (list != NULL) {
 		cp = zk_slist_append(cp, list->data);
 		list = list->next;
