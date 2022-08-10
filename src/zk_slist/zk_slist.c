@@ -317,6 +317,26 @@ zk_slist_t *zk_slist_prepend(zk_slist_t *list, void *data)
 	return list;
 }
 
+zk_slist_t *zk_slist_reverse(zk_slist_t *list)
+{
+	if (list == NULL) {
+		return NULL;
+	}
+	zk_slist_t *prev = NULL;
+	while (list != NULL) {
+		zk_slist_t *next = list->next;
+		list->next = prev;
+		prev = list;
+		// end of the list reached
+		if (next == NULL) {
+			break;
+		}
+		list = next;
+	}
+
+	return list;
+}
+
 zk_slist_t *zk_slist_sort(zk_slist_t *list, zk_compare_t func)
 {
 	if (list == NULL || func == NULL) {

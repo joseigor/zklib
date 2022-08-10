@@ -1401,6 +1401,69 @@ void test_zk_slist_prepend_null_data_to_slist(void)
 	TEST_ASSERT_NULL(slist);
 }
 
+void test_zk_slit_reverse_when_list_is_null(void)
+{
+	zk_slist_t *slist = NULL;
+	TEST_ASSERT_NULL(slist);
+}
+
+void test_zk_slit_reverse_when_list_has_one_link(void)
+{
+	zk_slist_t *slist = NULL;
+	int node1_data = 1;
+
+	slist = zk_slist_append(slist, &node1_data);
+	slist = zk_slist_reverse(slist);
+
+	TEST_ASSERT_NOT_NULL(slist);
+	TEST_ASSERT_EQUAL_PTR(slist->data, &node1_data);
+	TEST_ASSERT_EQUAL(node1_data, *((int *)slist->data));
+	TEST_ASSERT_NULL(slist->next);
+
+	zk_slist_free(&slist);
+	TEST_ASSERT_NULL(slist);
+}
+
+void test_zk_slit_reverse_when_list_has_mutiple_nodes(void)
+{
+	zk_slist_t *slist = NULL;
+	int node_1_data = 1;
+	int node_2_data = 2;
+	int node_3_data = 3;
+
+	slist = zk_slist_append(slist, &node_1_data);
+	slist = zk_slist_append(slist, &node_2_data);
+	slist = zk_slist_append(slist, &node_3_data);
+
+	slist = zk_slist_reverse(slist);
+	/* after reverse operation we should expect nodes of slist to be:
+	 * node_1.data = node_3_data
+	 * node_2.data = node_2_data
+	 * node_3.data = node_1_data
+	 */
+	zk_slist_t *node_1, *node_2, *node_3 = NULL;
+	node_1 = slist;
+	TEST_ASSERT_NOT_NULL(node_1);
+	TEST_ASSERT_EQUAL_PTR(node_1->data, &node_3_data);
+	TEST_ASSERT_EQUAL(*((int *)node_1->data), node_3_data);
+	TEST_ASSERT_NOT_NULL(node_1->next);
+
+	node_2 = node_1->next;
+	TEST_ASSERT_NOT_NULL(node_2);
+	TEST_ASSERT_EQUAL_PTR(node_2->data, &node_2_data);
+	TEST_ASSERT_EQUAL(*((int *)node_2->data), node_2_data);
+	TEST_ASSERT_NOT_NULL(node_2->next);
+
+	node_3 = node_2->next;
+	TEST_ASSERT_NOT_NULL(node_3);
+	TEST_ASSERT_EQUAL_PTR(node_3->data, &node_1_data);
+	TEST_ASSERT_EQUAL(*((int *)node_3->data), node_1_data);
+	TEST_ASSERT_NULL(node_3->next);
+
+	zk_slist_free(&slist);
+	TEST_ASSERT_NULL(slist);
+}
+
 void test_zk_slist_sort_when_list_is_null(void)
 {
 	TEST_ASSERT_NULL(zk_slist_sort(NULL, slist_compare_data_custom));
@@ -1776,6 +1839,12 @@ int main(void)
 
 		RUN_TEST(test_zk_slist_prepend_n_items_to_slist);
 		RUN_TEST(test_zk_slist_prepend_null_data_to_slist);
+	}
+
+	{ // test_zk_slit_reverse
+		RUN_TEST(test_zk_slit_reverse_when_list_is_null);
+		RUN_TEST(test_zk_slit_reverse_when_list_has_one_link);
+		RUN_TEST(test_zk_slit_reverse_when_list_has_mutiple_nodes);
 	}
 
 	{ // test_zk_slit_sort

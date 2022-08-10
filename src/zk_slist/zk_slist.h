@@ -75,7 +75,17 @@ zk_slist_t *zk_slist_remove(zk_slist_t *list, const void *const data);
 // TODO: to implement
 zk_slist_t *zk_slist_remove_all(zk_slist_t *list, const void *const data);
 
-// TODO: to implement
+/**
+ * @brief Reverses a zk_slist_t. It simply switches the next and prev pointers of each element.
+ *
+ * @param list
+ * 	Type: A pointer to the top of a zk_slist_t
+ * 	The data is owned by the caller of the function.
+ *
+ * @return zk_slist_t*
+ *	Type: A pointer to the top of the reversed zk_slist_t
+ *	The data is owned by the called function.
+ */
 zk_slist_t *zk_slist_reverse(zk_slist_t *list);
 
 // TODO: to implement
