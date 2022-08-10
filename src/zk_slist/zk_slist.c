@@ -96,10 +96,10 @@ zk_slist_t *zk_slist_copy(const zk_slist_t *list)
 
 	zk_slist_t *cp = NULL;
 	while (list != NULL) {
-		cp = zk_slist_append(cp, list->data);
+		cp = zk_slist_prepend(cp, list->data);
 		list = list->next;
 	}
-
+	cp = zk_slist_reverse(cp);
 	return cp;
 }
 
@@ -110,13 +110,12 @@ zk_slist_t *zk_slist_copy_deep(const zk_slist_t *list, zk_copy_data_t func, void
 	}
 
 	zk_slist_t *cp = NULL;
-
 	while (list != NULL) {
 		void *data = func(list->data, user_data);
-		cp = zk_slist_append(cp, data);
+		cp = zk_slist_prepend(cp, data);
 		list = list->next;
 	}
-
+	cp = zk_slist_reverse(cp);
 	return cp;
 }
 

@@ -18,8 +18,51 @@ zk_slist_t *zk_slist_append(zk_slist_t *list, void *data);
 
 zk_slist_t *zk_slist_concat(zk_slist_t *list_dest, zk_slist_t *list_src);
 
+/**
+ * @brief
+ * Copies a `zk_slist_t`
+ *
+ * Note that this is a "shallow" copy. If the list elements consist of pointers to data,the pointers are copied but the
+ * actual data is not. See `zk_slist_copy_deep()` if you need to copy the data as well.
+ *
+ *
+ * @param list
+ * Type: A pointer to the top of a `zk_slist_t`
+ * The data is owned by the caller of the function.
+ *
+ * @return zk_slist_t*
+ * Type: A pointer to the start of the new list that holds the same data as list.
+ * The data is owned by the called function.
+ */
 zk_slist_t *zk_slist_copy(const zk_slist_t *list);
 
+/**
+ * @brief
+ * Makes a full (deep) copy of a `zk_slist_t`.
+ *
+ * In contrast with `zk_slist_copy()`, this function uses `func` to make a copy of each list element, in addition to
+ * copying the list container itself. func, as a `zk_copy_data_t`, takes two arguments, the `data` to be copied and a
+ * `user_data` pointer.
+ *
+ * @param list
+ * Type: A pointer to the top of a zk_slist_t
+ * The data is owned by the caller of the function.
+ *
+ * @param func
+ * TYPE: A copy function of type `zk_copy_data_t` used to copy every element in the list.
+ *
+ * @param user_data
+ * Type: `void*`
+ * User data passed to the copy function `func`, or NULL.
+ * The argument can be NULL.
+ * The data is owned by the caller of the function.
+
+ *
+ * @return zk_slist_t*
+ * Type: A pointer to the start of the new list that holds the same data as `list`.
+ * Use `zk_slist_free_full()` to free it.
+ * The data is owned by the called function
+ */
 zk_slist_t *zk_slist_copy_deep(const zk_slist_t *list, zk_copy_data_t func, void *user_data);
 
 zk_slist_t *zk_slist_delete_node(zk_slist_t *list, zk_slist_t *node, zk_destructor_t func);
@@ -76,15 +119,15 @@ zk_slist_t *zk_slist_remove(zk_slist_t *list, const void *const data);
 zk_slist_t *zk_slist_remove_all(zk_slist_t *list, const void *const data);
 
 /**
- * @brief Reverses a zk_slist_t. It simply switches the next and prev pointers of each element.
+ * @brief Reverses a `zk_slist_t`. It simply switches the next and prev pointers of each element.
  *
  * @param list
- * 	Type: A pointer to the top of a zk_slist_t
- * 	The data is owned by the caller of the function.
+ * Type: A pointer to the start of a `zk_slist_t`.
+ * The data is owned by the caller of the function.
  *
  * @return zk_slist_t*
- *	Type: A pointer to the top of the reversed zk_slist_t
- *	The data is owned by the called function.
+ * Type: A pointer to the start of the reversed list.
+ * The data is owned by the called function.
  */
 zk_slist_t *zk_slist_reverse(zk_slist_t *list);
 
