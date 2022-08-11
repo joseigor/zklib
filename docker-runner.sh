@@ -39,6 +39,7 @@ create_builder_container() {
 		run \
 		-it \
 		-v $(pwd):/workdir \
+		-u "$(id -u):$(id -g)" \
 		--name "${BUILD_CONTAINER_NAME}" \
 		-d "${BUILD_IMAGE_NAME}"
 
@@ -60,7 +61,7 @@ run_builder_container() {
 		docker start "${BUILD_CONTAINER_NAME}" > /dev/null
 	fi
 
-	docker exec -it "${BUILD_CONTAINER_NAME}" /bin/bash
+	docker exec -it "${BUILD_CONTAINER_NAME}" /bin/sh
 
 	echo "info" "Exited from builder docker container."
 
@@ -103,7 +104,7 @@ run_debugger_container() {
 		docker start "${DEBUGGER_CONTAINER_NAME}" > /dev/null
 	fi
 
-	docker exec -it "${DEBUGGER_CONTAINER_NAME}" /bin/bash
+	docker exec -it "${DEBUGGER_CONTAINER_NAME}" /bin/sh
 
 	echo "info" "Exited from debugger docker container."
 }

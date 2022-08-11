@@ -3,6 +3,7 @@
         "editorconfig.editorconfig",
         "ms-vscode.cpptools",
         "gruntfuggly.todo-tree",
-        "donjayamanne.githistory"
+        "donjayamanne.githistory",
+        "cschlosser.doxdocgen"
     ]
 }
