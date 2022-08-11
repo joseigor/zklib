@@ -2,13 +2,10 @@
 
 #include "zk_common/zk_types.h"
 
-typedef struct _zk_slist_t {
+typedef struct zk_slist_t {
 	void *data;
-	struct _zk_slist_t *next;
+	struct zk_slist_t *next;
 } zk_slist_t;
-
-// TODO: add comments and description for all methods
-// TODO: generate documentation from the code comments
 
 #if UNIT_TEST
 void _zk_slist_front_back_split(zk_slist_t *list, zk_slist_t **front, zk_slist_t **back);
