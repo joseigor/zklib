@@ -1404,7 +1404,7 @@ void test_zk_slist_prepend_null_data_to_slist(void)
 void test_zk_slit_reverse_when_list_is_null(void)
 {
 	zk_slist_t *slist = NULL;
-	TEST_ASSERT_NULL(slist);
+	TEST_ASSERT_NULL(zk_slist_reverse(slist));
 }
 
 void test_zk_slit_reverse_when_list_has_one_link(void)
