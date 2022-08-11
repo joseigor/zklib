@@ -8,6 +8,10 @@ BUILD_CONTAINER_NAME=${BUILD_CONTAINER_NAME:-"zklib-builder-container"}
 DEBUGGER_IMAGE_NAME=${DEBUGGER_IMAGE_NAME:-"zklib-debugger"}
 DEBUGGER_CONTAINER_NAME=${DEBUGGER_CONTAINER_NAME:-"zklib-debugger-container"}
 
+LINT_IMAGE_NAME=${LIST_IMAGE_NAME:-"zklib-lint"}
+LINT_CONTAINER_NAME=${LINT_CONTAINER_NAME:-"zklib-lint-container"}
+
+
 
 usage()
 {
@@ -16,8 +20,10 @@ usage()
 	echo "Available options:"
 	echo "    -b   Build docker image and container for BUILD purpouse."
 	echo "    -d   Build docker image and container for DEBUG purpouse."
+	echo "    -l   Build docker image and container for LINT purpouse."
 	echo "    -e   Run build container."
 	echo "    -f   Run debugger container."
+	echo "    -g   Run lint container."
 	echo "    -r   Remove all images and containers."
 }
 
@@ -27,7 +33,7 @@ cleanup() {
 
 create_builder_container() {
 
-	echo "info" "Will create builder contianer and run in detached mode."
+	echo "info" "Will create builder container and run in detached mode."
 
 	docker build -t "${BUILD_IMAGE_NAME}" .
 
@@ -43,7 +49,7 @@ create_builder_container() {
 		--name "${BUILD_CONTAINER_NAME}" \
 		-d "${BUILD_IMAGE_NAME}"
 
-	echo "info" "Builder contianer running in detached mode"
+	echo "info" "Builder container running in detached mode"
 
 }
 
@@ -69,7 +75,7 @@ run_builder_container() {
 
 create_debugger_container() {
 
-	echo "info" "Will create debugger contianer and run in detached mode."
+	echo "info" "Will create debugger container and run in detached mode."
 
 	docker build -t "${BUILD_IMAGE_NAME}" .
 
@@ -87,7 +93,7 @@ create_debugger_container() {
 		--name "${DEBUGGER_CONTAINER_NAME}" \
 		-d "${DEBUGGER_IMAGE_NAME}"
 
-	echo "info" "Debugger contianer running in detached mode."
+	echo "info" "Debugger container running in detached mode."
 }
 
 run_debugger_container() {
@@ -109,11 +115,51 @@ run_debugger_container() {
 	echo "info" "Exited from debugger docker container."
 }
 
+create_lint_container() {
+
+	echo "info" "Will create lint container and run in detached mode."
+
+	docker build -t "${LINT_IMAGE_NAME}" -f Dockerfile.lint .
+
+	if [ "$(docker ps -q -f name="${LINT_CONTAINER_NAME}")" ]; then
+		docker rm -f "${LINT_CONTAINER_NAME}" > /dev/null
+	fi
+
+	docker \
+		run \
+		-it \
+		-v $(pwd):/workdir \
+		-u "$(id -u):$(id -g)" \
+		--name "${LINT_CONTAINER_NAME}" \
+		-d "${LINT_IMAGE_NAME}"
+
+	echo "info" "Lint container running in detached mode."
+}
+
+run_lint_container() {
+
+	echo "info" "Will run lint docker container."
+
+	# checks if container exists
+	if [ ! "$(docker ps -a -q -f name="${LINT_CONTAINER_NAME}")" ]; then
+		create_lint_container
+	fi
+
+	# checks if container is running
+	if [ ! "$(docker ps -q -f status=running -f name="${LINT_CONTAINER_NAME}")" ]; then
+		docker start "${LINT_CONTAINER_NAME}" > /dev/null
+	fi
+
+	docker exec -it "${LINT_CONTAINER_NAME}" /bin/bash
+
+	echo "info" "Exited from lint docker container."
+}
+
 docker_clean_all() {
 
 	echo "info" "Will remove all docker containers and images."
 
-	# remove builder and debugger containers
+	# remove builder,debugger and lint containers
 	if [ "$(docker ps -q -f status=running -f name="${BUILD_CONTAINER_NAME}")" ]; then
 		echo "Stoping container "${BUILD_CONTAINER_NAME}"."
 		docker stop "${BUILD_CONTAINER_NAME}" > /dev/null
@@ -138,6 +184,18 @@ docker_clean_all() {
 		echo "Container "${DEBUGGER_CONTAINER_NAME}" removed."
 	fi
 
+	if [ "$(docker ps -q -f status=running -f name="${LINT_CONTAINER_NAME}")" ]; then
+		echo "Stoping container "${LINT_CONTAINER_NAME}"."
+		docker stop "${LINT_CONTAINER_NAME}" > /dev/null
+		echo "Container ${LINT_CONTAINER_NAME} stoped."
+	fi
+
+	if [ "$(docker ps -a -q -f name="${LINT_CONTAINER_NAME}")" ]; then
+		echo "Removing container "${LINT_CONTAINER_NAME}"."
+		docker rm "${LINT_CONTAINER_NAME}" > /dev/null
+		echo "Container "${LINT_CONTAINER_NAME}" removed."
+	fi
+
 	# remove builder and debugger images
 	# Order is important as debugger image depends on builder image. First remove debugger image
 	if [ "$(docker images -q "${DEBUGGER_IMAGE_NAME}")" ]; then
@@ -152,12 +210,19 @@ docker_clean_all() {
 		echo "Image ${BUILD_IMAGE_NAME} removed."
 	fi
 
+	# remove lint image
+	if [ "$(docker images -q "${LINT_IMAGE_NAME}")" ]; then
+		echo "Removing image "${LINT_IMAGE_NAME}"."
+		docker rmi "${LINT_IMAGE_NAME}" > /dev/null
+		echo "Image ${LINT_IMAGE_NAME} removed."
+	fi
+
 	echo "info" "All  docker containers and images removed."
 }
 
 main()
 {
-	while getopts ":hbdefr" _options; do
+	while getopts ":hbdlefgr" _options; do
 		case "${_options}" in
 		h)
 			usage
@@ -171,11 +236,20 @@ main()
 			create_debugger_container
 			;;
 
+		l)
+			create_lint_container
+			;;
+
 		e)
 			run_builder_container
 			;;
+
 		f)
 			run_debugger_container
+			;;
+
+		g)
+			run_lint_container
 			;;
 
 		r)

@@ -1,5 +1,3 @@
-
-
 FROM alpine:latest
 
 LABEL maintainer="zklib"
