@@ -76,7 +76,7 @@ zk_slist_t *zk_slist_append(zk_slist_t *list, void *const data)
 	return list;
 }
 
-zk_slist_t *zk_slist_concat(zk_slist_t *list_dest, zk_slist_t *list_src)
+zk_slist_t *zk_slist_concat(zk_slist_t *const list_dest, zk_slist_t *const list_src)
 {
 	if (list_dest == NULL) {
 		return NULL;

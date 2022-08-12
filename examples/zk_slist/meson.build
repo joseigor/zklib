@@ -1,9 +1,2 @@
-ex_zk_slist_append = \
-    executable(
-        'append',
-        sources: ['append.c'],
-        dependencies: [
-            zklib_dep
-        ],
-        include_directories : inc_dir
-    )
+ex_zk_slist_append = executable('append', sources: ['append.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
+ex_zk_slist_concat = executable('concat', sources: ['concat.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])

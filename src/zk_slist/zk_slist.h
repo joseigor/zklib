@@ -33,7 +33,7 @@ void _zk_slist_front_back_split(zk_slist_t *list, zk_slist_t **front, zk_slist_t
  * - The data is owned by the caller of the function.
  *
  * @return zk_slist_t*
- * - Type: A pointer to a `zk_list_t`.
+ * - Type: A list of `zk_list_t`.
  * - Either \p list or the new start of the `zk_list_t` if \p list was `NULL`.
  * - The data is owned by the called function.
  *
@@ -49,7 +49,6 @@ void _zk_slist_front_back_split(zk_slist_t *list, zk_slist_t **front, zk_slist_t
  * number_slist = zk_slist_append(number_slist, &node1_data);
  * number_slist = zk_slist_append(number_slist, &node2_data);
  *
-
  * // This is a list of strings.
  * string_list = zk_slist_append (string_list, "first");
  * string_list = zk_slist_append (string_list, "second");
@@ -65,16 +64,58 @@ void _zk_slist_front_back_split(zk_slist_t *list, zk_slist_t **front, zk_slist_t
  * struct custom_data custom_node_3 = { .value = 3, .string = "node3"};
  *
  * // This is a list of custom data.
- * custom_slist = zk_slist_append (custom_slist, &custom_node_1);
- * custom_slist = zk_slist_append (custom_slist, &custom_node_2);
- * custom_slist = zk_slist_append (custom_slist, &custom_node_3);
+ * custom_slist = zk_slist_append(custom_slist, &custom_node_1);
+ * custom_slist = zk_slist_append(custom_slist, &custom_node_2);
+ * custom_slist = zk_slist_append(custom_slist, &custom_node_3);
  *
  *  \endcode
  *
  */
 zk_slist_t *zk_slist_append(zk_slist_t *list, void *const data);
 
-zk_slist_t *zk_slist_concat(zk_slist_t *list_dest, zk_slist_t *list_src);
+/**
+ * @brief
+ * Adds the second list \p list_src to the end of the first list \p list_dest. Note that the elements \p list_src are
+ * not copied they are used directly. This function just appends the \p list_src to the end of \p list_dest . If your
+ * intent is to concat a copy of \p list_src to \p list_dest check `zk_slist_copy()` and `zk_slist_copy_deep()`.
+ *
+ * **Time Complexity:** O(n)
+ *
+ * @param list_dest
+ * - Type: A pointer to the top of a `zk_slist_t`
+ * - This argument can be `NULL`
+ * - The data is owned by the caller of the function.
+ *
+ * @param list_src
+ * - Type: A pointer to the top of a `zk_slist_t`
+ * - The zk_slist_t to add to the end of the first zk_slist_t, this must point to the top of the list.
+ * - This argument can be `NULL`
+ * - The data is owned by the caller of the function.
+ *
+ * @return zk_slist_t*
+ * - Type: A list of `zk_slist_t`
+ * - The start of the new `zk_slist_t`.
+ * - If \p list_dest is `NULL` returns `NULL`.
+ * - The data is owned by the called function.
+ *
+ * **Example**
+ *
+ * \code{.c}
+ *
+ * zk_slist_t *list = NULL, *list_top = NULL, *list_end = NULL;
+ *
+ * list = zk_slist_append (list, "middle");
+ * list_top = zk_slist_append (list_top, "top");
+ * list_end = zk_slist_append (list_end, "end");
+ *
+ * // add list_top to top of list
+ * list = zk_slist_concat(list_top, list);
+ * // add list_end to end of list
+ * list = zk_slist_concat(list, list_end);
+ *
+ *  \endcode
+ */
+zk_slist_t *zk_slist_concat(zk_slist_t *const list_dest, zk_slist_t *const list_src);
 
 /**
  * @brief
@@ -84,12 +125,13 @@ zk_slist_t *zk_slist_concat(zk_slist_t *list_dest, zk_slist_t *list_src);
  * actual data is not. See `zk_slist_copy_deep()` if you need to copy the data as well.
  *
  * @param list
- * Type: A pointer to the top of a `zk_slist_t`
- * The data is owned by the caller of the function.
+ * - Type: A pointer to the top of a `zk_slist_t`
+ * - The data is owned by the caller of the function.
  *
  * @return zk_slist_t*
- * Type: A pointer to the start of the new list that holds the same data as list.
- * The data is owned by the called function.
+ * - Type: A list of `zk_slist_t`
+ * - The start of the new list that holds the same data as list.
+ * - The data is owned by the called function.
  */
 zk_slist_t *zk_slist_copy(const zk_slist_t *list);
 
@@ -102,23 +144,25 @@ zk_slist_t *zk_slist_copy(const zk_slist_t *list);
  * `user_data` pointer.
  *
  * @param list
- * Type: A pointer to the top of a zk_slist_t
- * The data is owned by the caller of the function.
+ * - Type: A pointer to the top of a zk_slist_t
+ * - The data is owned by the caller of the function.
  *
  * @param func
- * TYPE: A copy function of type `zk_copy_data_t` used to copy every element in the list.
+ * TYPE:
+ * - A copy function of type `zk_copy_data_t` used to copy every element in the list.
  *
  * @param user_data
- * Type: `void*`
- * User data passed to the copy function `func`, or NULL.
- * The argument can be NULL.
- * The data is owned by the caller of the function.
+ * - Type: `void*`
+ * - User data passed to the copy function `func`, or NULL.
+ * - The argument can be NULL.
+ * - The data is owned by the caller of the function.
 
  *
  * @return zk_slist_t*
- * Type: A pointer to the start of the new list that holds the same data as `list`.
- * Use `zk_slist_free_full()` to free it.
- * The data is owned by the called function
+ * - Type: A list of `zk_slist_t`
+ * - The start of the new list that holds the same data as `list`.
+ * - Use `zk_slist_free_full()` to free it.
+ * - The data is owned by the called function
  */
 zk_slist_t *zk_slist_copy_deep(const zk_slist_t *list, zk_copy_data_t func, void *user_data);
 
@@ -179,12 +223,13 @@ zk_slist_t *zk_slist_remove_all(zk_slist_t *list, const void *const data);
  * @brief Reverses a `zk_slist_t`. It simply switches the next and prev pointers of each element.
  *
  * @param list
- * Type: A pointer to the start of a `zk_slist_t`.
- * The data is owned by the caller of the function.
+ * - Type: A pointer to the start of a `zk_slist_t`.
+ * - The data is owned by the caller of the function.
  *
  * @return zk_slist_t*
- * Type: A pointer to the start of the reversed list.
- * The data is owned by the called function.
+ * - Type: A list of `zk_slist_t`
+ * - The start of the reversed list.
+ * - The data is owned by the called function.
  */
 zk_slist_t *zk_slist_reverse(zk_slist_t *list);
 
