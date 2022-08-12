@@ -11,7 +11,68 @@ typedef struct zk_slist_t {
 void _zk_slist_front_back_split(zk_slist_t *list, zk_slist_t **front, zk_slist_t **back);
 #endif
 
-zk_slist_t *zk_slist_append(zk_slist_t *list, void *data);
+/**
+ * @brief
+ * Adds a new element to the end of the \p list.
+ * If \p list is empty the return value is the start of a new \p list.
+ *
+ * **Time Complexity:** O(n)
+ *
+ * In order to append an element to a \p list `zk_slist_append()` needs to traverse all the `list` to find its end which
+ * is a \b O(n) operation. This is not a problem when few elements need to be added but if you are working with a big
+ * set of elements the best approach is to first use `zk_slist_prepend()` which has time complexity \b O(1) and then
+ * reverse the list calling `zk_slist_reverse()` that is a \b O(n) operation.
+ *
+ * @param list
+ * - Type: A pointer to the top of a `zk_slist_t`
+ * - The data is owned by the caller of the function.
+ *
+ * @param data
+ * - Type: A pointer to the data to be addded.
+ * - This argument can be `NULL`.
+ * - The data is owned by the caller of the function.
+ *
+ * @return zk_slist_t*
+ * - Type: A pointer to a `zk_list_t`.
+ * - Either \p list or the new start of the `zk_list_t` if \p list was `NULL`.
+ * - The data is owned by the called function.
+ *
+ * **Example**
+ * \code{.c}
+ *
+ * zk_slist_t *number_slist = NULL, *string_list = NULL, *custom_slist = NULL;
+ *
+ * int node1_data = 1;
+ * int node2_data = 2;
+ *
+ * // This is a list of integers.
+ * number_slist = zk_slist_append(number_slist, &node1_data);
+ * number_slist = zk_slist_append(number_slist, &node2_data);
+ *
+
+ * // This is a list of strings.
+ * string_list = zk_slist_append (string_list, "first");
+ * string_list = zk_slist_append (string_list, "second");
+ *
+ *
+ * struct custom_data {
+ *    int value;
+ *    char *string;
+ * };
+ *
+ * struct custom_data custom_node_1 = { .value = 1, .string = "node1"};
+ * struct custom_data custom_node_2 = { .value = 2, .string = "node2"};
+ * struct custom_data custom_node_3 = { .value = 3, .string = "node3"};
+ *
+ * // This is a list of custom data.
+ * custom_slist = zk_slist_append (custom_slist, &custom_node_1);
+ * custom_slist = zk_slist_append (custom_slist, &custom_node_2);
+ * custom_slist = zk_slist_append (custom_slist, &custom_node_3);
+ *
+ *  \endcode
+ *
+ */
+zk_slist_t *zk_slist_append(zk_slist_t *list, void *const data);
 
 zk_slist_t *zk_slist_concat(zk_slist_t *list_dest, zk_slist_t *list_src);
 
@@ -21,7 +82,6 @@ zk_slist_t *zk_slist_concat(zk_slist_t *list_dest, zk_slist_t *list_src);
  *
  * Note that this is a "shallow" copy. If the list elements consist of pointers to data,the pointers are copied but the
  * actual data is not. See `zk_slist_copy_deep()` if you need to copy the data as well.
- *
  *
  * @param list
  * Type: A pointer to the top of a `zk_slist_t`

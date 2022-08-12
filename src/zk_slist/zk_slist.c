@@ -61,7 +61,7 @@ void _zk_slist_front_back_split(zk_slist_t *list, zk_slist_t **front, zk_slist_t
 
 // SECTION END: Private functions
 
-zk_slist_t *zk_slist_append(zk_slist_t *list, void *data)
+zk_slist_t *zk_slist_append(zk_slist_t *list, void *const data)
 {
 	zk_slist_t *node = _zk_slist_new_node();
 	node->data = data;
