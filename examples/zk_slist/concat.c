@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "zk_slist/zk_slist.h"
+#include "zk/zklib.h"
 
 void print_list(void *data, __attribute__((__unused__)) void *user_data)
 {

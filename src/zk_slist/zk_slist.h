@@ -119,10 +119,10 @@ zk_slist_t *zk_slist_concat(zk_slist_t *const list_dest, zk_slist_t *const list_
 
 /**
  * @brief
- * Copies a `zk_slist_t`
+ * Copies a `zk_slist_t`. Note that this is a "shallow" copy. If the \p list elements consist of pointers to data,
+ * the pointers are copied but the actual data is not. See `zk_slist_copy_deep()` if you need to copy the data as well.
  *
- * Note that this is a "shallow" copy. If the list elements consist of pointers to data,the pointers are copied but the
- * actual data is not. See `zk_slist_copy_deep()` if you need to copy the data as well.
+ * **Time Complexity:** O(n)
  *
  * @param list
  * - Type: A pointer to the top of a `zk_slist_t`
@@ -132,6 +132,28 @@ zk_slist_t *zk_slist_concat(zk_slist_t *const list_dest, zk_slist_t *const list_
  * - Type: A list of `zk_slist_t`
  * - The start of the new list that holds the same data as list.
  * - The data is owned by the called function.
+ *
+ * **Example**
+ *
+ * \code{.c}
+ *
+ * zk_slist_t *list = NULL, *list_cp = NULL;
+ * list = zk_slist_append(list, strdup("This"));
+ * list = zk_slist_append(list, strdup("list"));
+ * list = zk_slist_append(list, strdup("will"));
+ * list = zk_slist_append(list, strdup("be"));
+ * list = zk_slist_append(list, strdup("shallow"));
+ * list = zk_slist_append(list, strdup("copied."));
+ *
+ * // creates a shallow copy of list
+ * list_cp = zk_slist_copy(list);
+ *
+ * // As this is a shallow copy if one of the lists is freed the other list loses its reference to data.
+ * zk_slist_free_full(&list, free);
+ *
+ * // Note that from now on all list_cp nodes have dangling pointers to data
+ * zk_slist_free(&list_cp);
+ * \endcode
  */
 zk_slist_t *zk_slist_copy(const zk_slist_t *list);
 
@@ -148,8 +170,7 @@ zk_slist_t *zk_slist_copy(const zk_slist_t *list);
  * - The data is owned by the caller of the function.
  *
  * @param func
- * TYPE:
- * - A copy function of type `zk_copy_data_t` used to copy every element in the list.
+ *  - Type: A function pointer of type `zk_copy_data_t` used to copy every element in the list.
  *
  * @param user_data
  * - Type: `void*`
