@@ -153,7 +153,7 @@ zk_slist_t *zk_slist_copy_deep(const zk_slist_t *list, zk_copy_data_t func, void
  * **Example**
  * \include zk_slist/delete_node.c
  */
-zk_slist_t *zk_slist_delete_node(zk_slist_t *list, zk_slist_t *node, zk_destructor_t func);
+zk_slist_t *zk_slist_delete_node(zk_slist_t *list, zk_slist_t *node, zk_destructor_t const func);
 
 // FIXME: rename to zk_slist_find
 zk_slist_t *zk_slist_find_by_data(zk_slist_t *list, const void *const data);
