@@ -9,6 +9,12 @@ void print_list(void *data, __attribute__((__unused__)) void *user_data)
 	printf("data: %s\n", (char *)data);
 }
 
+void *copy_list_data(const void *data, void *user_data)
+{
+	printf("User data: %s \n", (char *)user_data);
+	return strdup((char *)data);
+}
+
 int main()
 {
 	zk_slist_t *list = NULL, *list_cp = NULL;
@@ -17,19 +23,18 @@ int main()
 	list = zk_slist_append(list, strdup("list"));
 	list = zk_slist_append(list, strdup("will"));
 	list = zk_slist_append(list, strdup("be"));
-	list = zk_slist_append(list, strdup("shallow"));
+	list = zk_slist_append(list, strdup("deep"));
 	list = zk_slist_append(list, strdup("copied."));
 
-	// creates a shallow copy of list
-	list_cp = zk_slist_copy(list);
+	// creates a deep copy of list
+	list_cp = zk_slist_copy_deep(list, copy_list_data, "My own data");
 
 	// print list_cp
 	zk_slist_foreach(list_cp, print_list, NULL);
 
-	// As this is a shallow copy if one of the lists is freed the other list loses its reference to data.
 	zk_slist_free_full(&list, free);
-	// Note that from now on all list_cp nodes have dangling pointers to data
-	zk_slist_free(&list_cp);
+	// use zk_slist_free_full() to also free list_cp
+	zk_slist_free_full(&list_cp, free);
 
 	return 0;
 }
