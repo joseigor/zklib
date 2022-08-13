@@ -35,7 +35,7 @@ void _zk_slist_front_back_split(zk_slist_t *list, zk_slist_t **front, zk_slist_t
  * @return zk_slist_t*
  * - Type: A list of \c zk_list_t.
  * - Either \p list or the new start of the \c zk_list_t if \p list was \c NULL.
- * - The data is owned by the called function.
+ * - The data is owned by the caller of the function.
  *
  * **Example**
  * \include zk_slist/append.c
@@ -64,7 +64,7 @@ zk_slist_t *zk_slist_append(zk_slist_t *list, void *const data);
  * @return zk_slist_t*
  * - Type: A list of \c zk_slist_t
  * - The start of the new \c zk_slist_t or if \p list_dest is \c NULL returns \c NULL.
- * - The data is owned by the called function.
+ * - The data is owned by the caller of the function.
  *
  * **Example**
  * \include zk_slist/concat.c
@@ -85,7 +85,7 @@ zk_slist_t *zk_slist_concat(zk_slist_t *const list_dest, zk_slist_t *const list_
  * @return zk_slist_t*
  * - Type: A list of \c zk_slist_t
  * - The start of the new list that holds the same data as list.
- * - The data is owned by the called function.
+ * - The data is owned by the caller of the function.
  *
  * **Example**
  * \include zk_slist/copy.c
@@ -148,13 +148,38 @@ zk_slist_t *zk_slist_copy_deep(const zk_slist_t *list, zk_copy_data_t func, void
  * @return zk_slist_t*
  * - Type: A list of \c zk_list_t
  * - The new head of the \p list .
- * - The data is owned by the called function.
+ * - The data is owned by the caller of the function.
  *
  * **Example**
  * \include zk_slist/delete_node.c
  */
 zk_slist_t *zk_slist_delete_node(zk_slist_t *list, zk_slist_t *node, zk_destructor_t const func);
 
+/**
+ * @brief
+ * Finds the node from the \p list that contains \p data. If \p list contains more than one node with \p data the first
+ * match is returned.
+ *
+ * **Time Complexity:** O(n)
+ *
+ * @param list
+ * - Type: A list of \c zk_list_t .
+ * - The data is owned by the caller of the function.
+ *
+ * @param data
+ * - Type: Pointer to \c void .
+ * - The node to be find.
+ * - This argument can be \c NULL .
+ * - The data is owned by the caller of the function.
+ *
+ * @return zk_slist_t*
+ * - Type: A list of \c zk_list_t .
+ * - The found \c zk_list_t element, or \c NULL if it is not found.
+ * - The data is owned by the caller of the function.
+ *
+ * **Example**
+ * \include zk_slist/find.c
+ */
 zk_slist_t *zk_slist_find(zk_slist_t *list, const void *const data);
 
 zk_slist_t *zk_slist_find_custom(zk_slist_t *list, const void *const data, zk_compare_t func);
@@ -214,7 +239,7 @@ zk_slist_t *zk_slist_remove_all(zk_slist_t *list, const void *const data);
  * @return zk_slist_t*
  * - Type: A list of \c zk_slist_t
  * - The start of the reversed list.
- * - The data is owned by the called function.
+ * - The data is owned by the caller of the function.
  */
 zk_slist_t *zk_slist_reverse(zk_slist_t *list);
 

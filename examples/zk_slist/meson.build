@@ -3,3 +3,4 @@ ex_zk_slist_concat = executable('concat', sources: ['concat.c'], include_directo
 ex_zk_slist_copy = executable('copy', sources: ['copy.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
 ex_zk_slist_copy_deep = executable('copy_deep', sources: ['copy_deep.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
 ex_zk_slist_delete_node = executable('delete_node', sources: ['delete_node.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
+ex_zk_slist_find = executable('find', sources: ['find.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
