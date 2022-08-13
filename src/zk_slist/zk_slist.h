@@ -24,21 +24,20 @@ void _zk_slist_front_back_split(zk_slist_t *list, zk_slist_t **front, zk_slist_t
  * reverse the list calling `zk_slist_reverse()` that is a \b O(n) operation.
  *
  * @param list
- * - Type: A pointer to the top of a `zk_slist_t`
+ * - Type: A list of \c zk_list_t
  * - The data is owned by the caller of the function.
  *
  * @param data
  * - Type: A pointer to the data to be addded.
- * - This argument can be `NULL`.
+ * - This argument can be \c NULL.
  * - The data is owned by the caller of the function.
  *
  * @return zk_slist_t*
- * - Type: A list of `zk_list_t`.
- * - Either \p list or the new start of the `zk_list_t` if \p list was `NULL`.
+ * - Type: A list of \c zk_list_t.
+ * - Either \p list or the new start of the \c zk_list_t if \p list was \c NULL.
  * - The data is owned by the called function.
  *
  * **Example**
- *
  * \include zk_slist/append.c
  */
 zk_slist_t *zk_slist_append(zk_slist_t *list, void *const data);
@@ -52,62 +51,59 @@ zk_slist_t *zk_slist_append(zk_slist_t *list, void *const data);
  * **Time Complexity:** O(n)
  *
  * @param list_dest
- * - Type: A pointer to the top of a `zk_slist_t`
- * - This argument can be `NULL`
+ * - Type: A list of \c zk_list_t
+ * - This argument can be \c NULL
  * - The data is owned by the caller of the function.
  *
  * @param list_src
- * - Type: A pointer to the top of a `zk_slist_t`
- * - The zk_slist_t to add to the end of the first zk_slist_t, this must point to the top of the list.
- * - This argument can be `NULL`
+ * - Type: A list of \c zk_list_t
+ * - The \c zk_slist_t to add to the end of the first zk_slist_t, this must point to the top of the list.
+ * - This argument can be \c NULL
  * - The data is owned by the caller of the function.
  *
  * @return zk_slist_t*
- * - Type: A list of `zk_slist_t`
- * - The start of the new `zk_slist_t`.
- * - If \p list_dest is `NULL` returns `NULL`.
+ * - Type: A list of \c zk_slist_t
+ * - The start of the new \c zk_slist_t or if \p list_dest is \c NULL returns \c NULL.
  * - The data is owned by the called function.
  *
  * **Example**
- *
  * \include zk_slist/concat.c
  */
 zk_slist_t *zk_slist_concat(zk_slist_t *const list_dest, zk_slist_t *const list_src);
 
 /**
  * @brief
- * Copies a `zk_slist_t`. Note that this is a "shallow" copy. If the \p list elements consist of pointers to data,
+ * Copies a \c zk_slist_t. Note that this is a "shallow" copy. If the \p list elements consist of pointers to data,
  * the pointers are copied but the actual data is not. See `zk_slist_copy_deep()` if you need to copy the data as well.
  *
  * **Time Complexity:** O(n)
  *
  * @param list
- * - Type: A pointer to the top of a `zk_slist_t`
+ * - Type: A list of \c zk_list_t
  * - The data is owned by the caller of the function.
  *
  * @return zk_slist_t*
- * - Type: A list of `zk_slist_t`
+ * - Type: A list of \c zk_slist_t
  * - The start of the new list that holds the same data as list.
  * - The data is owned by the called function.
  *
  * **Example**
- *
  * \include zk_slist/copy.c
  */
 zk_slist_t *zk_slist_copy(const zk_slist_t *list);
 
 /**
  * @brief
- * Makes a full (deep) copy of a `zk_slist_t`.
+ * Makes a full (deep) copy of a \c zk_slist_t.
  *
  * **Time Complexity:** O(n)
  *
  * In contrast with `zk_slist_copy()`, this function uses \p func to make a copy of each list element, in addition to
  * copying the list container itself. \p func as a `zk_copy_data_t` takes two arguments, the `data` to be copied and a
- * `user_data` pointer which can be `NULL`.
+ * `user_data` pointer which can be \c NULL.
  *
  * @param list
- * - Type: A pointer to the top of a zk_slist_t
+ * - Type: A list of \c zk_list_t
  * - The data is owned by the caller of the function.
  *
  * @param func
@@ -119,18 +115,44 @@ zk_slist_t *zk_slist_copy(const zk_slist_t *list);
  * - The data is owned by the caller of the function.
  *
  * @return zk_slist_t*
- * - Type: A list of `zk_slist_t`
- * - The start of the new list that holds the same data as \p list .
- * - \c NULL if \p list or \p func is \c NULL
+ * - Type: A list of \c zk_slist_t
+ * - The start of the new list that holds the same data as \p list or \c NULL if \p list or \p func is \c NULL
  * - Use `zk_slist_free_full()` to free it.
  * - The data is owned by the called function
  *
  * **Example**
- *
  * \include zk_slist/copy_deep.c
  */
 zk_slist_t *zk_slist_copy_deep(const zk_slist_t *list, zk_copy_data_t func, void *user_data);
 
+/**
+ * @brief
+ * Removes \c node from the \p list and frees it. If you need to free the data that \p node is pointing to you can pass
+ * a custom function pointer \p func that implements a custom behavior to proper free the node`s data.
+ *
+ * **Time Complexity:** O(n)
+ *
+ * @param list
+ * - Type: A list of \c zk_list_t
+ * - The data is owned by the caller of the function.
+ *
+ * @param node
+ * - Type: A list of \c zk_list_t
+ * - Node to be delete.
+ * - The data is owned by the caller of the function.
+ *
+ * @param func
+ * - Type: A function pointer of type `zk_destructor_t()` used to free the \p node data.
+ * - It can be \c NULL.
+ *
+ * @return zk_slist_t*
+ * - Type: A list of \c zk_list_t
+ * - The new head of the \p list .
+ * - The data is owned by the called function.
+ *
+ * **Example**
+ * \include zk_slist/delete_node.c
+ */
 zk_slist_t *zk_slist_delete_node(zk_slist_t *list, zk_slist_t *node, zk_destructor_t func);
 
 // FIXME: rename to zk_slist_find
@@ -185,14 +207,14 @@ zk_slist_t *zk_slist_remove(zk_slist_t *list, const void *const data);
 zk_slist_t *zk_slist_remove_all(zk_slist_t *list, const void *const data);
 
 /**
- * @brief Reverses a `zk_slist_t`. It simply switches the next and prev pointers of each element.
+ * @brief Reverses a \c zk_slist_t. It simply switches the next and prev pointers of each element.
  *
  * @param list
- * - Type: A pointer to the start of a `zk_slist_t`.
+ * - Type: A pointer to the start of a \c zk_slist_t.
  * - The data is owned by the caller of the function.
  *
  * @return zk_slist_t*
- * - Type: A list of `zk_slist_t`
+ * - Type: A list of \c zk_slist_t
  * - The start of the reversed list.
  * - The data is owned by the called function.
  */
