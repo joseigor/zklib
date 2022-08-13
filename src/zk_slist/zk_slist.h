@@ -155,11 +155,9 @@ zk_slist_t *zk_slist_copy_deep(const zk_slist_t *list, zk_copy_data_t func, void
  */
 zk_slist_t *zk_slist_delete_node(zk_slist_t *list, zk_slist_t *node, zk_destructor_t const func);
 
-// FIXME: rename to zk_slist_find
-zk_slist_t *zk_slist_find_by_data(zk_slist_t *list, const void *const data);
+zk_slist_t *zk_slist_find(zk_slist_t *list, const void *const data);
 
-// FIXME: rename to zk_slist_find_custom
-zk_slist_t *zk_slist_find_by_data_custom(zk_slist_t *list, const void *const data, zk_compare_t func);
+zk_slist_t *zk_slist_find_custom(zk_slist_t *list, const void *const data, zk_compare_t func);
 
 void zk_slist_foreach(zk_slist_t *list, zk_foreach_t func, void *user_data);
 

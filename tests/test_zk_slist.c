@@ -700,7 +700,7 @@ void test_zk_slist_find_by_data(void)
 	slist = zk_slist_append(slist, &node_6_data);
 	slist = zk_slist_append(slist, &node_7_data);
 
-	slist_found = zk_slist_find_by_data(slist, &node_5_data);
+	slist_found = zk_slist_find(slist, &node_5_data);
 
 	TEST_ASSERT_NOT_NULL(slist_found);
 	TEST_ASSERT_EQUAL(node_5_data, *((int *)(slist_found->data)));
@@ -733,7 +733,7 @@ void test_zk_slist_find_by_data_custom_when_comparison_func_is_null(void)
 	slist = zk_slist_append(slist, &node_6_data);
 	slist = zk_slist_append(slist, &node_7_data);
 
-	slist_found = zk_slist_find_by_data_custom(slist, &node_5_data, NULL);
+	slist_found = zk_slist_find_custom(slist, &node_5_data, NULL);
 
 	TEST_ASSERT_NULL(slist_found);
 
@@ -762,7 +762,7 @@ void test_zk_slist_find_by_data_custom(void)
 	slist = zk_slist_append(slist, &node_6_data);
 	slist = zk_slist_append(slist, &node_7_data);
 
-	slist_found = zk_slist_find_by_data_custom(slist, &node_5_data, slist_compare_data_custom);
+	slist_found = zk_slist_find_custom(slist, &node_5_data, slist_compare_data_custom);
 
 	TEST_ASSERT_NOT_NULL(slist_found);
 	TEST_ASSERT_EQUAL(node_5_data, *((int *)(slist_found->data)));
@@ -955,7 +955,7 @@ void test_zk_slist_insert_when_data_is_null(void)
 	// insert a node in postion 1 of the list
 	slist = zk_slist_insert(slist, NULL, 1);
 
-	zk_slist_t *node = zk_slist_find_by_data(slist, NULL);
+	zk_slist_t *node = zk_slist_find(slist, NULL);
 
 	TEST_ASSERT_EQUAL(1, zk_slist_get_index(slist, NULL));
 	TEST_ASSERT_NOT_NULL(node);
@@ -1027,7 +1027,7 @@ void test_zk_slist_insert_when_position_is_inside_list_range(void)
 	// insert node in position 2
 	slist = zk_slist_insert(slist, &node_3_data, 2);
 
-	zk_slist_t *node = zk_slist_find_by_data(slist, &node_3_data);
+	zk_slist_t *node = zk_slist_find(slist, &node_3_data);
 	TEST_ASSERT_EQUAL(2, zk_slist_get_index(slist, &node_3_data));
 	TEST_ASSERT_NOT_NULL(node);
 	TEST_ASSERT_EQUAL(&node_3_data, node->data);
@@ -1758,12 +1758,12 @@ int main(void)
 	}
 
 	{
-		// test zk_slist_find_by_data
+		// test zk_slist_find
 		RUN_TEST(test_zk_slist_find_by_data);
 	}
 
 	{
-		// test zk_slist_find_by_data_custom
+		// test zk_slist_find_custom
 		RUN_TEST(test_zk_slist_find_by_data_custom_when_comparison_func_is_null);
 		RUN_TEST(test_zk_slist_find_by_data_custom);
 	}
