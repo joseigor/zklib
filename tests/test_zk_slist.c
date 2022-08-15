@@ -700,7 +700,7 @@ void test_zk_slist_find_by_data(void)
 	slist = zk_slist_append(slist, &node_6_data);
 	slist = zk_slist_append(slist, &node_7_data);
 
-	slist_found = zk_slist_find(slist, &node_5_data);
+	slist_found = zk_slist_find(slist, &node_5_data, NULL);
 
 	TEST_ASSERT_NOT_NULL(slist_found);
 	TEST_ASSERT_EQUAL(node_5_data, *((int *)(slist_found->data)));
@@ -712,7 +712,7 @@ void test_zk_slist_find_by_data(void)
 	zk_slist_free(&slist);
 }
 
-void test_zk_slist_find_by_data_custom_when_comparison_func_is_null(void)
+void test_zk_slist_find_by_data_custom_when_node_is_not_in_the_list(void)
 {
 	zk_slist_t *slist = NULL;
 	zk_slist_t *slist_found = NULL;
@@ -724,6 +724,7 @@ void test_zk_slist_find_by_data_custom_when_comparison_func_is_null(void)
 	int node_5_data = 5;
 	int node_6_data = 6;
 	int node_7_data = 7;
+	int node_8_data = 8;
 
 	slist = zk_slist_append(slist, &node_1_data);
 	slist = zk_slist_append(slist, &node_2_data);
@@ -733,7 +734,7 @@ void test_zk_slist_find_by_data_custom_when_comparison_func_is_null(void)
 	slist = zk_slist_append(slist, &node_6_data);
 	slist = zk_slist_append(slist, &node_7_data);
 
-	slist_found = zk_slist_find_custom(slist, &node_5_data, NULL);
+	slist_found = zk_slist_find(slist, &node_8_data, NULL);
 
 	TEST_ASSERT_NULL(slist_found);
 
@@ -762,7 +763,7 @@ void test_zk_slist_find_by_data_custom(void)
 	slist = zk_slist_append(slist, &node_6_data);
 	slist = zk_slist_append(slist, &node_7_data);
 
-	slist_found = zk_slist_find_custom(slist, &node_5_data, slist_compare_data_custom);
+	slist_found = zk_slist_find(slist, &node_5_data, slist_compare_data_custom);
 
 	TEST_ASSERT_NOT_NULL(slist_found);
 	TEST_ASSERT_EQUAL(node_5_data, *((int *)(slist_found->data)));
@@ -955,7 +956,7 @@ void test_zk_slist_insert_when_data_is_null(void)
 	// insert a node in postion 1 of the list
 	slist = zk_slist_insert(slist, NULL, 1);
 
-	zk_slist_t *node = zk_slist_find(slist, NULL);
+	zk_slist_t *node = zk_slist_find(slist, NULL, NULL);
 
 	TEST_ASSERT_EQUAL(1, zk_slist_get_index(slist, NULL));
 	TEST_ASSERT_NOT_NULL(node);
@@ -1027,7 +1028,7 @@ void test_zk_slist_insert_when_position_is_inside_list_range(void)
 	// insert node in position 2
 	slist = zk_slist_insert(slist, &node_3_data, 2);
 
-	zk_slist_t *node = zk_slist_find(slist, &node_3_data);
+	zk_slist_t *node = zk_slist_find(slist, &node_3_data, NULL);
 	TEST_ASSERT_EQUAL(2, zk_slist_get_index(slist, &node_3_data));
 	TEST_ASSERT_NOT_NULL(node);
 	TEST_ASSERT_EQUAL(&node_3_data, node->data);
@@ -1716,8 +1717,7 @@ int main(void)
 {
 	UNITY_BEGIN();
 
-	{
-		// tests for zk_slist_append function
+	{ // tests for zk_slist_append function
 		RUN_TEST(test_zk_slist_append_to_empty_list);
 		RUN_TEST(test_zk_slist_append_2_items_to_slist);
 		RUN_TEST(test_zk_slist_append_3_items_to_slist);
@@ -1725,28 +1725,24 @@ int main(void)
 		RUN_TEST(test_zk_slist_append_null_data_to_slist);
 	}
 
-	{
-		// test for zk_slist_concat
+	{ // test for zk_slist_concat
 		RUN_TEST(test_zk_slist_concat_lists_of_strings);
 		RUN_TEST(test_zk_slist_concat_when_destination_list_is_null_should_return_null);
 		RUN_TEST(test_zk_slist_concat_when_source_list_is_null_should_return_destination_list);
 	}
 
-	{
-		// test for zk_slist_copy
+	{ // test for zk_slist_copy
 		RUN_TEST(test_zk_slist_copy_when_source_list_is_null);
 		RUN_TEST(test_zk_slist_copy_when_source_list_node_data_is_a_pointer_to_data_only_the_pointer_is_copied);
 	}
 
-	{
-		// test for zk_slist_copy_deep
+	{ // test for zk_slist_copy_deep
 		RUN_TEST(test_zk_slist_copy_full_should_return_null_when_source_list_is_null);
 		RUN_TEST(test_zk_slist_copy_full_should_return_null_when_copy_function_is_null);
 		RUN_TEST(test_zk_slist_copy_deep_should_perform_a_deep_copy_of_source_list_nodes_data);
 	}
 
-	{
-		// test zk_slist_delete_node
+	{ // test zk_slist_delete_node
 		RUN_TEST(test_zk_slist_delete_node_when_list_is_null);
 		RUN_TEST(test_zk_slist_delete_node_when_node_is_null);
 		RUN_TEST(test_zk_slist_delete_node_when_list_has_only_one_node);
@@ -1757,38 +1753,29 @@ int main(void)
 		RUN_TEST(test_zk_slist_delete_node_when_node_is_not_in_the_list);
 	}
 
-	{
-		// test zk_slist_find
+	{ // test zk_slist_find
 		RUN_TEST(test_zk_slist_find_by_data);
-	}
-
-	{
-		// test zk_slist_find_custom
-		RUN_TEST(test_zk_slist_find_by_data_custom_when_comparison_func_is_null);
+		RUN_TEST(test_zk_slist_find_by_data_custom_when_node_is_not_in_the_list);
 		RUN_TEST(test_zk_slist_find_by_data_custom);
 	}
 
-	{
-		// test zk_slist_foreach
+	{ // test zk_slist_foreach
 		RUN_TEST(test_zk_slist_foreach_when_func_is_null);
 		RUN_TEST(test_zk_slist_foreach_when_list_is_null);
 		RUN_TEST(test_zk_slist_foreach_when_func_is_not_null);
 	}
 
-	{
-		// tes zk_slist_free
+	{ // tes zk_slist_free
 		RUN_TEST(test_zk_slist_free_a_null_list_should_just_return);
 	}
 
-	{
-		// test zk_slist_free_full function
+	{ // test zk_slist_free_full function
 		RUN_TEST(test_zk_slist_free_full_for_list_of_strings);
 		RUN_TEST(test_zk_slist_free_full_for_a_null_list_should_just_return);
 		RUN_TEST(test_zk_slist_free_full_for_a_null_destructor_should_just_return);
 	}
 
-	{
-		// test zk_slist_get_index
+	{ // test zk_slist_get_index
 		RUN_TEST(test_zk_slist_get_index_when_list_is_null);
 		RUN_TEST(test_zk_slist_get_index_when_data_is_null);
 		RUN_TEST(test_zk_slist_get_index_when_data_is_on_list);

@@ -149,29 +149,22 @@ zk_slist_t *zk_slist_delete_node(zk_slist_t *list, zk_slist_t *node, zk_destruct
 	return list;
 }
 
-zk_slist_t *zk_slist_find(zk_slist_t *list, const void *const data)
+zk_slist_t *zk_slist_find(zk_slist_t *list, const void *const data, zk_compare_t const func)
 {
-	while (list != NULL) {
-		if (list->data == data) {
-			break;
+	if (func != NULL) {
+		while (list != NULL) {
+			if (func(list->data, data) == 0)
+				break;
+			list = list->next;
 		}
-		list = list->next;
-	}
-	return list;
-}
-
-zk_slist_t *zk_slist_find_custom(zk_slist_t *list, const void *const data, zk_compare_t func)
-{
-	if (func == NULL) {
-		return NULL;
-	}
-
-	while (list != NULL) {
-		if (func(list->data, data) == 0) {
-			break;
+	} else {
+		while (list != NULL) {
+			if (list->data == data)
+				break;
+			list = list->next;
 		}
-		list = list->next;
 	}
+
 	return list;
 }
 

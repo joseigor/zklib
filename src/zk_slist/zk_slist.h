@@ -158,31 +158,37 @@ zk_slist_t *zk_slist_delete_node(zk_slist_t *list, zk_slist_t *node, zk_destruct
 /**
  * @brief
  * Finds the node from the \p list that contains \p data. If \p list contains more than one node with \p data the first
- * match is returned.
+ * match is returned. User can provide a custom function \p func to performe the comparison which will be called for
+ * each node of the list. This function should return 0 when the desired node is found. The function takes two
+ * arguments, the zk_slist_t node’s data as the first argument and the given user data as second argument.
  *
  * **Time Complexity:** O(n)
  *
  * @param list
- * - Type: A list of \c zk_list_t .
+ * - Type: A list of \c zk_list_t
  * - The data is owned by the caller of the function.
  *
  * @param data
- * - Type: Pointer to \c void .
+ * - Type: Pointer to \c void
  * - The node to be find.
  * - This argument can be \c NULL .
  * - The data is owned by the caller of the function.
  *
+ * @param func
+ * - Type: zk_compare_t
+ * - Function to be used to compare \p list nodes with the \p data provided.
+ * - This argument can be \c NULL in which case simple comparison is performed.
+ * - The data is owned by the caller of the function.
+ *
  * @return zk_slist_t*
- * - Type: A list of \c zk_list_t .
+ * - Type: A list of \c zk_list_t
  * - The found \c zk_list_t element, or \c NULL if it is not found.
  * - The data is owned by the caller of the function.
  *
  * **Example**
  * \include zk_slist/find.c
  */
-zk_slist_t *zk_slist_find(zk_slist_t *list, const void *const data);
-
-zk_slist_t *zk_slist_find_custom(zk_slist_t *list, const void *const data, zk_compare_t func);
+zk_slist_t *zk_slist_find(zk_slist_t *list, const void *const data, zk_compare_t func);
 
 void zk_slist_foreach(zk_slist_t *list, zk_foreach_t func, void *user_data);
 

@@ -3,6 +3,13 @@
 
 #include "zk/zklib.h"
 
+int cmp_int(const void *const data, const void *const user_data)
+{
+	if (*(int *)data == *(int *)user_data)
+		return 0;
+	return -1;
+}
+
 int main()
 {
 	zk_slist_t *list = NULL, *list_node = NULL;
@@ -16,17 +23,16 @@ int main()
 	list = zk_slist_append(list, &node1_data);
 	list = zk_slist_append(list, &node2_data);
 	list = zk_slist_append(list, &node3_data);
+	list = zk_slist_append(list, &node4_data);
 
-	if ((list_node = zk_slist_find(list, &node2_data))) {
+	// Find without a custom function
+	if ((list_node = zk_slist_find(list, &node2_data, NULL))) {
 		printf("Node data: %d\n", *((int *)list_node->data));
-	} else {
-		printf("Node not found.\n");
 	}
 
-	if ((list_node = zk_slist_find(list, &node4_data))) {
+	// Make use of a custom funtion to find the node
+	if ((list_node = zk_slist_find(list, &node2_data, cmp_int))) {
 		printf("Node data: %d\n", *((int *)list_node->data));
-	} else {
-		printf("Node not found.\n");
 	}
 
 	// free lists after use
