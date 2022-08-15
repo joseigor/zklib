@@ -36,7 +36,7 @@ int main()
 	}
 
 	// free lists after use
-	zk_slist_free(&list);
+	zk_slist_free(&list, NULL);
 
 	return 0;
 }

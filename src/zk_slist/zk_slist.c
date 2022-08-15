@@ -17,16 +17,7 @@ static zk_slist_t *_zk_slist_new_node(void)
 	return list;
 }
 
-static void _zk_slist_free_1(zk_slist_t **node)
-{
-	if (node == NULL || *node == NULL) {
-		return;
-	}
-	free(*node);
-	*node = NULL;
-}
-
-PRIVATE void _zk_slist_free_1_full(zk_slist_t **node, zk_destructor_t func)
+static void _zk_slist_free(zk_slist_t **node, zk_destructor_t func)
 {
 	if (node == NULL || *node == NULL) {
 		return;
@@ -35,6 +26,7 @@ PRIVATE void _zk_slist_free_1_full(zk_slist_t **node, zk_destructor_t func)
 	if (func != NULL) {
 		func((*node)->data);
 	}
+
 	free(*node);
 	*node = NULL;
 }
@@ -132,7 +124,7 @@ zk_slist_t *zk_slist_delete_node(zk_slist_t *list, zk_slist_t *node, zk_destruct
 	// node is head of the list
 	if (list == node) {
 		list = list->next;
-		_zk_slist_free_1_full(&node, func);
+		_zk_slist_free(&node, func);
 		return list;
 	}
 
@@ -140,7 +132,7 @@ zk_slist_t *zk_slist_delete_node(zk_slist_t *list, zk_slist_t *node, zk_destruct
 	while (temp != NULL) {
 		if (temp->next == node) {
 			temp->next = node->next;
-			_zk_slist_free_1_full(&node, func);
+			_zk_slist_free(&node, func);
 			break;
 		}
 		temp = temp->next;
@@ -180,29 +172,16 @@ void zk_slist_foreach(zk_slist_t *list, zk_foreach_t func, void *user_data)
 	}
 }
 
-void zk_slist_free(zk_slist_t **list_p)
+void zk_slist_free(zk_slist_t **list_p, zk_destructor_t const func)
 {
-	if (list_p == NULL || *list_p == NULL) {
+	if (list_p == NULL) {
 		return;
 	}
 
 	while ((*list_p) != NULL) {
 		zk_slist_t *node = *list_p;
 		*list_p = (*list_p)->next;
-		_zk_slist_free_1(&node);
-	}
-}
-
-void zk_slist_free_full(zk_slist_t **list_p, zk_destructor_t func)
-{
-	if (list_p == NULL || *list_p == NULL || func == NULL) {
-		return;
-	}
-
-	while ((*list_p) != NULL) {
-		zk_slist_t *node = *list_p;
-		*list_p = (*list_p)->next;
-		_zk_slist_free_1_full(&node, func);
+		_zk_slist_free(&node, func);
 	}
 }
 

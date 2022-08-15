@@ -96,11 +96,11 @@ zk_slist_t *zk_slist_copy(const zk_slist_t *list);
  * @brief
  * Makes a full (deep) copy of a \c zk_slist_t.
  *
- * **Time Complexity:** O(n)
- *
  * In contrast with `zk_slist_copy()`, this function uses \p func to make a copy of each list element, in addition to
  * copying the list container itself. \p func as a `zk_copy_data_t` takes two arguments, the `data` to be copied and a
  * `user_data` pointer which can be \c NULL.
+ *
+ * **Time Complexity:** O(n)
  *
  * @param list
  * - Type: A list of \c zk_list_t
@@ -195,6 +195,8 @@ zk_slist_t *zk_slist_find(zk_slist_t *list, const void *const data, zk_compare_t
  * Iterates over \p list and calls the function \p func for each node of the \p list. This function takes two
  * arguments, the zk_slist_t node’s data as the first argument and the given \p user_data as second argument.
  *
+ * **Time Complexity:** O(n) if \p func is O(1)
+ *
  * @param list
  * - Type: A list of \c zk_list_t
  * - The data is owned by the caller of the function.
@@ -210,13 +212,36 @@ zk_slist_t *zk_slist_find(zk_slist_t *list, const void *const data, zk_compare_t
  * - It can be NULL.
  * - The data is owned by the caller of the function.
  *
+ * **Example**
  * \include zk_slist/foreach.c
  */
 void zk_slist_foreach(zk_slist_t *list, zk_foreach_t const func, void *user_data);
 
-void zk_slist_free(zk_slist_t **list_p);
-
-void zk_slist_free_full(zk_slist_t **list_p, zk_destructor_t func);
+/**
+ * @brief
+ * Frees a zk_slist_t and set it to NULL. If \p func is provided it will be called for every node of \p list. \p func
+ * receives as argument the node`s data. So if you need to free the node but also the data the node is pointing
+ * to you can do it by providing your own implementation for \p func, see example below. If you just want to free the
+ * \p list but not the data each node is pointing to then \p func can be NULL.
+ *
+ * **Time Complexity:** O(n) if \p func is O(1)
+ *
+ * @param list_p
+ * - Type: A pointer to a list of \c zk_list_t
+ * - The list to be freed.
+ * - The data is owned by the caller of the function.
+ *
+ * @param func
+ * - Type: zk_destructor_t
+ * - Function called for each node of the list.
+ * - This is your custom implementation to free each node`s data.
+ * - It can be NULL.
+ * - The data is owned by the caller of the function.
+ *
+ * **Example**
+ * \include zk_slist/free.c
+ */
+void zk_slist_free(zk_slist_t **list_p, zk_destructor_t const func);
 
 // FIXME: rename to zk_slist_index
 int zk_slist_get_index(zk_slist_t *list, const void *const data);

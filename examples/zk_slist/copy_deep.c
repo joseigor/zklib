@@ -32,9 +32,8 @@ int main()
 	// print list_cp
 	zk_slist_foreach(list_cp, print_list, NULL);
 
-	zk_slist_free_full(&list, free);
-	// use zk_slist_free_full() to also free list_cp
-	zk_slist_free_full(&list_cp, free);
+	zk_slist_free(&list, free);
+	zk_slist_free(&list_cp, free);
 
 	return 0;
 }

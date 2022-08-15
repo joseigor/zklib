@@ -45,9 +45,9 @@ int main()
 	printf("custom_slist->next->data: %d %s\n", custom_node->value, custom_node->string);
 
 	// free lists after use
-	zk_slist_free(&number_slist);
-	zk_slist_free(&string_list);
-	zk_slist_free(&custom_slist);
+	zk_slist_free(&number_slist, NULL);
+	zk_slist_free(&string_list, NULL);
+	zk_slist_free(&custom_slist, NULL);
 
 	return 0;
 }
