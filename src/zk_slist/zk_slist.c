@@ -170,7 +170,7 @@ zk_slist_t *zk_slist_find(zk_slist_t *list, const void *const data, zk_compare_t
 
 void zk_slist_foreach(zk_slist_t *list, zk_foreach_t func, void *user_data)
 {
-	if (list == NULL || func == NULL) {
+	if (func == NULL) {
 		return;
 	}
 

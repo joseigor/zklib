@@ -190,7 +190,29 @@ zk_slist_t *zk_slist_delete_node(zk_slist_t *list, zk_slist_t *node, zk_destruct
  */
 zk_slist_t *zk_slist_find(zk_slist_t *list, const void *const data, zk_compare_t func);
 
-void zk_slist_foreach(zk_slist_t *list, zk_foreach_t func, void *user_data);
+/**
+ * @brief
+ * Iterates over \p list and calls the function \p func for each node of the \p list. This function takes two
+ * arguments, the zk_slist_t node’s data as the first argument and the given \p user_data as second argument.
+ *
+ * @param list
+ * - Type: A list of \c zk_list_t
+ * - The data is owned by the caller of the function.
+ *
+ * @param func
+ * - Type: zk_foreach_t
+ * - Function called for each node of the list.
+ * - The data is owned by the caller of the function.
+ *
+ * @param user_data
+ * - Type: Pointer to void
+ * - User data to be passed as second argument of \p func.
+ * - It can be NULL.
+ * - The data is owned by the caller of the function.
+ *
+ * \include zk_slist/foreach.c
+ */
+void zk_slist_foreach(zk_slist_t *list, zk_foreach_t const func, void *user_data);
 
 void zk_slist_free(zk_slist_t **list_p);
 
