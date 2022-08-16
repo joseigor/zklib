@@ -27,7 +27,7 @@ static void _zk_slist_free(zk_slist_t **node, zk_destructor_t func)
 	*node = NULL;
 }
 
-static size_t _zk_slist_compare(const void *const node_data, const void *const data, zk_compare_t const func)
+static int _zk_slist_compare(const void *const node_data, const void *const data, zk_compare_t const func)
 {
 	return (func != NULL ? func(node_data, data) : !(node_data == data));
 }
@@ -144,20 +144,11 @@ zk_slist_t *zk_slist_delete_node(zk_slist_t *list, zk_slist_t *node, zk_destruct
 
 zk_slist_t *zk_slist_find(zk_slist_t *list, const void *const data, zk_compare_t const func)
 {
-	if (func != NULL) {
-		while (list != NULL) {
-			if (func(list->data, data) == 0) {
-				break;
-			}
-			list = list->next;
+	while (list != NULL) {
+		if (_zk_slist_compare(list->data, data, func) == 0) {
+			break;
 		}
-	} else {
-		while (list != NULL) {
-			if (list->data == data) {
-				break;
-			}
-			list = list->next;
-		}
+		list = list->next;
 	}
 
 	return list;
