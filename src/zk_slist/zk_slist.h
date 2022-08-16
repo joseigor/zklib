@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stddef.h>
+
 #include "zk_common/zk_types.h"
 
 typedef struct zk_slist_t {
@@ -159,8 +161,9 @@ zk_slist_t *zk_slist_delete_node(zk_slist_t *list, zk_slist_t *node, zk_destruct
  * @brief
  * Finds the node from the \p list that contains \p data. If \p list contains more than one node with \p data the first
  * match is returned. User can provide a custom function \p func to performe the comparison which will be called for
- * each node of the list. This function should return 0 when the desired node is found. The function takes two
- * arguments, the zk_slist_t node’s data as the first argument and the given user data as second argument.
+ * each node of the list. The provided user function function should return 0 when the desired node is found. The
+ * function takes two arguments, the zk_slist_t node’s data as the first argument and the given user data as second
+ * argument.
  *
  * **Time Complexity:** O(n)
  *
@@ -185,6 +188,8 @@ zk_slist_t *zk_slist_delete_node(zk_slist_t *list, zk_slist_t *node, zk_destruct
  * - The found \c zk_list_t element, or \c NULL if it is not found.
  * - The data is owned by the caller of the function.
  *
+ * - \note \p func should handle NULL arguments.
+ *
  * **Example**
  * \include zk_slist/find.c
  */
@@ -195,7 +200,7 @@ zk_slist_t *zk_slist_find(zk_slist_t *list, const void *const data, zk_compare_t
  * Iterates over \p list and calls the function \p func for each node of the \p list. This function takes two
  * arguments, the zk_slist_t node’s data as the first argument and the given \p user_data as second argument.
  *
- * **Time Complexity:** O(n) if \p func is O(1)
+ * **Time Complexity:** O(n)
  *
  * @param list
  * - Type: A list of \c zk_list_t
@@ -224,7 +229,7 @@ void zk_slist_foreach(zk_slist_t *list, zk_foreach_t const func, void *user_data
  * to you can do it by providing your own implementation for \p func, see example below. If you just want to free the
  * \p list but not the data each node is pointing to then \p func can be NULL.
  *
- * **Time Complexity:** O(n) if \p func is O(1)
+ * **Time Complexity:** O(n)
  *
  * @param list_p
  * - Type: A pointer to a list of \c zk_list_t
@@ -243,8 +248,43 @@ void zk_slist_foreach(zk_slist_t *list, zk_foreach_t const func, void *user_data
  */
 void zk_slist_free(zk_slist_t **list_p, zk_destructor_t const func);
 
-// FIXME: rename to zk_slist_index
-int zk_slist_get_index(zk_slist_t *list, const void *const data);
+/**
+ * @brief
+ * Finds first node that contains \p data and returns its index. If \p list contains more than one node with \p data the
+ * index of the first match is returned. User can provide a custom function \p func to performe the comparison which
+ * will be called for each node of the list. The provided user function should return 0 when the desired data is found.
+ * The function takes two arguments, the zk_slist_t node’s data as the first argument and the given user data as second
+ * argument.
+ *
+ * **Time Complexity:** O(n)
+ *
+ * @param list
+ * - Type: A list of \c zk_list_t
+ * - The data is owned by the caller of the function.
+ *
+ * @param data
+ * - Type: Pointer to \c void
+ * - The node to be find.
+ * - This argument can be \c NULL .
+ * - The data is owned by the caller of the function.
+ *
+ * @param func
+ * - Type: zk_compare_t
+ * - Function to be used to compare \p list nodes with the \p data provided.
+ * - This argument can be \c NULL in which case simple comparison is performed.
+ * - The data is owned by the caller of the function.
+ *
+ * @return size_t
+ * - Type size_t
+ * - The index of the node or 0 if data is not found.
+ * - Index starts at 1.
+ *
+ * - \note \p func should handle NULL arguments.
+ *
+ * **Example**
+ * \include zk_slist/index.c
+ */
+size_t zk_slist_index(zk_slist_t *list, const void *const data, zk_compare_t const func);
 
 zk_slist_t *zk_slist_insert(zk_slist_t *list, void *data, int position);
 

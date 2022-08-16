@@ -1,10 +1,6 @@
-#include <stddef.h>
 #include <stdlib.h>
 
-#include "zk_common/zk_utils.h"
 #include "zk_slist/zk_slist.h"
-
-// FIXME: check function where const apply to arguments, like append ...
 
 // SECTION: Private functions
 
@@ -29,6 +25,11 @@ static void _zk_slist_free(zk_slist_t **node, zk_destructor_t func)
 
 	free(*node);
 	*node = NULL;
+}
+
+static size_t _zk_slist_compare(const void *const node_data, const void *const data, zk_compare_t const func)
+{
+	return (func != NULL ? func(node_data, data) : !(node_data == data));
 }
 
 void _zk_slist_front_back_split(zk_slist_t *list, zk_slist_t **front, zk_slist_t **back)
@@ -145,14 +146,16 @@ zk_slist_t *zk_slist_find(zk_slist_t *list, const void *const data, zk_compare_t
 {
 	if (func != NULL) {
 		while (list != NULL) {
-			if (func(list->data, data) == 0)
+			if (func(list->data, data) == 0) {
 				break;
+			}
 			list = list->next;
 		}
 	} else {
 		while (list != NULL) {
-			if (list->data == data)
+			if (list->data == data) {
 				break;
+			}
 			list = list->next;
 		}
 	}
@@ -185,18 +188,17 @@ void zk_slist_free(zk_slist_t **list_p, zk_destructor_t const func)
 	}
 }
 
-int zk_slist_get_index(zk_slist_t *list, const void *const data)
+size_t zk_slist_index(zk_slist_t *list, const void *const data, zk_compare_t const func)
 {
-	int index = 0;
+	size_t index = 1;
 	while (list != NULL) {
-		if (list->data == data) {
+		if (_zk_slist_compare(list->data, data, func) == 0) {
 			return index;
 		}
 		index++;
 		list = list->next;
 	}
-
-	return -1;
+	return 0;
 }
 
 zk_slist_t *zk_slist_insert(zk_slist_t *list, void *data, int position)
