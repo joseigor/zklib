@@ -130,7 +130,7 @@ zk_slist_t *zk_slist_delete_node(zk_slist_t *list, zk_slist_t *node, zk_destruct
 	}
 
 	zk_slist_t *temp = list;
-	while (temp != NULL) {
+	while (temp->next != NULL) {
 		if (temp->next == node) {
 			temp->next = node->next;
 			_zk_slist_free(&node, func);
@@ -283,9 +283,6 @@ zk_slist_t *zk_slist_prepend(zk_slist_t *list, void *data)
 
 zk_slist_t *zk_slist_reverse(zk_slist_t *list)
 {
-	if (list == NULL) {
-		return NULL;
-	}
 	zk_slist_t *prev = NULL;
 	while (list != NULL) {
 		zk_slist_t *next = list->next;
@@ -297,7 +294,6 @@ zk_slist_t *zk_slist_reverse(zk_slist_t *list)
 		}
 		list = next;
 	}
-
 	return list;
 }
 

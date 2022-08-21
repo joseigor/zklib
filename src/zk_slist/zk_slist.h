@@ -325,14 +325,19 @@ zk_slist_t *zk_slist_remove_all(zk_slist_t *list, const void *const data);
 /**
  * @brief Reverses a \c zk_slist_t. It simply switches the next and prev pointers of each element.
  *
+ * **Time Complexity:** O(n)
+ *
  * @param list
- * - Type: A pointer to the start of a \c zk_slist_t.
+ * - Type: A list of \c zk_list_t
  * - The data is owned by the caller of the function.
  *
  * @return zk_slist_t*
- * - Type: A list of \c zk_slist_t
+ * - Type: A list of \c zk_list_t
  * - The start of the reversed list.
  * - The data is owned by the caller of the function.
+ *
+ * **Example**
+ * \include zk_slist/reverse.c
  */
 zk_slist_t *zk_slist_reverse(zk_slist_t *list);
 
