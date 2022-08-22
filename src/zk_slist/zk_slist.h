@@ -318,6 +318,33 @@ size_t zk_slist_index(zk_slist_t *list, const void *const data, zk_compare_t con
  */
 zk_slist_t *zk_slist_insert(zk_slist_t *list, void *data, size_t position);
 
+/**
+ * @brief Inserts a node before \p sibling containing data.
+ *
+ * **Time Complexity:** O(n)
+ *
+ * @param list
+ * - Type: A list of \c zk_list_t
+ * - The data is owned by the caller of the function.
+ *
+ * @param sibling
+ * - Type: A list of \c zk_list_t
+ * - Node to insert data before.
+ *
+ * @param data
+ * - Type: Pointer to \c void
+ * - Data to put in the newly-inserted node.
+ * - This argument can be \c NULL .
+ * - The data is owned by the caller of the function.
+ *
+ * @return zk_slist_t*
+ * - Type: A list of \c zk_list_t
+ * - Thenew head of the \p list.
+ * - The data is owned by the caller of the function.
+ *
+ * **Example**
+ * \include zk_slist/insert_before.c
+ */
 zk_slist_t *zk_slist_insert_before(zk_slist_t *list, zk_slist_t *sibling, void *data);
 
 /**
