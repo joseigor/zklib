@@ -14,6 +14,7 @@ if unit_test
 endif
 
 subdir('src')
+subdir('examples')
 
 if unit_test
     subdir('tests')

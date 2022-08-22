@@ -1,10 +1,6 @@
-#include <stddef.h>
 #include <stdlib.h>
 
-#include "zk_common/zk_utils.h"
 #include "zk_slist/zk_slist.h"
-
-// FIXME: check function where const apply to arguments, like append ...
 
 // SECTION: Private functions
 
@@ -17,16 +13,7 @@ static zk_slist_t *_zk_slist_new_node(void)
 	return list;
 }
 
-static void _zk_slist_free_1(zk_slist_t **node)
-{
-	if (node == NULL || *node == NULL) {
-		return;
-	}
-	free(*node);
-	*node = NULL;
-}
-
-PRIVATE void _zk_slist_free_1_full(zk_slist_t **node, zk_destructor_t func)
+static void _zk_slist_free(zk_slist_t **node, zk_destructor_t func)
 {
 	if (node == NULL || *node == NULL) {
 		return;
@@ -35,8 +22,14 @@ PRIVATE void _zk_slist_free_1_full(zk_slist_t **node, zk_destructor_t func)
 	if (func != NULL) {
 		func((*node)->data);
 	}
+
 	free(*node);
 	*node = NULL;
+}
+
+static int _zk_slist_compare(const void *const node_data, const void *const data, zk_compare_t const func)
+{
+	return (func != NULL ? func(node_data, data) : !(node_data == data));
 }
 
 void _zk_slist_front_back_split(zk_slist_t *list, zk_slist_t **front, zk_slist_t **back)
@@ -61,7 +54,7 @@ void _zk_slist_front_back_split(zk_slist_t *list, zk_slist_t **front, zk_slist_t
 
 // SECTION END: Private functions
 
-zk_slist_t *zk_slist_append(zk_slist_t *list, void *data)
+zk_slist_t *zk_slist_append(zk_slist_t *list, void *const data)
 {
 	zk_slist_t *node = _zk_slist_new_node();
 	node->data = data;
@@ -76,7 +69,7 @@ zk_slist_t *zk_slist_append(zk_slist_t *list, void *data)
 	return list;
 }
 
-zk_slist_t *zk_slist_concat(zk_slist_t *list_dest, zk_slist_t *list_src)
+zk_slist_t *zk_slist_concat(zk_slist_t *const list_dest, zk_slist_t *const list_src)
 {
 	if (list_dest == NULL) {
 		return NULL;
@@ -119,7 +112,7 @@ zk_slist_t *zk_slist_copy_deep(const zk_slist_t *list, zk_copy_data_t func, void
 	return cp;
 }
 
-zk_slist_t *zk_slist_delete_node(zk_slist_t *list, zk_slist_t *node, zk_destructor_t func)
+zk_slist_t *zk_slist_delete_node(zk_slist_t *list, zk_slist_t *node, zk_destructor_t const func)
 {
 	if (list == NULL) {
 		return NULL;
@@ -132,15 +125,15 @@ zk_slist_t *zk_slist_delete_node(zk_slist_t *list, zk_slist_t *node, zk_destruct
 	// node is head of the list
 	if (list == node) {
 		list = list->next;
-		_zk_slist_free_1_full(&node, func);
+		_zk_slist_free(&node, func);
 		return list;
 	}
 
 	zk_slist_t *temp = list;
-	while (temp != NULL) {
+	while (temp->next != NULL) {
 		if (temp->next == node) {
 			temp->next = node->next;
-			_zk_slist_free_1_full(&node, func);
+			_zk_slist_free(&node, func);
 			break;
 		}
 		temp = temp->next;
@@ -149,35 +142,21 @@ zk_slist_t *zk_slist_delete_node(zk_slist_t *list, zk_slist_t *node, zk_destruct
 	return list;
 }
 
-zk_slist_t *zk_slist_find_by_data(zk_slist_t *list, const void *const data)
+zk_slist_t *zk_slist_find(zk_slist_t *list, const void *const data, zk_compare_t const func)
 {
 	while (list != NULL) {
-		if (list->data == data) {
+		if (_zk_slist_compare(list->data, data, func) == 0) {
 			break;
 		}
 		list = list->next;
 	}
-	return list;
-}
 
-zk_slist_t *zk_slist_find_by_data_custom(zk_slist_t *list, const void *const data, zk_compare_t func)
-{
-	if (func == NULL) {
-		return NULL;
-	}
-
-	while (list != NULL) {
-		if (func(list->data, data) == 0) {
-			break;
-		}
-		list = list->next;
-	}
 	return list;
 }
 
 void zk_slist_foreach(zk_slist_t *list, zk_foreach_t func, void *user_data)
 {
-	if (list == NULL || func == NULL) {
+	if (func == NULL) {
 		return;
 	}
 
@@ -187,60 +166,47 @@ void zk_slist_foreach(zk_slist_t *list, zk_foreach_t func, void *user_data)
 	}
 }
 
-void zk_slist_free(zk_slist_t **list_p)
+void zk_slist_free(zk_slist_t **list_p, zk_destructor_t const func)
 {
-	if (list_p == NULL || *list_p == NULL) {
+	if (list_p == NULL) {
 		return;
 	}
 
 	while ((*list_p) != NULL) {
 		zk_slist_t *node = *list_p;
 		*list_p = (*list_p)->next;
-		_zk_slist_free_1(&node);
+		_zk_slist_free(&node, func);
 	}
 }
 
-void zk_slist_free_full(zk_slist_t **list_p, zk_destructor_t func)
+size_t zk_slist_index(zk_slist_t *list, const void *const data, zk_compare_t const func)
 {
-	if (list_p == NULL || *list_p == NULL || func == NULL) {
-		return;
-	}
-
-	while ((*list_p) != NULL) {
-		zk_slist_t *node = *list_p;
-		*list_p = (*list_p)->next;
-		_zk_slist_free_1_full(&node, func);
-	}
-}
-
-int zk_slist_get_index(zk_slist_t *list, const void *const data)
-{
-	int index = 0;
+	size_t index = 1;
 	while (list != NULL) {
-		if (list->data == data) {
+		if (_zk_slist_compare(list->data, data, func) == 0) {
 			return index;
 		}
 		index++;
 		list = list->next;
 	}
-
-	return -1;
+	return 0;
 }
 
-zk_slist_t *zk_slist_insert(zk_slist_t *list, void *data, int position)
+zk_slist_t *zk_slist_insert(zk_slist_t *list, void *data, size_t position)
 {
-	if (position <= 0 || list == NULL) {
+	if (position < 1) {
+		list = zk_slist_append(list, data);
+	} else if (position == 1) {
 		list = zk_slist_prepend(list, data);
-		return list;
+	} else {
+		zk_slist_t *temp = list;
+		size_t index = 1;
+		while (temp->next != NULL && index < position - 1) {
+			temp = temp->next;
+			index++;
+		}
+		temp->next = zk_slist_prepend(temp->next, data);
 	}
-
-	zk_slist_t *temp = list;
-	int index = 0;
-	while (temp->next != NULL && index < position - 1) {
-		temp = temp->next;
-		index++;
-	}
-	temp->next = zk_slist_prepend(temp->next, data);
 
 	return list;
 }
@@ -277,9 +243,9 @@ zk_slist_t *zk_slist_last(zk_slist_t *list)
 	return list;
 }
 
-unsigned int zk_slist_length(zk_slist_t *list)
+size_t zk_slist_length(zk_slist_t *list)
 {
-	unsigned int count = 0;
+	size_t count = 0;
 
 	while (list != NULL) {
 		count++;
@@ -289,14 +255,17 @@ unsigned int zk_slist_length(zk_slist_t *list)
 	return count;
 }
 
-zk_slist_t *zk_slist_nth(zk_slist_t *list, unsigned int n)
+zk_slist_t *zk_slist_nth(zk_slist_t *list, size_t n)
 {
-	unsigned index = 0;
-	while (list != NULL && index != n) {
-		index++;
-		list = list->next;
+	if (n == 0) {
+		list = zk_slist_last(list);
+	} else {
+		size_t index = 1;
+		while (list != NULL && list->next != NULL && index != n) {
+			index++;
+			list = list->next;
+		}
 	}
-
 	return list;
 }
 
@@ -318,9 +287,6 @@ zk_slist_t *zk_slist_prepend(zk_slist_t *list, void *data)
 
 zk_slist_t *zk_slist_reverse(zk_slist_t *list)
 {
-	if (list == NULL) {
-		return NULL;
-	}
 	zk_slist_t *prev = NULL;
 	while (list != NULL) {
 		zk_slist_t *next = list->next;
@@ -332,15 +298,5 @@ zk_slist_t *zk_slist_reverse(zk_slist_t *list)
 		}
 		list = next;
 	}
-
-	return list;
-}
-
-zk_slist_t *zk_slist_sort(zk_slist_t *list, zk_compare_t func)
-{
-	if (list == NULL || func == NULL) {
-		return NULL;
-	}
-
 	return list;
 }
