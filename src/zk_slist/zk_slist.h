@@ -286,41 +286,63 @@ void zk_slist_free(zk_slist_t **list_p, zk_destructor_t const func);
  */
 size_t zk_slist_index(zk_slist_t *list, const void *const data, zk_compare_t const func);
 
-zk_slist_t *zk_slist_insert(zk_slist_t *list, void *data, int position);
+/**
+ * @brief Inserts a new  node with \p data at the given \p position.
+ *
+ * **Time Complexity:** O(n)
+ *
+ * @param list
+ * - Type: A list of \c zk_list_t
+ * - The data is owned by the caller of the function.
+ *
+ * @param data
+ * - Type: Pointer to \c void
+ * - Data to be inserted in the list as part of a new node.
+ * - This argument can be \c NULL .
+ * - The data is owned by the caller of the function.
+ *
+ * @param position
+ * - Type size_t
+ * - The position where to insert the new node with \p data.
+ * - First node of the list is 1.
+ * - If \p postion is 0 or greater than the number of nodes that list contains the new node is inserted at the
+ * end of the list.
+ *
+ * @return zk_slist_t*
+ * - Type: A list of \c zk_list_t
+ * - The head of the new \p list which contains the new node with \p data.
+ * - The data is owned by the caller of the function.
+ *
+ * **Example**
+ * \include zk_slist/insert.c
+ */
+zk_slist_t *zk_slist_insert(zk_slist_t *list, void *data, size_t position);
 
 zk_slist_t *zk_slist_insert_before(zk_slist_t *list, zk_slist_t *sibling, void *data);
 
-// TODO: to implement
-zk_slist_t *zk_slist_insert_before_link(zk_slist_t *list, zk_slist_t *sibling, zk_slist_t *link);
-
-// TODO: to implement
-zk_slist_t *zk_slist_insert_sorted(zk_slist_t *list, void *data, zk_compare_t func);
-
-// TODO: to implement and create zk_compare_data_t
-zk_slist_t *zk_slist_insert_sorted_with_data(zk_slist_t *list, void *data, zk_compare_t func, void *user_data);
-
 zk_slist_t *zk_slist_last(zk_slist_t *list);
 
-unsigned int zk_slist_length(zk_slist_t *list);
+/**
+ * @brief Get the length of the list.
+ *
+ * **Time Complexity:** O(n)
+ *
+ * @param list
+ * - Type: A list of \c zk_list_t
+ * - The data is owned by the caller of the function.
+ *
+ * @return size_t
+ * - Type size_t
+ * - The length of the list or 0 if list has no nodes.
+ *
+ * **Example**
+ * \include zk_slist/length.c
+ */
+size_t zk_slist_length(zk_slist_t *list);
 
 zk_slist_t *zk_slist_nth(zk_slist_t *list, unsigned int n);
 
-// TODO: to implement
-void *zk_slist_nth_data(zk_slist_t *list, unsigned int n);
-
-// TODO: to implement
-zk_slist_t *zk_slist_nth_prev(zk_slist_t *list, unsigned int n);
-
-// TODO: to implement
-unsigned int zk_slist_position(zk_slist_t *list, zk_slist_t *link);
-
 zk_slist_t *zk_slist_prepend(zk_slist_t *list, void *data);
-
-// TODO: to implement
-zk_slist_t *zk_slist_remove(zk_slist_t *list, const void *const data);
-
-// TODO: to implement
-zk_slist_t *zk_slist_remove_all(zk_slist_t *list, const void *const data);
 
 /**
  * @brief Reverses a \c zk_slist_t. It simply switches the next and prev pointers of each element.
@@ -340,9 +362,3 @@ zk_slist_t *zk_slist_remove_all(zk_slist_t *list, const void *const data);
  * \include zk_slist/reverse.c
  */
 zk_slist_t *zk_slist_reverse(zk_slist_t *list);
-
-// TODO: to implement
-zk_slist_t *zk_slist_sort(zk_slist_t *list, zk_compare_t func);
-
-// TODO: to implement and create zk_compare_data_t
-zk_slist_t *zk_slist_sort_with_data(zk_slist_t *list, zk_compare_t func, void *user_data);

@@ -192,20 +192,21 @@ size_t zk_slist_index(zk_slist_t *list, const void *const data, zk_compare_t con
 	return 0;
 }
 
-zk_slist_t *zk_slist_insert(zk_slist_t *list, void *data, int position)
+zk_slist_t *zk_slist_insert(zk_slist_t *list, void *data, size_t position)
 {
-	if (position <= 0 || list == NULL) {
+	if (position < 1) {
+		list = zk_slist_append(list, data);
+	} else if (position == 1) {
 		list = zk_slist_prepend(list, data);
-		return list;
+	} else {
+		zk_slist_t *temp = list;
+		size_t index = 1;
+		while (temp->next != NULL && index < position - 1) {
+			temp = temp->next;
+			index++;
+		}
+		temp->next = zk_slist_prepend(temp->next, data);
 	}
-
-	zk_slist_t *temp = list;
-	int index = 0;
-	while (temp->next != NULL && index < position - 1) {
-		temp = temp->next;
-		index++;
-	}
-	temp->next = zk_slist_prepend(temp->next, data);
 
 	return list;
 }
@@ -242,9 +243,9 @@ zk_slist_t *zk_slist_last(zk_slist_t *list)
 	return list;
 }
 
-unsigned int zk_slist_length(zk_slist_t *list)
+size_t zk_slist_length(zk_slist_t *list)
 {
-	unsigned int count = 0;
+	size_t count = 0;
 
 	while (list != NULL) {
 		count++;
@@ -294,14 +295,5 @@ zk_slist_t *zk_slist_reverse(zk_slist_t *list)
 		}
 		list = next;
 	}
-	return list;
-}
-
-zk_slist_t *zk_slist_sort(zk_slist_t *list, zk_compare_t func)
-{
-	if (list == NULL || func == NULL) {
-		return NULL;
-	}
-
 	return list;
 }

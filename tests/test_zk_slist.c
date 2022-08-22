@@ -1024,14 +1024,14 @@ void test_zk_slist_insert_when_data_is_null(void)
 
 	zk_slist_t *node = zk_slist_find(slist, NULL, NULL);
 
-	TEST_ASSERT_EQUAL(2, zk_slist_index(slist, NULL, NULL));
+	TEST_ASSERT_EQUAL(1, zk_slist_index(slist, NULL, NULL));
 	TEST_ASSERT_NOT_NULL(node);
 	TEST_ASSERT_EQUAL(NULL, node->data);
 
 	zk_slist_free(&slist, NULL);
 }
 
-void test_zk_slist_insert_when_position_is_negative(void)
+void test_zk_slist_insert_when_position_is_zero(void)
 {
 	zk_slist_t *slist = NULL;
 	int node_1_data = 1;
@@ -1043,13 +1043,13 @@ void test_zk_slist_insert_when_position_is_negative(void)
 	slist = zk_slist_append(slist, &node_2_data);
 	slist = zk_slist_append(slist, &node_3_data);
 
-	// as position is negative, new node is preprended to the list
-	slist = zk_slist_insert(slist, &node_4_data, -1);
+	// as position is zero, new node is appended to the list
+	slist = zk_slist_insert(slist, &node_4_data, 0);
 
-	TEST_ASSERT_EQUAL(1, zk_slist_index(slist, &node_4_data, NULL));
 	TEST_ASSERT_NOT_NULL(slist);
-	TEST_ASSERT_EQUAL(&node_4_data, slist->data);
-	TEST_ASSERT_EQUAL(node_4_data, *((int *)(slist->data)));
+	TEST_ASSERT_EQUAL(4, zk_slist_index(slist, &node_4_data, NULL));
+	TEST_ASSERT_EQUAL(&node_4_data, slist->next->next->next->data);
+	TEST_ASSERT_EQUAL(node_4_data, *((int *)(slist->next->next->next->data)));
 
 	zk_slist_free(&slist, NULL);
 }
@@ -1091,8 +1091,8 @@ void test_zk_slist_insert_when_position_is_inside_list_range(void)
 	slist = zk_slist_append(slist, &node_2_data);
 	slist = zk_slist_append(slist, &node_4_data);
 
-	// insert node in position 2
-	slist = zk_slist_insert(slist, &node_3_data, 2);
+	// insert node in position 3
+	slist = zk_slist_insert(slist, &node_3_data, 3);
 
 	zk_slist_t *node = zk_slist_find(slist, &node_3_data, NULL);
 	TEST_ASSERT_EQUAL(3, zk_slist_index(slist, &node_3_data, NULL));
@@ -1531,82 +1531,6 @@ void test_zk_slit_reverse_when_list_has_mutiple_nodes(void)
 	TEST_ASSERT_NULL(slist);
 }
 
-void test_zk_slist_sort_when_list_is_null(void)
-{
-	TEST_ASSERT_NULL(zk_slist_sort(NULL, slist_compare_data_custom));
-}
-
-void test_zk_slist_sort_when_compare_func_is_null(void)
-{
-	zk_slist_t *slist = NULL;
-	int node_1_data = 1;
-	int node_2_data = 2;
-	int node_3_data = 3;
-
-	slist = zk_slist_append(slist, &node_1_data);
-	slist = zk_slist_append(slist, &node_2_data);
-	slist = zk_slist_append(slist, &node_3_data);
-
-	TEST_ASSERT_NULL(zk_slist_sort(slist, NULL));
-
-	zk_slist_free(&slist, NULL);
-}
-
-void test_zk_slist_sort_when_list_has_one_link(void)
-{
-	zk_slist_t *slist = NULL;
-	int node_1_data = 1;
-
-	slist = zk_slist_append(slist, &node_1_data);
-
-	zk_slist_t *slist_sorted = zk_slist_sort(slist, slist_compare_data_custom);
-
-	TEST_ASSERT_NOT_NULL(slist_sorted);
-	TEST_ASSERT_EQUAL(slist, slist_sorted);
-	TEST_ASSERT_EQUAL(&node_1_data, slist_sorted->data);
-
-	zk_slist_free(&slist, NULL);
-}
-
-void test_zk_slist_sort_when_list_number_of_links_is_even(void)
-{
-	// const int number_of_nodes = 10;
-	// int nodes_data[] = { 4, 1, 3, 8, 0, 6, 5, 9, 7, 2 };
-	// const int nodes_data_sorted[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-	// zk_slist_t *slist = NULL;
-
-	// for (int i = 0; i < number_of_nodes; i++) {
-	// 	slist = zk_slist_append(slist, &nodes_data[i]);
-	// 	TEST_ASSERT_NOT_NULL(slist);
-	// }
-
-	// TEST_ASSERT_EQUAL(number_of_nodes, zk_slist_length(slist));
-
-	// slist = zk_slist_sort(slist, slist_compare_data_custom);
-
-	// TEST_ASSERT_EQUAL(number_of_nodes, zk_slist_length(slist));
-
-	// int node_idx = 0;
-	// const zk_slist_t *node_i = slist;
-	// while (node_i != NULL) {
-	// 	TEST_ASSERT_NOT_NULL(node_i);
-	// 	TEST_ASSERT_EQUAL(nodes_data_sorted[node_idx], *((int *)node_i->data));
-	// 	TEST_ASSERT_EQUAL_PTR(&nodes_data_sorted[node_idx], node_i->data);
-	// 	printf("%d->", *((int *)node_i->data));
-	// 	node_i = node_i->next;
-	// 	node_idx++;
-	// }
-
-	// zk_slist_free(&slist, NULL);
-	// TEST_ASSERT_NULL(slist);
-	TEST_IGNORE();
-}
-
-void test_zk_slist_sort_when_list_number_of_links_is_odd(void)
-{
-	TEST_IGNORE();
-}
-
 /**
  * TEST PRIVATE FUNCTIONS
  */
@@ -1853,7 +1777,7 @@ int main(void)
 
 		RUN_TEST(test_zk_slist_insert_when_list_is_null);
 		RUN_TEST(test_zk_slist_insert_when_data_is_null);
-		RUN_TEST(test_zk_slist_insert_when_position_is_negative);
+		RUN_TEST(test_zk_slist_insert_when_position_is_zero);
 		RUN_TEST(test_zk_slist_insert_when_position_is_greater_than_list_size);
 		RUN_TEST(test_zk_slist_insert_when_position_is_inside_list_range);
 	}
@@ -1899,14 +1823,6 @@ int main(void)
 		RUN_TEST(test_zk_slit_reverse_when_list_is_null);
 		RUN_TEST(test_zk_slit_reverse_when_list_has_one_link);
 		RUN_TEST(test_zk_slit_reverse_when_list_has_mutiple_nodes);
-	}
-
-	{ // test_zk_slit_sort
-		RUN_TEST(test_zk_slist_sort_when_list_is_null);
-		RUN_TEST(test_zk_slist_sort_when_compare_func_is_null);
-		RUN_TEST(test_zk_slist_sort_when_list_has_one_link);
-		RUN_TEST(test_zk_slist_sort_when_list_number_of_links_is_even);
-		RUN_TEST(test_zk_slist_sort_when_list_number_of_links_is_odd);
 	}
 
 	{ // TEST PRIVATE FUNCTIONS
