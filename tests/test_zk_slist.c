@@ -1381,7 +1381,7 @@ void test_zk_slist_nth_when_index_is_zero(void)
 	slist = zk_slist_append(slist, &node_3_data);
 
 	TEST_ASSERT_EQUAL(3, zk_slist_length(slist));
-	TEST_ASSERT_EQUAL(slist, zk_slist_nth(slist, 0));
+	TEST_ASSERT_EQUAL(slist->next->next, zk_slist_nth(slist, 0));
 
 	zk_slist_free(&slist, NULL);
 }
@@ -1398,7 +1398,7 @@ void test_zk_slist_nth_when_index_is_greater_than_list_length(void)
 	slist = zk_slist_append(slist, &node_3_data);
 
 	TEST_ASSERT_EQUAL(3, zk_slist_length(slist));
-	TEST_ASSERT_NULL(zk_slist_nth(NULL, 4));
+	TEST_ASSERT_EQUAL(slist->next->next, zk_slist_nth(slist, 4));
 
 	zk_slist_free(&slist, NULL);
 }
@@ -1415,7 +1415,39 @@ void test_zk_slist_nth_when_index_is_less_than_or_equal_to_list_length(void)
 	slist = zk_slist_append(slist, &node_3_data);
 
 	TEST_ASSERT_EQUAL(3, zk_slist_length(slist));
-	TEST_ASSERT_EQUAL(slist->next, zk_slist_nth(slist, 1));
+	TEST_ASSERT_EQUAL(slist->next, zk_slist_nth(slist, 2));
+	zk_slist_free(&slist, NULL);
+}
+
+void test_zk_slist_nth_when_index_equal_to_list_length(void)
+{
+	zk_slist_t *slist = NULL;
+	int node_1_data = 1;
+	int node_2_data = 2;
+	int node_3_data = 3;
+
+	slist = zk_slist_append(slist, &node_1_data);
+	slist = zk_slist_append(slist, &node_2_data);
+	slist = zk_slist_append(slist, &node_3_data);
+
+	TEST_ASSERT_EQUAL(3, zk_slist_length(slist));
+	TEST_ASSERT_EQUAL(slist->next->next, zk_slist_nth(slist, 3));
+	zk_slist_free(&slist, NULL);
+}
+
+void test_zk_slist_nth_when_index_is_1(void)
+{
+	zk_slist_t *slist = NULL;
+	int node_1_data = 1;
+	int node_2_data = 2;
+	int node_3_data = 3;
+
+	slist = zk_slist_append(slist, &node_1_data);
+	slist = zk_slist_append(slist, &node_2_data);
+	slist = zk_slist_append(slist, &node_3_data);
+
+	TEST_ASSERT_EQUAL(3, zk_slist_length(slist));
+	TEST_ASSERT_EQUAL(slist, zk_slist_nth(slist, 1));
 	zk_slist_free(&slist, NULL);
 }
 
@@ -1811,6 +1843,8 @@ int main(void)
 		RUN_TEST(test_zk_slist_nth_when_index_is_zero);
 		RUN_TEST(test_zk_slist_nth_when_index_is_greater_than_list_length);
 		RUN_TEST(test_zk_slist_nth_when_index_is_less_than_or_equal_to_list_length);
+		RUN_TEST(test_zk_slist_nth_when_index_equal_to_list_length);
+		RUN_TEST(test_zk_slist_nth_when_index_is_1);
 	}
 
 	{ // test zk_slist_prepend function

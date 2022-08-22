@@ -9,4 +9,5 @@ ex_zk_slist_free = executable('free', sources: ['free.c'], include_directories: 
 ex_zk_slist_index = executable('index', sources: ['index.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
 ex_zk_slist_insert = executable('insert', sources: ['insert.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
 ex_zk_slist_length = executable('length', sources: ['length.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
+ex_zk_slist_nth = executable('nth', sources: ['nth.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
 ex_zk_slist_reverse = executable('reverse', sources: ['reverse.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])

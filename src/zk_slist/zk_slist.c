@@ -255,14 +255,17 @@ size_t zk_slist_length(zk_slist_t *list)
 	return count;
 }
 
-zk_slist_t *zk_slist_nth(zk_slist_t *list, unsigned int n)
+zk_slist_t *zk_slist_nth(zk_slist_t *list, size_t n)
 {
-	unsigned index = 0;
-	while (list != NULL && index != n) {
-		index++;
-		list = list->next;
+	if (n == 0) {
+		list = zk_slist_last(list);
+	} else {
+		size_t index = 1;
+		while (list != NULL && list->next != NULL && index != n) {
+			index++;
+			list = list->next;
+		}
 	}
-
 	return list;
 }
 

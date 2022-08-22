@@ -340,7 +340,31 @@ zk_slist_t *zk_slist_last(zk_slist_t *list);
  */
 size_t zk_slist_length(zk_slist_t *list);
 
-zk_slist_t *zk_slist_nth(zk_slist_t *list, unsigned int n);
+/**
+ * @brief Gets the \p list node at a given position \p n.
+ *
+ * **Time Complexity:** O(n)
+ *
+ * @param list
+ * - Type: A list of \c zk_list_t
+ * - The data is owned by the caller of the function.
+ *
+ * @param n
+ * - Type size_t
+ * - The node position.
+ * - First node of the list is at position 1.
+ *
+ * @return zk_slist_t*
+ * - Type: A list of \c zk_list_t
+ * - The node at position \p n.
+ * - If \p n is 0 or greater than the number of nodes that \p list contains the the last node is returned.
+ * - The data is owned by the caller of the function.
+ * - NULL is \p list is NULL.
+ *
+ * **Example**
+ * \include zk_slist/nth.c
+ */
+zk_slist_t *zk_slist_nth(zk_slist_t *list, size_t n);
 
 zk_slist_t *zk_slist_prepend(zk_slist_t *list, void *data);
 
