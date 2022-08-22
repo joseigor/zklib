@@ -12,9 +12,12 @@ int main()
 {
 	zk_slist_t *list = NULL;
 
-	list = zk_slist_append(list, "top");
-	list = zk_slist_append(list, "middle");
-	list = zk_slist_append(list, "end");
+	list = zk_slist_append(list, "1");
+	list = zk_slist_append(list, "2");
+	list = zk_slist_append(list, "3");
+
+	// prepends new node with data to the list.
+	list = zk_slist_prepend(list, "0");
 
 	// calls zk_slist_foreach() to print each node`s data of the list
 	zk_slist_foreach(list, print_list, NULL);

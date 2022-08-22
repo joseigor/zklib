@@ -358,14 +358,35 @@ size_t zk_slist_length(zk_slist_t *list);
  * - Type: A list of \c zk_list_t
  * - The node at position \p n.
  * - If \p n is 0 or greater than the number of nodes that \p list contains the the last node is returned.
- * - The data is owned by the caller of the function.
  * - NULL is \p list is NULL.
+ * - The data is owned by the caller of the function.
  *
  * **Example**
  * \include zk_slist/nth.c
  */
 zk_slist_t *zk_slist_nth(zk_slist_t *list, size_t n);
 
+/**
+ * @brief Preprends, i.e. inserts at the head, a new node with \p data to the \p list.
+ *
+ * @param list
+ * - Type: A list of \c zk_list_t
+ * - The data is owned by the caller of the function.
+ *
+ * @param data
+ * - Type: A pointer to the data to be addded.
+ * - This argument can be \c NULL.
+ * - The data is owned by the caller of the function.
+ *
+ * @return zk_slist_t*
+ * - Type: A list of \c zk_list_t.
+ * - Either \p list or the new start of the \c zk_list_t if \p list was \c NULL.
+ * - The data is owned by the caller of the function.
+ *
+ * **Example**
+ * \include zk_slist/prepend.c
+ *
+ */
 zk_slist_t *zk_slist_prepend(zk_slist_t *list, void *data);
 
 /**
