@@ -4,6 +4,10 @@
 
 #include "zk_common/zk_types.h"
 
+/**
+ * @brief Single linked list struct
+ *
+ */
 typedef struct zk_slist_t {
 	void *data;
 	struct zk_slist_t *next;
