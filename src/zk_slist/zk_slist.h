@@ -279,7 +279,7 @@ void zk_slist_free(zk_slist_t **list_p, zk_destructor_t const func);
  * - The index of the node or 0 if data is not found.
  * - Index starts at 1.
  *
- * - \note \p func should handle NULL arguments.
+ * \note \p func should handle NULL arguments.
  *
  * **Example**
  * \include zk_slist/index.c
@@ -319,6 +319,22 @@ size_t zk_slist_index(zk_slist_t *list, const void *const data, zk_compare_t con
 zk_slist_t *zk_slist_insert(zk_slist_t *list, void *data, size_t position);
 
 zk_slist_t *zk_slist_insert_before(zk_slist_t *list, zk_slist_t *sibling, void *data);
+
+/**
+ * @brief Gets last node of \p list.
+ *
+ * @param list
+ * - Type: A list of \c zk_list_t
+ * - The data is owned by the caller of the function.
+ *
+ * @return zk_slist_t*
+ * - Type: A list of \c zk_list_t
+ * - Last node of the \p list of NULL if \p list is NULL.
+ * - The data is owned by the caller of the function.
+ *
+ * **Example**
+ * \include zk_slist/last.c
+ */
 
 zk_slist_t *zk_slist_last(zk_slist_t *list);
 
@@ -368,6 +384,8 @@ zk_slist_t *zk_slist_nth(zk_slist_t *list, size_t n);
 
 /**
  * @brief Preprends, i.e. inserts at the head, a new node with \p data to the \p list.
+ *
+ * **Time Complexity:** O(1)
  *
  * @param list
  * - Type: A list of \c zk_list_t
