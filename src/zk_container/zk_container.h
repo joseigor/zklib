@@ -16,4 +16,7 @@
 #define zk_push_back(CONTAINER, DATA) \
 	_Generic((CONTAINER), zk_slist_t * : zk_slist_push_back, zk_dlist * : zk_dlist_push_back)(CONTAINER, DATA)
 
+#define zk_free(CONTAINER, FUNC) \
+	_Generic((CONTAINER), zk_slist_t * * : zk_slist_free, zk_dlist * * : zk_dlist_free)(CONTAINER, FUNC)
+
 #endif

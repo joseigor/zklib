@@ -16,5 +16,6 @@ void zk_dlist_for_each(zk_dlist *begin, zk_dlist *end, zk_foreach_t func, void *
 
 // Modifiers
 zk_dlist *zk_dlist_push_back(zk_dlist *list, void *const data);
+void zk_dlist_free(zk_dlist **list_p, zk_destructor_t const func);
 
 #endif

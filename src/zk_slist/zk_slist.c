@@ -152,14 +152,12 @@ void zk_slist_foreach(zk_slist_t *list, zk_foreach_t func, void *user_data)
 
 void zk_slist_free(zk_slist_t **list_p, zk_destructor_t const func)
 {
-	if (list_p == NULL) {
-		return;
-	}
-
-	while ((*list_p) != NULL) {
-		zk_slist_t *node = *list_p;
-		*list_p = (*list_p)->next;
-		_zk_slist_free(&node, func);
+	if (list_p != NULL) {
+		while ((*list_p) != NULL) {
+			zk_slist_t *node = *list_p;
+			*list_p = node->next;
+			_zk_slist_free(&node, func);
+		}
 	}
 }
 

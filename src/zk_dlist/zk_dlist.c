@@ -23,6 +23,20 @@ static zk_dlist *zk_dlist_back(zk_dlist *list)
 	return list;
 }
 
+static void _zk_dlist_free(zk_dlist **node, zk_destructor_t func)
+{
+	if (node == NULL || *node == NULL) {
+		return;
+	}
+
+	if (func != NULL) {
+		func((*node)->data);
+	}
+
+	free(*node);
+	*node = NULL;
+}
+
 // SECTION END: Private functions
 
 // Iterators
@@ -37,7 +51,7 @@ zk_dlist *zk_dlist_end(zk_dlist *list)
 	return NULL;
 }
 
-void zk_dlist_for_each(zk_dlist *begin, zk_dlist *end, zk_foreach_t func, void *user_data)
+void zk_dlist_for_each(zk_dlist *begin, zk_dlist *end, zk_foreach_t const func, void *user_data)
 {
 	for (; begin != end; begin = begin->next) {
 		func(begin->data, user_data);
@@ -56,4 +70,15 @@ zk_dlist *zk_dlist_push_back(zk_dlist *list, void *const data)
 		node->prev = tail;
 	}
 	return list;
+}
+
+void zk_dlist_free(zk_dlist **list_p, zk_destructor_t const func)
+{
+	if (list_p != NULL) {
+		while ((*list_p) != NULL) {
+			zk_dlist *node = *list_p;
+			*list_p = node->next;
+			_zk_dlist_free(&node, func);
+		}
+	}
 }
