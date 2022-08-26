@@ -16,6 +16,7 @@ CONTAINER *zk_push_back(CONTAINER, DATA)
 `CONTAINER`:
 - Could be any of the types below:
   - `zk_slist_t *`
+  - `zk_dlist *`
  - The data is owned by the caller of the function.
 
  `DATA`:
@@ -26,14 +27,17 @@ CONTAINER *zk_push_back(CONTAINER, DATA)
 
 ### Returns
  If `CONTAINER` is:
- - `zk_slist_t *`: The start of the `CONTAINER`.
+ - `zk_slist_t*`: The start of the `CONTAINER`.
+ - `zk_dlist*`: The start of the `CONTAINER`.
  - The data is owned by the caller of the function.
 
 ### Time Complexity / Space Complexity:
 If `CONTAINER` is:
- - `zk_slist_t *`: **O(N) / O(1)**.
+ - `zk_slist_t*`: **O(N) / O(1)**.
+ - `zk_dlist*`: **O(N) / O(1)**.
 
 ### Examples
  - [zk_slist/push_back](https://github.com/zklib/zklib/blob/main/examples/zk_slist/push_back.c)
+  - [zk_dlist/push_back](https://github.com/zklib/zklib/blob/main/examples/zk_dlist/push_back.c)
 
 
