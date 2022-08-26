@@ -24,6 +24,27 @@ static zk_dlist *zk_dlist_back(zk_dlist *list)
 }
 
 // SECTION END: Private functions
+
+// Iterators
+zk_dlist *zk_dlist_begin(zk_dlist *list)
+{
+	return list;
+}
+
+zk_dlist *zk_dlist_end(zk_dlist *list)
+{
+	ZK_UNUSED(list);
+	return NULL;
+}
+
+void zk_dlist_for_each(zk_dlist *begin, zk_dlist *end, zk_foreach_t func, void *user_data)
+{
+	for (; begin != end; begin = begin->next) {
+		func(begin->data, user_data);
+	}
+}
+
+// Modifiers
 zk_dlist *zk_dlist_push_back(zk_dlist *list, void *const data)
 {
 	zk_dlist *node = zk_dlist_new_node(data);

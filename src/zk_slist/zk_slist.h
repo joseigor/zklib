@@ -2,7 +2,7 @@
 
 #include <stddef.h>
 
-#include "zk_common/zk_types.h"
+#include "zk_common/zk_common.h"
 
 /**
  * @brief Single linked list struct

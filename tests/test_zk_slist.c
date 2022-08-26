@@ -3,7 +3,7 @@
 
 #include "unity.h"
 #include "zk/zklib.h"
-#include "zk_common/zk_utils.h"
+#include "zk_common/zk_common.h"
 
 struct dummy_node_data {
 	int value;
@@ -41,15 +41,17 @@ static void dummy_node_data_free(void *data)
 	free(node_data);
 }
 
-static void dummy_node_data_free_foreach(void *data, ZK_GNUC_UNUSED void *user_data)
+static void dummy_node_data_free_foreach(void *data, void *user_data)
 {
+	ZK_UNUSED(user_data);
 	struct dummy_node_data *node_data = data;
 	free(node_data->string);
 	free(node_data);
 }
 
-static void *copy_node_data(const void *const data, ZK_GNUC_UNUSED void *user_data)
+static void *copy_node_data(const void *const data, void *user_data)
 {
+	ZK_UNUSED(user_data);
 	const struct dummy_node_data *const node_data = data;
 	struct dummy_node_data *node_data_copy = malloc(sizeof(struct dummy_node_data));
 	node_data_copy->value = node_data->value;
