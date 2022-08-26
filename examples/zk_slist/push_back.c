@@ -58,9 +58,9 @@ int main()
 	zk_slist_foreach(custom_list, print_custom_list, NULL);
 
 	// free lists after use
-	zk_slist_free(&number_list, NULL);
-	zk_slist_free(&string_list, NULL);
-	zk_slist_free(&custom_list, NULL);
+	zk_free(&number_list, NULL);
+	zk_free(&string_list, NULL);
+	zk_free(&custom_list, NULL);
 
 	return 0;
 }

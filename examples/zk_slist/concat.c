@@ -25,7 +25,7 @@ int main()
 	zk_slist_foreach(list, print_list, NULL);
 
 	// As list_top and list_list are linked to list only list needs to be freed
-	zk_slist_free(&list, NULL);
+	zk_free(&list, NULL);
 
 	return 0;
 }

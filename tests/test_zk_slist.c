@@ -82,7 +82,7 @@ void test_zk_push_back_to_empty_list(void)
 	TEST_ASSERT_EQUAL(*((int *)slist->data), data);
 	TEST_ASSERT_NULL(slist->next);
 
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 	TEST_ASSERT_NULL(slist);
 }
 
@@ -115,7 +115,7 @@ void test_zk_push_back_2_items_to_slist(void)
 	TEST_ASSERT_EQUAL_PTR(*((int *)node_1->data), node2_data);
 	TEST_ASSERT_NULL(node_1->next);
 
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 	TEST_ASSERT_NULL(slist);
 }
 
@@ -175,7 +175,7 @@ void test_zk_push_back_3_items_to_slist(void)
 	TEST_ASSERT_EQUAL(*((int *)node_3->data), node3_data);
 	TEST_ASSERT_NULL(node_3->next);
 
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 	TEST_ASSERT_NULL(slist);
 }
 
@@ -202,7 +202,7 @@ void test_zk_push_back_n_items_to_slist(void)
 		node_idx++;
 	}
 
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 	TEST_ASSERT_NULL(slist);
 }
 
@@ -224,7 +224,7 @@ void test_zk_push_back_null_data_to_slist(void)
 		}
 	}
 
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 	TEST_ASSERT_NULL(slist);
 }
 
@@ -276,7 +276,7 @@ void test_zk_slist_concat_lists_of_strings(void)
 
 	// as slist_src was concatenated to the end of slist_dest by freeing slist_dest the slist_src is also
 	// freed.
-	zk_slist_free(&slist_dest, free);
+	zk_free(&slist_dest, free);
 	TEST_ASSERT_NULL(slist_dest);
 	// Now slist_src is a dangling pointer
 	TEST_ASSERT_NOT_NULL(slist_src);
@@ -292,8 +292,8 @@ void test_zk_slist_concat_when_destination_list_is_null_should_return_null(void)
 
 	TEST_ASSERT_NULL(zk_slist_concat(slist_dest, slist_src));
 
-	zk_slist_free(&slist_dest, NULL);
-	zk_slist_free(&slist_src, NULL);
+	zk_free(&slist_dest, NULL);
+	zk_free(&slist_src, NULL);
 }
 
 void test_zk_slist_concat_when_source_list_is_null_should_return_destination_list(void)
@@ -309,7 +309,7 @@ void test_zk_slist_concat_when_source_list_is_null_should_return_destination_lis
 	TEST_ASSERT_EQUAL(&data, slist_dest->data);
 	TEST_ASSERT_EQUAL(data, *((int *)(slist_dest->data)));
 
-	zk_slist_free(&slist_dest, NULL);
+	zk_free(&slist_dest, NULL);
 }
 
 void test_zk_slist_copy_when_source_list_is_null(void)
@@ -362,9 +362,9 @@ void test_zk_slist_copy_when_source_list_node_data_is_a_pointer_to_data_only_the
 		}
 	}
 
-	zk_slist_free(&slist_src, dummy_node_data_free);
-	// data of the nodes were already freed with the above call to zk_slist_free
-	zk_slist_free(&slist_copy, NULL);
+	zk_free(&slist_src, dummy_node_data_free);
+	// data of the nodes were already freed with the above call to zk_free
+	zk_free(&slist_copy, NULL);
 }
 
 void test_zk_slist_copy_full_should_return_null_when_source_list_is_null(void)
@@ -379,7 +379,7 @@ void test_zk_slist_copy_full_should_return_null_when_copy_function_is_null(void)
 	int data = 1;
 	slist_src = zk_slist_prepend(slist_src, &data);
 	TEST_ASSERT_NULL(zk_slist_copy_deep(slist_src, NULL, NULL));
-	zk_slist_free(&slist_src, NULL);
+	zk_free(&slist_src, NULL);
 }
 
 void test_zk_slist_copy_deep_should_perform_a_deep_copy_of_source_list_nodes_data(void)
@@ -423,7 +423,7 @@ void test_zk_slist_copy_deep_should_perform_a_deep_copy_of_source_list_nodes_dat
 		node_i_src = node_i_src->next;
 	}
 
-	zk_slist_free(&slist_src, dummy_node_data_free);
+	zk_free(&slist_src, dummy_node_data_free);
 
 	// create a temporary array to check against the values of slit_dest
 	struct dummy_node_data *node_data_arr[] = {
@@ -447,7 +447,7 @@ void test_zk_slist_copy_deep_should_perform_a_deep_copy_of_source_list_nodes_dat
 		i++;
 	}
 
-	zk_slist_free(&slist_dest, dummy_node_data_free);
+	zk_free(&slist_dest, dummy_node_data_free);
 }
 
 void test_zk_slist_delete_node_when_list_is_null(void)
@@ -459,7 +459,7 @@ void test_zk_slist_delete_node_when_list_is_null(void)
 	TEST_ASSERT_NOT_NULL(slist_node);
 	TEST_ASSERT_NULL(zk_slist_delete_node(slist, slist_node, NULL));
 
-	zk_slist_free(&slist_node, NULL);
+	zk_free(&slist_node, NULL);
 }
 
 void test_zk_slist_delete_node_when_node_is_null(void)
@@ -471,7 +471,7 @@ void test_zk_slist_delete_node_when_node_is_null(void)
 	TEST_ASSERT_NOT_NULL(slist);
 	TEST_ASSERT_EQUAL(slist, zk_slist_delete_node(slist, slist_node, NULL));
 
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 }
 
 void test_zk_slist_delete_node_when_list_has_only_one_node(void)
@@ -524,7 +524,7 @@ void test_zk_slist_delete_first_node_when_list_has_mutiple_nodes(void)
 	// slist_node is dangling pointers no need to free it
 	TEST_ASSERT_NOT_NULL(slist_node);
 
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 }
 
 void test_zk_slist_delete_last_node(void)
@@ -558,7 +558,7 @@ void test_zk_slist_delete_last_node(void)
 	// slist_node is dangling pointers no need to free it
 	TEST_ASSERT_NOT_NULL(slist_node);
 
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 }
 
 void test_zk_slist_delete_node_when_list_has_multiple_nodes(void)
@@ -592,7 +592,7 @@ void test_zk_slist_delete_node_when_list_has_multiple_nodes(void)
 	// slist_node is dangling pointers no need to free it
 	TEST_ASSERT_NOT_NULL(slist_node);
 
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 }
 
 void test_zk_slist_delete_node_and_use_external_function_to_free_node_data(void)
@@ -649,7 +649,7 @@ void test_zk_slist_delete_node_and_use_external_function_to_free_node_data(void)
 	// slist_node is dangling pointers no need to free it
 	TEST_ASSERT_NOT_NULL(slist_node);
 
-	zk_slist_free(&slist, dummy_node_data_free);
+	zk_free(&slist, dummy_node_data_free);
 }
 
 void test_zk_slist_delete_node_when_node_is_not_in_the_list(void)
@@ -685,8 +685,8 @@ void test_zk_slist_delete_node_when_node_is_not_in_the_list(void)
 	TEST_ASSERT_EQUAL(node_3_data, *(int *)(slist_node->data));
 	TEST_ASSERT_NULL(slist_node->next);
 
-	zk_slist_free(&slist, NULL);
-	zk_slist_free(&slist_node, NULL);
+	zk_free(&slist, NULL);
+	zk_free(&slist_node, NULL);
 }
 
 void test_zk_slist_find_by_data(void)
@@ -719,7 +719,7 @@ void test_zk_slist_find_by_data(void)
 	TEST_ASSERT_NULL(slist_found->next->next->next);
 
 	// There is no nedd to free slist_found as it is part slist
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 }
 
 void test_zk_slist_find_by_data_custom_when_node_is_not_in_the_list(void)
@@ -749,7 +749,7 @@ void test_zk_slist_find_by_data_custom_when_node_is_not_in_the_list(void)
 	TEST_ASSERT_NULL(slist_found);
 
 	// There is no nedd to free slist_found as it is part slist
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 }
 
 void test_zk_slist_find_by_data_custom(void)
@@ -782,7 +782,7 @@ void test_zk_slist_find_by_data_custom(void)
 	TEST_ASSERT_NULL(slist_found->next->next->next);
 
 	// There is no nedd to free slist_found as it is part slist
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 }
 
 void test_zk_slist_foreach_when_func_is_null(void)
@@ -798,7 +798,7 @@ void test_zk_slist_foreach_when_func_is_null(void)
 	// Func is null, it will just return
 	zk_slist_foreach(slist, NULL, NULL);
 
-	zk_slist_free(&slist, dummy_node_data_free);
+	zk_free(&slist, dummy_node_data_free);
 	TEST_ASSERT_NULL(slist);
 }
 
@@ -834,14 +834,14 @@ void test_zk_slist_foreach_when_func_is_not_null(void)
 	// Use foreach to clean each node data
 	zk_slist_foreach(slist, dummy_node_data_free_foreach, NULL);
 
-	// As nodes data were freed, we just need to call zk_slist_free.
-	zk_slist_free(&slist, NULL);
+	// As nodes data were freed, we just need to call zk_free.
+	zk_free(&slist, NULL);
 }
 
 void test_zk_slist_free_a_null_list_should_just_return(void)
 {
 	zk_slist_t *slist = NULL;
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 	TEST_ASSERT_NULL(slist);
 }
 
@@ -858,7 +858,7 @@ void test_zk_slist_free_list_with_no_dynamic_allocated_node_data(void)
 	slist = zk_push_back(slist, &node_3_data);
 	slist = zk_push_back(slist, &node_4_data);
 
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 
 	TEST_ASSERT_NULL(slist);
 }
@@ -873,14 +873,14 @@ void test_zk_slist_free_for_list_of_strings(void)
 		TEST_ASSERT_NOT_NULL(slist);
 	}
 
-	zk_slist_free(&slist, free);
+	zk_free(&slist, free);
 	TEST_ASSERT_NULL(slist);
 }
 
 void test_zk_slist_free_for_a_null_list_should_just_return(void)
 {
 	zk_slist_t *slist = NULL;
-	zk_slist_free(&slist, free);
+	zk_free(&slist, free);
 	TEST_ASSERT_NULL(slist);
 }
 
@@ -912,7 +912,7 @@ void test_zk_slist_get_index_when_data_is_null(void)
 
 	TEST_ASSERT_EQUAL(2, zk_slist_index(slist, NULL, NULL));
 
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 }
 
 void test_zk_slist_get_index_func_when_data_is_null(void)
@@ -927,7 +927,7 @@ void test_zk_slist_get_index_func_when_data_is_null(void)
 
 	TEST_ASSERT_EQUAL(2, zk_slist_index(slist, NULL, slist_compare_data_custom));
 
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 }
 
 void test_zk_slist_get_index_when_data_is_on_list(void)
@@ -943,7 +943,7 @@ void test_zk_slist_get_index_when_data_is_on_list(void)
 
 	TEST_ASSERT_EQUAL(3, zk_slist_index(slist, &node_3_data, NULL));
 
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 }
 
 void test_zk_slist_get_index_func_when_data_is_on_list(void)
@@ -959,7 +959,7 @@ void test_zk_slist_get_index_func_when_data_is_on_list(void)
 
 	TEST_ASSERT_EQUAL(3, zk_slist_index(slist, &node_3_data, slist_compare_data_custom));
 
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 }
 
 void test_zk_slist_get_index_when_data_is_not_on_list(void)
@@ -976,7 +976,7 @@ void test_zk_slist_get_index_when_data_is_not_on_list(void)
 
 	TEST_ASSERT_EQUAL(0, zk_slist_index(slist, &node_4_data, NULL));
 
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 }
 
 void test_zk_slist_get_index_func_when_data_is_not_on_list(void)
@@ -993,7 +993,7 @@ void test_zk_slist_get_index_func_when_data_is_not_on_list(void)
 
 	TEST_ASSERT_EQUAL(0, zk_slist_index(slist, &node_4_data, slist_compare_data_custom));
 
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 }
 
 void test_zk_slist_insert_when_list_is_null(void)
@@ -1007,7 +1007,7 @@ void test_zk_slist_insert_when_list_is_null(void)
 	TEST_ASSERT_EQUAL(&node_1_data, slist->data);
 	TEST_ASSERT_EQUAL(node_1_data, *((int *)(slist->data)));
 
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 }
 
 void test_zk_slist_insert_when_data_is_null(void)
@@ -1030,7 +1030,7 @@ void test_zk_slist_insert_when_data_is_null(void)
 	TEST_ASSERT_NOT_NULL(node);
 	TEST_ASSERT_EQUAL(NULL, node->data);
 
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 }
 
 void test_zk_slist_insert_when_position_is_zero(void)
@@ -1053,7 +1053,7 @@ void test_zk_slist_insert_when_position_is_zero(void)
 	TEST_ASSERT_EQUAL(&node_4_data, slist->next->next->next->data);
 	TEST_ASSERT_EQUAL(node_4_data, *((int *)(slist->next->next->next->data)));
 
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 }
 
 void test_zk_slist_insert_when_position_is_greater_than_list_size(void)
@@ -1078,7 +1078,7 @@ void test_zk_slist_insert_when_position_is_greater_than_list_size(void)
 	TEST_ASSERT_EQUAL(&node_4_data, node->data);
 	TEST_ASSERT_EQUAL(node_4_data, *((int *)(node->data)));
 
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 }
 
 void test_zk_slist_insert_when_position_is_inside_list_range(void)
@@ -1102,7 +1102,7 @@ void test_zk_slist_insert_when_position_is_inside_list_range(void)
 	TEST_ASSERT_EQUAL(&node_3_data, node->data);
 	TEST_ASSERT_EQUAL(node_3_data, *((int *)(node->data)));
 
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 }
 
 void test_zk_slist_insert_before_when_list_is_null(void)
@@ -1115,7 +1115,7 @@ void test_zk_slist_insert_before_when_list_is_null(void)
 	// if list is null then there is no way to sibling link be part of the list
 	TEST_ASSERT_NULL(zk_slist_insert_before(NULL, sibling, &node_1_data));
 
-	zk_slist_free(&sibling, NULL);
+	zk_free(&sibling, NULL);
 }
 
 void test_zk_slist_insert_before_when_sibling_is_null(void)
@@ -1142,7 +1142,7 @@ void test_zk_slist_insert_before_when_sibling_is_null(void)
 	TEST_ASSERT_EQUAL(node_4_data, *((int *)(slist_last->data)));
 	TEST_ASSERT_NULL(slist_last->next);
 
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 }
 
 void test_zk_slist_insert_before_when_sibling_is_first_link_of_the_list(void)
@@ -1165,7 +1165,7 @@ void test_zk_slist_insert_before_when_sibling_is_first_link_of_the_list(void)
 	TEST_ASSERT_EQUAL(node_1_data, *((int *)(slist->data)));
 	TEST_ASSERT_NOT_NULL(slist->next);
 
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 }
 
 void test_zk_slist_insert_before_when_sibling_is_in_the_middle_of_the_list(void)
@@ -1204,7 +1204,7 @@ void test_zk_slist_insert_before_when_sibling_is_in_the_middle_of_the_list(void)
 	TEST_ASSERT_EQUAL(node_4_data, *((int *)(slist->next->next->next->data)));
 	TEST_ASSERT_NULL(slist->next->next->next->next);
 
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 }
 
 void test_zk_slist_insert_before_when_sibling_is_the_last_element_of_the_list(void)
@@ -1243,7 +1243,7 @@ void test_zk_slist_insert_before_when_sibling_is_the_last_element_of_the_list(vo
 	TEST_ASSERT_EQUAL(node_4_data, *((int *)(slist->next->next->next->data)));
 	TEST_ASSERT_NULL(slist->next->next->next->next);
 
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 }
 
 void test_zk_slist_insert_before_when_sibling_is_not_in_the_list(void)
@@ -1285,8 +1285,8 @@ void test_zk_slist_insert_before_when_sibling_is_not_in_the_list(void)
 	TEST_ASSERT_EQUAL(node_4_data, *((int *)(slist->next->next->next->data)));
 	TEST_ASSERT_NULL(slist->next->next->next->next);
 
-	zk_slist_free(&slist, NULL);
-	zk_slist_free(&slist_sibling, NULL);
+	zk_free(&slist, NULL);
+	zk_free(&slist_sibling, NULL);
 }
 
 void test_zk_slist_last_when_list_is_null(void)
@@ -1308,7 +1308,7 @@ void test_zk_slist_last_when_list_has_only_one_node(void)
 	TEST_ASSERT_EQUAL(node_1_data, *((int *)(slist->data)));
 	TEST_ASSERT_NULL(slist->next);
 
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 }
 
 void test_zk_slist_last_when_list_has_more_than_one_node(void)
@@ -1330,7 +1330,7 @@ void test_zk_slist_last_when_list_has_more_than_one_node(void)
 	TEST_ASSERT_EQUAL(node_3_data, *((int *)(slist_last->data)));
 	TEST_ASSERT_NULL(slist_last->next);
 
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 }
 
 void test_zk_slist_length_when_list_is_null(void)
@@ -1347,7 +1347,7 @@ void test_zk_slist_length_when_list_has_one_element(void)
 
 	TEST_ASSERT_EQUAL(1, zk_slist_length(slist));
 
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 }
 
 void test_zk_slist_length_when_list_has_3_elements(void)
@@ -1363,7 +1363,7 @@ void test_zk_slist_length_when_list_has_3_elements(void)
 
 	TEST_ASSERT_EQUAL(3, zk_slist_length(slist));
 
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 }
 
 void test_zk_slist_nth_when_list_is_null(void)
@@ -1385,7 +1385,7 @@ void test_zk_slist_nth_when_index_is_zero(void)
 	TEST_ASSERT_EQUAL(3, zk_slist_length(slist));
 	TEST_ASSERT_EQUAL(slist->next->next, zk_slist_nth(slist, 0));
 
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 }
 
 void test_zk_slist_nth_when_index_is_greater_than_list_length(void)
@@ -1402,7 +1402,7 @@ void test_zk_slist_nth_when_index_is_greater_than_list_length(void)
 	TEST_ASSERT_EQUAL(3, zk_slist_length(slist));
 	TEST_ASSERT_EQUAL(slist->next->next, zk_slist_nth(slist, 4));
 
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 }
 
 void test_zk_slist_nth_when_index_is_less_than_or_equal_to_list_length(void)
@@ -1418,7 +1418,7 @@ void test_zk_slist_nth_when_index_is_less_than_or_equal_to_list_length(void)
 
 	TEST_ASSERT_EQUAL(3, zk_slist_length(slist));
 	TEST_ASSERT_EQUAL(slist->next, zk_slist_nth(slist, 2));
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 }
 
 void test_zk_slist_nth_when_index_equal_to_list_length(void)
@@ -1434,7 +1434,7 @@ void test_zk_slist_nth_when_index_equal_to_list_length(void)
 
 	TEST_ASSERT_EQUAL(3, zk_slist_length(slist));
 	TEST_ASSERT_EQUAL(slist->next->next, zk_slist_nth(slist, 3));
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 }
 
 void test_zk_slist_nth_when_index_is_1(void)
@@ -1450,7 +1450,7 @@ void test_zk_slist_nth_when_index_is_1(void)
 
 	TEST_ASSERT_EQUAL(3, zk_slist_length(slist));
 	TEST_ASSERT_EQUAL(slist, zk_slist_nth(slist, 1));
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 }
 
 void test_zk_slist_prepend_n_items_to_slist(void)
@@ -1476,7 +1476,7 @@ void test_zk_slist_prepend_n_items_to_slist(void)
 		node_idx++;
 	}
 
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 	TEST_ASSERT_NULL(slist);
 }
 
@@ -1498,7 +1498,7 @@ void test_zk_slist_prepend_null_data_to_slist(void)
 		}
 	}
 
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 	TEST_ASSERT_NULL(slist);
 }
 
@@ -1521,7 +1521,7 @@ void test_zk_slit_reverse_when_list_has_one_link(void)
 	TEST_ASSERT_EQUAL(node1_data, *((int *)slist->data));
 	TEST_ASSERT_NULL(slist->next);
 
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 	TEST_ASSERT_NULL(slist);
 }
 
@@ -1561,7 +1561,7 @@ void test_zk_slit_reverse_when_list_has_mutiple_nodes(void)
 	TEST_ASSERT_EQUAL(*((int *)node_3->data), node_1_data);
 	TEST_ASSERT_NULL(node_3->next);
 
-	zk_slist_free(&slist, NULL);
+	zk_free(&slist, NULL);
 	TEST_ASSERT_NULL(slist);
 }
 
@@ -1598,7 +1598,7 @@ void test_zk_slist_front_back_split_when_list_has_one_link(void)
 
 	TEST_ASSERT_NULL(back);
 
-	zk_slist_free(&front, NULL);
+	zk_free(&front, NULL);
 }
 
 void test_zk_slist_front_back_split_when_list_has_two_links(void)
@@ -1623,8 +1623,8 @@ void test_zk_slist_front_back_split_when_list_has_two_links(void)
 	TEST_ASSERT_EQUAL_PTR(&node_data_1, back->data);
 	TEST_ASSERT_EQUAL(node_data_1, *((int *)back->data));
 
-	zk_slist_free(&front, NULL);
-	zk_slist_free(&back, NULL);
+	zk_free(&front, NULL);
+	zk_free(&back, NULL);
 }
 
 void test_zk_slist_front_back_split_when_list_has_three_links(void)
@@ -1653,8 +1653,8 @@ void test_zk_slist_front_back_split_when_list_has_three_links(void)
 	TEST_ASSERT_EQUAL_PTR(&node_data_2, back->data);
 	TEST_ASSERT_EQUAL(node_data_2, *((int *)back->data));
 
-	zk_slist_free(&front, NULL);
-	zk_slist_free(&back, NULL);
+	zk_free(&front, NULL);
+	zk_free(&back, NULL);
 }
 
 void test_zk_slist_front_back_split_when_number_of_links_is_even(void)
@@ -1692,8 +1692,8 @@ void test_zk_slist_front_back_split_when_number_of_links_is_even(void)
 		node_idx++;
 	}
 
-	zk_slist_free(&front, NULL);
-	zk_slist_free(&back, NULL);
+	zk_free(&front, NULL);
+	zk_free(&back, NULL);
 }
 
 void test_zk_slist_front_back_split_when_number_of_links_is_odd(void)
@@ -1733,8 +1733,8 @@ void test_zk_slist_front_back_split_when_number_of_links_is_odd(void)
 		node_idx++;
 	}
 
-	zk_slist_free(&front, NULL);
-	zk_slist_free(&back, NULL);
+	zk_free(&front, NULL);
+	zk_free(&back, NULL);
 }
 
 int main(void)
@@ -1789,7 +1789,7 @@ int main(void)
 		RUN_TEST(test_zk_slist_foreach_when_func_is_not_null);
 	}
 
-	{ // test zk_slist_free
+	{ // test zk_free
 		RUN_TEST(test_zk_slist_free_a_null_list_should_just_return);
 		RUN_TEST(test_zk_slist_free_list_with_no_dynamic_allocated_node_data);
 		RUN_TEST(test_zk_slist_free_for_list_of_strings);

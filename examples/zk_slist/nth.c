@@ -19,7 +19,7 @@ int main()
 	printf("Lata node data: %s \n", (char *)(zk_slist_nth(list, 0)->data));
 
 	// frees list
-	zk_slist_free(&list, NULL);
+	zk_free(&list, NULL);
 
 	return 0;
 }

@@ -14,7 +14,7 @@ int main()
 	printf("Last node: %s \n", (char *)zk_slist_last(list)->data);
 
 	// frees list
-	zk_slist_free(&list, NULL);
+	zk_free(&list, NULL);
 
 	return 0;
 }

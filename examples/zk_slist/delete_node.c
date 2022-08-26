@@ -67,7 +67,7 @@ int main()
 	zk_slist_foreach(list, print_list, NULL);
 
 	// free list
-	zk_slist_free(&list, dummy_node_data_free);
+	zk_free(&list, dummy_node_data_free);
 
 	// There is no need to free list_node as zk_slist_delete_node() already did it.
 

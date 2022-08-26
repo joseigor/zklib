@@ -33,11 +33,11 @@ int main()
 	// use your list ...
 
 	// in this case there is no need to free the memory the list node are pointing to because they are pointing to
-	// static allocated memory (no-heap object) so func argument of zk_slist_free() can be NULL
-	zk_slist_free(&list, NULL);
+	// static allocated memory (no-heap object) so func argument of zk_free() can be NULL
+	zk_free(&list, NULL);
 
 	// now lets dynamically allocate some data of type struct custom_data and insert them in a list. Let`s just
-	// reuse the previous list that by now is clean due to previous call to zk_slist_free().
+	// reuse the previous list that by now is clean due to previous call to zk_free().
 
 	struct custom_data *node_1_data = malloc(sizeof(struct custom_data));
 	node_1_data->value = 1;
@@ -59,7 +59,7 @@ int main()
 
 	// In this case if you want to free the list but also the data each node is pointing to you can provide your
 	// own function to free the data as bellow
-	zk_slist_free(&list, custom_data_free);
+	zk_free(&list, custom_data_free);
 
 	return 0;
 }

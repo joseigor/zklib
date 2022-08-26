@@ -16,7 +16,7 @@ int main()
 	printf("empty_list length: %ld \n", zk_slist_length(empty_list));
 
 	// frees list, no need to free empty_list as it is empty
-	zk_slist_free(&list, NULL);
+	zk_free(&list, NULL);
 
 	return 0;
 }

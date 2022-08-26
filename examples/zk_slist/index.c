@@ -49,7 +49,7 @@ int main()
 	index = zk_slist_index(list, NULL, custom_compare_func);
 	assert(index == 3);
 
-	zk_slist_free(&list, NULL);
+	zk_free(&list, NULL);
 
 	return 0;
 }

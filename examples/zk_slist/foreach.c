@@ -20,7 +20,7 @@ int main()
 	zk_slist_foreach(list, print_list, NULL);
 
 	// frees list
-	zk_slist_free(&list, NULL);
+	zk_free(&list, NULL);
 
 	return 0;
 }

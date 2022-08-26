@@ -27,9 +27,9 @@ int main()
 	zk_slist_foreach(list_cp, print_list, NULL);
 
 	// As this is a shallow copy if one of the lists is freed the other list loses its reference to data.
-	zk_slist_free(&list, free);
+	zk_free(&list, free);
 	// Note that from now on all list_cp nodes have dangling pointers to data
-	zk_slist_free(&list_cp, NULL);
+	zk_free(&list_cp, NULL);
 
 	return 0;
 }
