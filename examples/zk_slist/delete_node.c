@@ -24,8 +24,8 @@ void dummy_node_data_free(void *data)
 
 int main()
 {
-	zk_slist_t *list = NULL;
-	zk_slist_t *list_node = NULL;
+	zk_slist *list = NULL;
+	zk_slist *list_node = NULL;
 
 	// create some custom data
 	struct dummy_node_data *node_1_data = malloc(sizeof(struct dummy_node_data));

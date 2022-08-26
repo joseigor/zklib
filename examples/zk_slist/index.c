@@ -24,7 +24,7 @@ int custom_compare_func(const void *const node_data, const void *const user_data
 
 int main()
 {
-	zk_slist_t *list = NULL;
+	zk_slist *list = NULL;
 	int node_1 = 1, node_2 = 2, node_3 = 3, node_4 = 4;
 	size_t index = 0;
 

@@ -27,7 +27,7 @@ void print_custom_list(void *data, __attribute__((__unused__)) void *user_data)
 
 int main()
 {
-	zk_slist_t *number_list = NULL, *string_list = NULL, *custom_list = NULL;
+	zk_slist *number_list = NULL, *string_list = NULL, *custom_list = NULL;
 
 	int node1_data = 1;
 	int node2_data = 2;

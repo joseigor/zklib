@@ -18,7 +18,7 @@ void custom_data_free(void *data)
 
 int main()
 {
-	zk_slist_t *list = NULL;
+	zk_slist *list = NULL;
 
 	// create some instances of struct custom_data in put them in the main stack frame.
 	struct custom_data custom_node_1 = { .value = 1, .string = "node1" };

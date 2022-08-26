@@ -5,7 +5,7 @@
 
 int main()
 {
-	zk_slist_t *list = NULL;
+	zk_slist *list = NULL;
 
 	list = zk_push_back(list, "1");
 	list = zk_push_back(list, "2");

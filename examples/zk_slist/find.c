@@ -12,7 +12,7 @@ int cmp_int(const void *const data, const void *const user_data)
 
 int main()
 {
-	zk_slist_t *list = NULL, *list_node = NULL;
+	zk_slist *list = NULL, *list_node = NULL;
 
 	int node1_data = 1;
 	int node2_data = 2;

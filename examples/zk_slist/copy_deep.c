@@ -17,7 +17,7 @@ void *copy_list_data(const void *data, void *user_data)
 
 int main()
 {
-	zk_slist_t *list = NULL, *list_cp = NULL;
+	zk_slist *list = NULL, *list_cp = NULL;
 
 	list = zk_push_back(list, strdup("This"));
 	list = zk_push_back(list, strdup("list"));
