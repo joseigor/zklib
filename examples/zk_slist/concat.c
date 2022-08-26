@@ -22,7 +22,7 @@ int main()
 	list = zk_slist_concat(list, list_end);
 
 	// print list
-	zk_slist_foreach(list, print_list, NULL);
+	zk_for_each(list, print_list, NULL);
 
 	// As list_top and list_list are linked to list only list needs to be freed
 	zk_free(&list, NULL);

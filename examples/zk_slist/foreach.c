@@ -16,8 +16,8 @@ int main()
 	list = zk_push_back(list, "middle");
 	list = zk_push_back(list, "end");
 
-	// calls zk_slist_foreach() to print each node`s data of the list
-	zk_slist_foreach(list, print_list, NULL);
+	// calls zk_for_each() to print each node`s data of the list
+	zk_for_each(list, print_list, NULL);
 
 	// frees list
 	zk_free(&list, NULL);

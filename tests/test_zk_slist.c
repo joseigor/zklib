@@ -796,7 +796,7 @@ void test_zk_slist_foreach_when_func_is_null(void)
 	TEST_ASSERT_NOT_NULL(slist);
 
 	// Func is null, it will just return
-	zk_slist_foreach(slist, NULL, NULL);
+	zk_for_each(slist, NULL, NULL);
 
 	zk_free(&slist, dummy_node_data_free);
 	TEST_ASSERT_NULL(slist);
@@ -807,7 +807,7 @@ void test_zk_slist_foreach_when_list_is_null(void)
 	zk_slist_t *slist = NULL;
 
 	// list is null, it will just return
-	zk_slist_foreach(slist, dummy_node_data_free_foreach, NULL);
+	zk_for_each(slist, dummy_node_data_free_foreach, NULL);
 
 	TEST_ASSERT_NULL(slist);
 }
@@ -832,7 +832,7 @@ void test_zk_slist_foreach_when_func_is_not_null(void)
 	slist = zk_push_back(slist, node_3_data);
 
 	// Use foreach to clean each node data
-	zk_slist_foreach(slist, dummy_node_data_free_foreach, NULL);
+	zk_for_each(slist, dummy_node_data_free_foreach, NULL);
 
 	// As nodes data were freed, we just need to call zk_free.
 	zk_free(&slist, NULL);
@@ -1783,7 +1783,7 @@ int main(void)
 		RUN_TEST(test_zk_slist_find_by_data_custom);
 	}
 
-	{ // test zk_slist_foreach
+	{ // test zk_for_each
 		RUN_TEST(test_zk_slist_foreach_when_func_is_null);
 		RUN_TEST(test_zk_slist_foreach_when_list_is_null);
 		RUN_TEST(test_zk_slist_foreach_when_func_is_not_null);

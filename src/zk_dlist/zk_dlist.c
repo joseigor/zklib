@@ -53,8 +53,10 @@ zk_dlist *zk_dlist_end(zk_dlist *list)
 
 void zk_dlist_for_each(zk_dlist *begin, zk_dlist *end, zk_foreach_t const func, void *user_data)
 {
-	for (; begin != end; begin = begin->next) {
-		func(begin->data, user_data);
+	if (func != NULL) {
+		for (; begin != end; begin = begin->next) {
+			func(begin->data, user_data);
+		}
 	}
 }
 

@@ -138,29 +138,6 @@ zk_slist_t *zk_slist_find(zk_slist_t *list, const void *const data, zk_compare_t
 	return list;
 }
 
-void zk_slist_foreach(zk_slist_t *list, zk_foreach_t func, void *user_data)
-{
-	if (func == NULL) {
-		return;
-	}
-
-	while (list != NULL) {
-		func(list->data, user_data);
-		list = list->next;
-	}
-}
-
-void zk_slist_free(zk_slist_t **list_p, zk_destructor_t const func)
-{
-	if (list_p != NULL) {
-		while ((*list_p) != NULL) {
-			zk_slist_t *node = *list_p;
-			*list_p = node->next;
-			_zk_slist_free(&node, func);
-		}
-	}
-}
-
 size_t zk_slist_index(zk_slist_t *list, const void *const data, zk_compare_t const func)
 {
 	size_t index = 1;
@@ -267,6 +244,44 @@ zk_slist_t *zk_slist_prepend(zk_slist_t *list, void *data)
 	return list;
 }
 
+zk_slist_t *zk_slist_reverse(zk_slist_t *list)
+{
+	zk_slist_t *prev = NULL;
+	while (list != NULL) {
+		zk_slist_t *next = list->next;
+		list->next = prev;
+		prev = list;
+		// end of the list reached
+		if (next == NULL) {
+			break;
+		}
+		list = next;
+	}
+	return list;
+}
+
+// Iterators
+zk_slist_t *zk_slist_begin(zk_slist_t *list)
+{
+	return list;
+}
+
+zk_slist_t *zk_slist_end(zk_slist_t *list)
+{
+	ZK_UNUSED(list);
+	return NULL;
+}
+
+void zk_slist_for_each(zk_slist_t *begin, zk_slist_t *end, zk_foreach_t const func, void *user_data)
+{
+	if (func != NULL) {
+		for (; begin != end; begin = begin->next) {
+			func(begin->data, user_data);
+		}
+	}
+}
+
+// Modifiers
 zk_slist_t *zk_slist_push_back(zk_slist_t *list, void *const data)
 {
 	zk_slist_t *node = _zk_slist_new_node();
@@ -282,18 +297,13 @@ zk_slist_t *zk_slist_push_back(zk_slist_t *list, void *const data)
 	return list;
 }
 
-zk_slist_t *zk_slist_reverse(zk_slist_t *list)
+void zk_slist_free(zk_slist_t **list_p, zk_destructor_t const func)
 {
-	zk_slist_t *prev = NULL;
-	while (list != NULL) {
-		zk_slist_t *next = list->next;
-		list->next = prev;
-		prev = list;
-		// end of the list reached
-		if (next == NULL) {
-			break;
+	if (list_p != NULL) {
+		while ((*list_p) != NULL) {
+			zk_slist_t *node = *list_p;
+			*list_p = node->next;
+			_zk_slist_free(&node, func);
 		}
-		list = next;
 	}
-	return list;
 }

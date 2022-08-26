@@ -24,7 +24,7 @@ int main()
 	list_cp = zk_slist_copy(list);
 
 	// print list_cp
-	zk_slist_foreach(list_cp, print_list, NULL);
+	zk_for_each(list_cp, print_list, NULL);
 
 	// As this is a shallow copy if one of the lists is freed the other list loses its reference to data.
 	zk_free(&list, free);

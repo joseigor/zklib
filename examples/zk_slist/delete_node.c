@@ -56,7 +56,7 @@ int main()
 	list = zk_push_back(list, node_3_data);
 
 	// print list
-	zk_slist_foreach(list, print_list, NULL);
+	zk_for_each(list, print_list, NULL);
 
 	// remove list_node from list
 	list = zk_slist_delete_node(list, list_node, dummy_node_data_free);
@@ -64,7 +64,7 @@ int main()
 	printf("\nlist after list_node was delete\n");
 
 	// print list after list_node was delete
-	zk_slist_foreach(list, print_list, NULL);
+	zk_for_each(list, print_list, NULL);
 
 	// free list
 	zk_free(&list, dummy_node_data_free);

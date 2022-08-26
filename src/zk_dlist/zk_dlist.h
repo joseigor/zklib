@@ -11,11 +11,14 @@ typedef struct zk_dlist {
 
 // Iterators
 zk_dlist *zk_dlist_begin(zk_dlist *list);
+
 zk_dlist *zk_dlist_end(zk_dlist *list);
+
 void zk_dlist_for_each(zk_dlist *begin, zk_dlist *end, zk_foreach_t func, void *user_data);
 
 // Modifiers
 zk_dlist *zk_dlist_push_back(zk_dlist *list, void *const data);
+
 void zk_dlist_free(zk_dlist **list_p, zk_destructor_t const func);
 
 #endif

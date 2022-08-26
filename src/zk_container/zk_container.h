@@ -5,12 +5,14 @@
 #include "zk_slist/zk_slist.h"
 
 // Iterators
-#define zk_for_each(CONTAINER, FUNC, USER_DATA) \
-	_Generic((CONTAINER), zk_dlist * : zk_dlist_for_each)(zk_begin(CONTAINER), zk_end(CONTAINER), FUNC, USER_DATA)
+#define zk_for_each(CONTAINER, FUNC, USER_DATA)  \
+	_Generic((CONTAINER), zk_slist_t *       \
+	         : zk_slist_for_each, zk_dlist * \
+	         : zk_dlist_for_each)(zk_begin(CONTAINER), zk_end(CONTAINER), FUNC, USER_DATA)
 
-#define zk_begin(CONTAINER) _Generic((CONTAINER), zk_dlist * : zk_dlist_begin)(CONTAINER)
+#define zk_begin(CONTAINER) _Generic((CONTAINER), zk_slist_t * : zk_slist_begin, zk_dlist * : zk_dlist_begin)(CONTAINER)
 
-#define zk_end(CONTAINER) _Generic((CONTAINER), zk_dlist * : zk_dlist_end)(CONTAINER)
+#define zk_end(CONTAINER) _Generic((CONTAINER), zk_slist_t * : zk_slist_end, zk_dlist * : zk_dlist_end)(CONTAINER)
 
 // Modifiers
 #define zk_push_back(CONTAINER, DATA) \

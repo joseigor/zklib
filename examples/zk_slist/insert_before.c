@@ -18,8 +18,8 @@ int main()
 	// uses zk_slist_insert_before() to insert a new node in the middle of the list
 	list = zk_slist_insert_before(list, list->next, "2");
 
-	// calls zk_slist_foreach() to print each node`s data of the list
-	zk_slist_foreach(list, print_list, NULL);
+	// calls zk_for_each() to print each node`s data of the list
+	zk_for_each(list, print_list, NULL);
 
 	// frees list
 	zk_free(&list, NULL);

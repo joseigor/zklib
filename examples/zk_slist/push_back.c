@@ -51,11 +51,11 @@ int main()
 
 	// print all lists
 	printf("number_list\n");
-	zk_slist_foreach(number_list, print_number_list, NULL);
+	zk_for_each(number_list, print_number_list, NULL);
 	printf("\nstring_list\n");
-	zk_slist_foreach(string_list, print_string_list, NULL);
+	zk_for_each(string_list, print_string_list, NULL);
 	printf("\ncustom_list\n");
-	zk_slist_foreach(custom_list, print_custom_list, NULL);
+	zk_for_each(custom_list, print_custom_list, NULL);
 
 	// free lists after use
 	zk_free(&number_list, NULL);

@@ -170,33 +170,6 @@ zk_slist_t *zk_slist_find(zk_slist_t *list, const void *const data, zk_compare_t
 
 /**
  * @brief
- * Iterates over \p list and calls the function \p func for each node of the \p list. This function takes two
- * arguments, the zk_slist_t node’s data as the first argument and the given \p user_data as second argument.
- *
- * **Time Complexity:** O(n)
- *
- * @param list
- * - Type: A list of \c zk_list_t
- * - The data is owned by the caller of the function.
- *
- * @param func
- * - Type: zk_foreach_t
- * - Function called for each node of the list.
- * - The data is owned by the caller of the function.
- *
- * @param user_data
- * - Type: Pointer to void
- * - User data to be passed as second argument of \p func.
- * - It can be NULL.
- * - The data is owned by the caller of the function.
- *
- * **Example**
- * \include zk_slist/foreach.c
- */
-void zk_slist_foreach(zk_slist_t *list, zk_foreach_t const func, void *user_data);
-
-/**
- * @brief
  * Frees a zk_slist_t and set it to NULL. If \p func is provided it will be called for every node of \p list. \p func
  * receives as argument the node`s data. So if you need to free the node but also the data the node is pointing
  * to you can do it by providing your own implementation for \p func, see example below. If you just want to free the
@@ -427,3 +400,15 @@ zk_slist_t *zk_slist_push_back(zk_slist_t *list, void *const data);
  * \include zk_slist/reverse.c
  */
 zk_slist_t *zk_slist_reverse(zk_slist_t *list);
+
+// Iterators
+zk_slist_t *zk_slist_begin(zk_slist_t *list);
+
+zk_slist_t *zk_slist_end(zk_slist_t *list);
+
+void zk_slist_for_each(zk_slist_t *begin, zk_slist_t *end, zk_foreach_t const func, void *user_data);
+
+// Modifiers
+zk_slist_t *zk_slist_push_back(zk_slist_t *list, void *const data);
+
+void zk_slist_free(zk_slist_t **list_p, zk_destructor_t const func);
