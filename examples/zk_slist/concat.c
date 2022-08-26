@@ -12,9 +12,9 @@ int main()
 {
 	zk_slist_t *list = NULL, *list_top = NULL, *list_end = NULL;
 
-	list = zk_slist_append(list, "middle");
-	list_top = zk_slist_append(list_top, "top");
-	list_end = zk_slist_append(list_end, "end");
+	list = zk_push_back(list, "middle");
+	list_top = zk_push_back(list_top, "top");
+	list_end = zk_push_back(list_end, "end");
 
 	// add list_top to top of list
 	list = zk_slist_concat(list_top, list);

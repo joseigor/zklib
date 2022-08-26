@@ -12,9 +12,9 @@ int main()
 {
 	zk_slist_t *list = NULL;
 
-	list = zk_slist_append(list, "top");
-	list = zk_slist_append(list, "middle");
-	list = zk_slist_append(list, "end");
+	list = zk_push_back(list, "top");
+	list = zk_push_back(list, "middle");
+	list = zk_push_back(list, "end");
 
 	// calls zk_slist_foreach() to print each node`s data of the list before it is reversed
 	zk_slist_foreach(list, print_list, NULL);

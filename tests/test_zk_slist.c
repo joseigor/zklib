@@ -68,12 +68,12 @@ void tearDown(void)
 	// clean stuff up here
 }
 
-void test_zk_slist_append_to_empty_list(void)
+void test_zk_push_back_to_empty_list(void)
 {
 	zk_slist_t *slist = NULL;
 	int data = 5;
 
-	slist = zk_slist_append(slist, &data);
+	slist = zk_push_back(slist, &data);
 
 	TEST_ASSERT_NOT_NULL(slist);
 	TEST_ASSERT_EQUAL_PTR(slist->data, &data);
@@ -84,21 +84,21 @@ void test_zk_slist_append_to_empty_list(void)
 	TEST_ASSERT_NULL(slist);
 }
 
-void test_zk_slist_append_2_items_to_slist(void)
+void test_zk_push_back_2_items_to_slist(void)
 {
 	zk_slist_t *slist = NULL;
 
 	int node1_data = 0;
 	int node2_data = 1;
 
-	slist = zk_slist_append(slist, &node1_data);
+	slist = zk_push_back(slist, &node1_data);
 
 	TEST_ASSERT_NOT_NULL(slist);
 	TEST_ASSERT_EQUAL_PTR(slist->data, &node1_data);
 	TEST_ASSERT_EQUAL_PTR(*((int *)slist->data), node1_data);
 	TEST_ASSERT_NULL(slist->next);
 
-	slist = zk_slist_append(slist, &node2_data);
+	slist = zk_push_back(slist, &node2_data);
 
 	// first we check that slist still points to the head of the list
 	TEST_ASSERT_NOT_NULL(slist);
@@ -117,7 +117,7 @@ void test_zk_slist_append_2_items_to_slist(void)
 	TEST_ASSERT_NULL(slist);
 }
 
-void test_zk_slist_append_3_items_to_slist(void)
+void test_zk_push_back_3_items_to_slist(void)
 {
 	zk_slist_t *slist = NULL;
 
@@ -128,14 +128,14 @@ void test_zk_slist_append_3_items_to_slist(void)
 	zk_slist_t *node_2 = NULL;
 	zk_slist_t *node_3 = NULL;
 
-	slist = zk_slist_append(slist, &node1_data);
+	slist = zk_push_back(slist, &node1_data);
 
 	TEST_ASSERT_NOT_NULL(slist);
 	TEST_ASSERT_EQUAL_PTR(slist->data, &node1_data);
 	TEST_ASSERT_EQUAL(*((int *)slist->data), node1_data);
 	TEST_ASSERT_NULL(slist->next);
 
-	slist = zk_slist_append(slist, &node2_data);
+	slist = zk_push_back(slist, &node2_data);
 
 	// first we check that slist still points to the head of the list
 	TEST_ASSERT_NOT_NULL(slist);
@@ -150,7 +150,7 @@ void test_zk_slist_append_3_items_to_slist(void)
 	TEST_ASSERT_EQUAL(*((int *)node_2->data), node2_data);
 	TEST_ASSERT_NULL(node_2->next);
 
-	slist = zk_slist_append(slist, &node3_data);
+	slist = zk_push_back(slist, &node3_data);
 
 	// first we check that slist still points to the head of the list
 	TEST_ASSERT_NOT_NULL(slist);
@@ -177,7 +177,7 @@ void test_zk_slist_append_3_items_to_slist(void)
 	TEST_ASSERT_NULL(slist);
 }
 
-void test_zk_slist_append_n_items_to_slist(void)
+void test_zk_push_back_n_items_to_slist(void)
 {
 	int number_of_nodes = 100;
 	int nodes_data[number_of_nodes];
@@ -185,7 +185,7 @@ void test_zk_slist_append_n_items_to_slist(void)
 
 	for (int i = 0; i < number_of_nodes; i++) {
 		nodes_data[i] = i;
-		slist = zk_slist_append(slist, &nodes_data[i]);
+		slist = zk_push_back(slist, &nodes_data[i]);
 		TEST_ASSERT_NOT_NULL(slist);
 	}
 
@@ -204,13 +204,13 @@ void test_zk_slist_append_n_items_to_slist(void)
 	TEST_ASSERT_NULL(slist);
 }
 
-void test_zk_slist_append_null_data_to_slist(void)
+void test_zk_push_back_null_data_to_slist(void)
 {
 	int number_of_nodes = 100;
 	zk_slist_t *slist = NULL;
 
 	for (int i = 0; i < number_of_nodes; i++) {
-		slist = zk_slist_append(slist, NULL);
+		slist = zk_push_back(slist, NULL);
 		TEST_ASSERT_NOT_NULL(slist);
 	}
 
@@ -231,13 +231,13 @@ void test_zk_slist_concat_lists_of_strings(void)
 	zk_slist_t *slist_dest = NULL;
 	zk_slist_t *slist_src = NULL;
 
-	slist_dest = zk_slist_append(slist_dest, strdup("list_dest_node_1"));
-	slist_dest = zk_slist_append(slist_dest, strdup("list_dest_node_2"));
-	slist_dest = zk_slist_append(slist_dest, strdup("list_dest_node_3"));
+	slist_dest = zk_push_back(slist_dest, strdup("list_dest_node_1"));
+	slist_dest = zk_push_back(slist_dest, strdup("list_dest_node_2"));
+	slist_dest = zk_push_back(slist_dest, strdup("list_dest_node_3"));
 
-	slist_src = zk_slist_append(slist_src, strdup("list_src_node_1"));
-	slist_src = zk_slist_append(slist_src, strdup("list_src_node_2"));
-	slist_src = zk_slist_append(slist_src, strdup("list_src_node_3"));
+	slist_src = zk_push_back(slist_src, strdup("list_src_node_1"));
+	slist_src = zk_push_back(slist_src, strdup("list_src_node_2"));
+	slist_src = zk_push_back(slist_src, strdup("list_src_node_3"));
 
 	// concatenates slist_src to the end of slist_dest
 	slist_dest = zk_slist_concat(slist_dest, slist_src);
@@ -286,7 +286,7 @@ void test_zk_slist_concat_when_destination_list_is_null_should_return_null(void)
 	zk_slist_t *slist_dest = NULL;
 	zk_slist_t *slist_src = NULL;
 
-	slist_src = zk_slist_append(slist_src, &data);
+	slist_src = zk_push_back(slist_src, &data);
 
 	TEST_ASSERT_NULL(zk_slist_concat(slist_dest, slist_src));
 
@@ -299,7 +299,7 @@ void test_zk_slist_concat_when_source_list_is_null_should_return_destination_lis
 	int data = 1;
 	zk_slist_t *slist_dest = NULL;
 
-	slist_dest = zk_slist_append(slist_dest, &data);
+	slist_dest = zk_push_back(slist_dest, &data);
 
 	slist_dest = zk_slist_concat(slist_dest, NULL);
 
@@ -333,9 +333,9 @@ void test_zk_slist_copy_when_source_list_node_data_is_a_pointer_to_data_only_the
 	node_3_data->value = 3;
 	node_3_data->string = strdup("node_3");
 
-	slist_src = zk_slist_append(slist_src, node_1_data);
-	slist_src = zk_slist_append(slist_src, node_2_data);
-	slist_src = zk_slist_append(slist_src, node_3_data);
+	slist_src = zk_push_back(slist_src, node_1_data);
+	slist_src = zk_push_back(slist_src, node_2_data);
+	slist_src = zk_push_back(slist_src, node_3_data);
 
 	slist_copy = zk_slist_copy(slist_src);
 
@@ -397,9 +397,9 @@ void test_zk_slist_copy_deep_should_perform_a_deep_copy_of_source_list_nodes_dat
 	node_3_data->value = 3;
 	node_3_data->string = strdup("node_3");
 
-	slist_src = zk_slist_append(slist_src, node_1_data);
-	slist_src = zk_slist_append(slist_src, node_2_data);
-	slist_src = zk_slist_append(slist_src, node_3_data);
+	slist_src = zk_push_back(slist_src, node_1_data);
+	slist_src = zk_push_back(slist_src, node_2_data);
+	slist_src = zk_push_back(slist_src, node_3_data);
 
 	slist_dest = zk_slist_copy_deep(slist_src, copy_node_data, NULL);
 
@@ -452,7 +452,7 @@ void test_zk_slist_delete_node_when_list_is_null(void)
 {
 	zk_slist_t *slist = NULL;
 	zk_slist_t *slist_node = NULL;
-	slist_node = zk_slist_append(slist_node, NULL);
+	slist_node = zk_push_back(slist_node, NULL);
 
 	TEST_ASSERT_NOT_NULL(slist_node);
 	TEST_ASSERT_NULL(zk_slist_delete_node(slist, slist_node, NULL));
@@ -464,7 +464,7 @@ void test_zk_slist_delete_node_when_node_is_null(void)
 {
 	zk_slist_t *slist = NULL;
 	zk_slist_t *slist_node = NULL;
-	slist = zk_slist_append(slist, NULL);
+	slist = zk_push_back(slist, NULL);
 
 	TEST_ASSERT_NOT_NULL(slist);
 	TEST_ASSERT_EQUAL(slist, zk_slist_delete_node(slist, slist_node, NULL));
@@ -476,7 +476,7 @@ void test_zk_slist_delete_node_when_list_has_only_one_node(void)
 {
 	zk_slist_t *slist = NULL;
 	zk_slist_t *slist_node = NULL;
-	slist = zk_slist_append(slist, NULL);
+	slist = zk_push_back(slist, NULL);
 
 	slist_node = slist;
 
@@ -501,9 +501,9 @@ void test_zk_slist_delete_first_node_when_list_has_mutiple_nodes(void)
 	int node_2_data = 2;
 	int node_3_data = 3;
 
-	slist = zk_slist_append(slist, &node_1_data);
-	slist = zk_slist_append(slist, &node_2_data);
-	slist = zk_slist_append(slist, &node_3_data);
+	slist = zk_push_back(slist, &node_1_data);
+	slist = zk_push_back(slist, &node_2_data);
+	slist = zk_push_back(slist, &node_3_data);
 
 	// slist_node points to first node
 	slist_node = slist;
@@ -534,9 +534,9 @@ void test_zk_slist_delete_last_node(void)
 	int node_2_data = 2;
 	int node_3_data = 3;
 
-	slist = zk_slist_append(slist, &node_1_data);
-	slist = zk_slist_append(slist, &node_2_data);
-	slist = zk_slist_append(slist, &node_3_data);
+	slist = zk_push_back(slist, &node_1_data);
+	slist = zk_push_back(slist, &node_2_data);
+	slist = zk_push_back(slist, &node_3_data);
 
 	// slist_node points to third/last node
 	slist_node = slist->next->next;
@@ -568,9 +568,9 @@ void test_zk_slist_delete_node_when_list_has_multiple_nodes(void)
 	int node_2_data = 2;
 	int node_3_data = 3;
 
-	slist = zk_slist_append(slist, &node_1_data);
-	slist = zk_slist_append(slist, &node_2_data);
-	slist = zk_slist_append(slist, &node_3_data);
+	slist = zk_push_back(slist, &node_1_data);
+	slist = zk_push_back(slist, &node_2_data);
+	slist = zk_push_back(slist, &node_3_data);
 
 	// slist_node points to second node
 	slist_node = slist->next;
@@ -610,9 +610,9 @@ void test_zk_slist_delete_node_and_use_external_function_to_free_node_data(void)
 	node_3_data->value = 3;
 	node_3_data->string = strdup("node_3");
 
-	slist = zk_slist_append(slist, node_1_data);
-	slist = zk_slist_append(slist, node_2_data);
-	slist = zk_slist_append(slist, node_3_data);
+	slist = zk_push_back(slist, node_1_data);
+	slist = zk_push_back(slist, node_2_data);
+	slist = zk_push_back(slist, node_3_data);
 
 	// slist_node points to second node
 	slist_node = slist->next;
@@ -659,12 +659,12 @@ void test_zk_slist_delete_node_when_node_is_not_in_the_list(void)
 	int node_2_data = 2;
 	int node_3_data = 3;
 
-	slist = zk_slist_append(slist, &node_1_data);
-	slist = zk_slist_append(slist, &node_2_data);
-	slist = zk_slist_append(slist, &node_3_data);
+	slist = zk_push_back(slist, &node_1_data);
+	slist = zk_push_back(slist, &node_2_data);
+	slist = zk_push_back(slist, &node_3_data);
 
 	// node has the same data of the third node of slist, but still this node is not part of slist
-	slist_node = zk_slist_append(slist_node, &node_3_data);
+	slist_node = zk_push_back(slist_node, &node_3_data);
 
 	// slist has only one link that once deletec slist should be null
 	TEST_ASSERT_NOT_NULL(slist);
@@ -700,13 +700,13 @@ void test_zk_slist_find_by_data(void)
 	int node_6_data = 6;
 	int node_7_data = 7;
 
-	slist = zk_slist_append(slist, &node_1_data);
-	slist = zk_slist_append(slist, &node_2_data);
-	slist = zk_slist_append(slist, &node_3_data);
-	slist = zk_slist_append(slist, &node_4_data);
-	slist = zk_slist_append(slist, &node_5_data);
-	slist = zk_slist_append(slist, &node_6_data);
-	slist = zk_slist_append(slist, &node_7_data);
+	slist = zk_push_back(slist, &node_1_data);
+	slist = zk_push_back(slist, &node_2_data);
+	slist = zk_push_back(slist, &node_3_data);
+	slist = zk_push_back(slist, &node_4_data);
+	slist = zk_push_back(slist, &node_5_data);
+	slist = zk_push_back(slist, &node_6_data);
+	slist = zk_push_back(slist, &node_7_data);
 
 	slist_found = zk_slist_find(slist, &node_5_data, NULL);
 
@@ -734,13 +734,13 @@ void test_zk_slist_find_by_data_custom_when_node_is_not_in_the_list(void)
 	int node_7_data = 7;
 	int node_8_data = 8;
 
-	slist = zk_slist_append(slist, &node_1_data);
-	slist = zk_slist_append(slist, &node_2_data);
-	slist = zk_slist_append(slist, &node_3_data);
-	slist = zk_slist_append(slist, &node_4_data);
-	slist = zk_slist_append(slist, &node_5_data);
-	slist = zk_slist_append(slist, &node_6_data);
-	slist = zk_slist_append(slist, &node_7_data);
+	slist = zk_push_back(slist, &node_1_data);
+	slist = zk_push_back(slist, &node_2_data);
+	slist = zk_push_back(slist, &node_3_data);
+	slist = zk_push_back(slist, &node_4_data);
+	slist = zk_push_back(slist, &node_5_data);
+	slist = zk_push_back(slist, &node_6_data);
+	slist = zk_push_back(slist, &node_7_data);
 
 	slist_found = zk_slist_find(slist, &node_8_data, NULL);
 
@@ -763,13 +763,13 @@ void test_zk_slist_find_by_data_custom(void)
 	int node_6_data = 6;
 	int node_7_data = 7;
 
-	slist = zk_slist_append(slist, &node_1_data);
-	slist = zk_slist_append(slist, &node_2_data);
-	slist = zk_slist_append(slist, &node_3_data);
-	slist = zk_slist_append(slist, &node_4_data);
-	slist = zk_slist_append(slist, &node_5_data);
-	slist = zk_slist_append(slist, &node_6_data);
-	slist = zk_slist_append(slist, &node_7_data);
+	slist = zk_push_back(slist, &node_1_data);
+	slist = zk_push_back(slist, &node_2_data);
+	slist = zk_push_back(slist, &node_3_data);
+	slist = zk_push_back(slist, &node_4_data);
+	slist = zk_push_back(slist, &node_5_data);
+	slist = zk_push_back(slist, &node_6_data);
+	slist = zk_push_back(slist, &node_7_data);
 
 	slist_found = zk_slist_find(slist, &node_5_data, slist_compare_data_custom);
 
@@ -790,7 +790,7 @@ void test_zk_slist_foreach_when_func_is_null(void)
 	node_1_data->string = strdup("node_1");
 	zk_slist_t *slist = NULL;
 
-	slist = zk_slist_append(slist, node_1_data);
+	slist = zk_push_back(slist, node_1_data);
 	TEST_ASSERT_NOT_NULL(slist);
 
 	// Func is null, it will just return
@@ -825,9 +825,9 @@ void test_zk_slist_foreach_when_func_is_not_null(void)
 	node_3_data->string = strdup("node_3");
 
 	zk_slist_t *slist = NULL;
-	slist = zk_slist_append(slist, node_1_data);
-	slist = zk_slist_append(slist, node_2_data);
-	slist = zk_slist_append(slist, node_3_data);
+	slist = zk_push_back(slist, node_1_data);
+	slist = zk_push_back(slist, node_2_data);
+	slist = zk_push_back(slist, node_3_data);
 
 	// Use foreach to clean each node data
 	zk_slist_foreach(slist, dummy_node_data_free_foreach, NULL);
@@ -851,10 +851,10 @@ void test_zk_slist_free_list_with_no_dynamic_allocated_node_data(void)
 	int node_3_data = 3;
 	int node_4_data = 4;
 
-	slist = zk_slist_append(slist, &node_1_data);
-	slist = zk_slist_append(slist, &node_2_data);
-	slist = zk_slist_append(slist, &node_3_data);
-	slist = zk_slist_append(slist, &node_4_data);
+	slist = zk_push_back(slist, &node_1_data);
+	slist = zk_push_back(slist, &node_2_data);
+	slist = zk_push_back(slist, &node_3_data);
+	slist = zk_push_back(slist, &node_4_data);
 
 	zk_slist_free(&slist, NULL);
 
@@ -867,7 +867,7 @@ void test_zk_slist_free_for_list_of_strings(void)
 	zk_slist_t *slist = NULL;
 
 	for (int i = 0; i < number_of_nodes; i++) {
-		slist = zk_slist_append(slist, strdup("a"));
+		slist = zk_push_back(slist, strdup("a"));
 		TEST_ASSERT_NOT_NULL(slist);
 	}
 
@@ -904,9 +904,9 @@ void test_zk_slist_get_index_when_data_is_null(void)
 	int node_1_data = 1;
 	int node_3_data = 3;
 
-	slist = zk_slist_append(slist, &node_1_data);
-	slist = zk_slist_append(slist, NULL);
-	slist = zk_slist_append(slist, &node_3_data);
+	slist = zk_push_back(slist, &node_1_data);
+	slist = zk_push_back(slist, NULL);
+	slist = zk_push_back(slist, &node_3_data);
 
 	TEST_ASSERT_EQUAL(2, zk_slist_index(slist, NULL, NULL));
 
@@ -919,9 +919,9 @@ void test_zk_slist_get_index_func_when_data_is_null(void)
 	int node_1_data = 1;
 	int node_3_data = 3;
 
-	slist = zk_slist_append(slist, &node_1_data);
-	slist = zk_slist_append(slist, NULL);
-	slist = zk_slist_append(slist, &node_3_data);
+	slist = zk_push_back(slist, &node_1_data);
+	slist = zk_push_back(slist, NULL);
+	slist = zk_push_back(slist, &node_3_data);
 
 	TEST_ASSERT_EQUAL(2, zk_slist_index(slist, NULL, slist_compare_data_custom));
 
@@ -935,9 +935,9 @@ void test_zk_slist_get_index_when_data_is_on_list(void)
 	int node_2_data = 2;
 	int node_3_data = 3;
 
-	slist = zk_slist_append(slist, &node_1_data);
-	slist = zk_slist_append(slist, &node_2_data);
-	slist = zk_slist_append(slist, &node_3_data);
+	slist = zk_push_back(slist, &node_1_data);
+	slist = zk_push_back(slist, &node_2_data);
+	slist = zk_push_back(slist, &node_3_data);
 
 	TEST_ASSERT_EQUAL(3, zk_slist_index(slist, &node_3_data, NULL));
 
@@ -951,9 +951,9 @@ void test_zk_slist_get_index_func_when_data_is_on_list(void)
 	int node_2_data = 2;
 	int node_3_data = 3;
 
-	slist = zk_slist_append(slist, &node_1_data);
-	slist = zk_slist_append(slist, &node_2_data);
-	slist = zk_slist_append(slist, &node_3_data);
+	slist = zk_push_back(slist, &node_1_data);
+	slist = zk_push_back(slist, &node_2_data);
+	slist = zk_push_back(slist, &node_3_data);
 
 	TEST_ASSERT_EQUAL(3, zk_slist_index(slist, &node_3_data, slist_compare_data_custom));
 
@@ -968,9 +968,9 @@ void test_zk_slist_get_index_when_data_is_not_on_list(void)
 	int node_3_data = 3;
 	int node_4_data = 4;
 
-	slist = zk_slist_append(slist, &node_1_data);
-	slist = zk_slist_append(slist, &node_2_data);
-	slist = zk_slist_append(slist, &node_3_data);
+	slist = zk_push_back(slist, &node_1_data);
+	slist = zk_push_back(slist, &node_2_data);
+	slist = zk_push_back(slist, &node_3_data);
 
 	TEST_ASSERT_EQUAL(0, zk_slist_index(slist, &node_4_data, NULL));
 
@@ -985,9 +985,9 @@ void test_zk_slist_get_index_func_when_data_is_not_on_list(void)
 	int node_3_data = 3;
 	int node_4_data = 4;
 
-	slist = zk_slist_append(slist, &node_1_data);
-	slist = zk_slist_append(slist, &node_2_data);
-	slist = zk_slist_append(slist, &node_3_data);
+	slist = zk_push_back(slist, &node_1_data);
+	slist = zk_push_back(slist, &node_2_data);
+	slist = zk_push_back(slist, &node_3_data);
 
 	TEST_ASSERT_EQUAL(0, zk_slist_index(slist, &node_4_data, slist_compare_data_custom));
 
@@ -1015,9 +1015,9 @@ void test_zk_slist_insert_when_data_is_null(void)
 	int node_2_data = 2;
 	int node_3_data = 3;
 
-	slist = zk_slist_append(slist, &node_1_data);
-	slist = zk_slist_append(slist, &node_2_data);
-	slist = zk_slist_append(slist, &node_3_data);
+	slist = zk_push_back(slist, &node_1_data);
+	slist = zk_push_back(slist, &node_2_data);
+	slist = zk_push_back(slist, &node_3_data);
 
 	// insert a node in postion 1 of the list
 	slist = zk_slist_insert(slist, NULL, 1);
@@ -1039,9 +1039,9 @@ void test_zk_slist_insert_when_position_is_zero(void)
 	int node_3_data = 3;
 	int node_4_data = 4;
 
-	slist = zk_slist_append(slist, &node_1_data);
-	slist = zk_slist_append(slist, &node_2_data);
-	slist = zk_slist_append(slist, &node_3_data);
+	slist = zk_push_back(slist, &node_1_data);
+	slist = zk_push_back(slist, &node_2_data);
+	slist = zk_push_back(slist, &node_3_data);
 
 	// as position is zero, new node is appended to the list
 	slist = zk_slist_insert(slist, &node_4_data, 0);
@@ -1062,9 +1062,9 @@ void test_zk_slist_insert_when_position_is_greater_than_list_size(void)
 	int node_3_data = 3;
 	int node_4_data = 4;
 
-	slist = zk_slist_append(slist, &node_1_data);
-	slist = zk_slist_append(slist, &node_2_data);
-	slist = zk_slist_append(slist, &node_3_data);
+	slist = zk_push_back(slist, &node_1_data);
+	slist = zk_push_back(slist, &node_2_data);
+	slist = zk_push_back(slist, &node_3_data);
 
 	// as position is greater than list size, new node is appended to the list
 	slist = zk_slist_insert(slist, &node_4_data, 10);
@@ -1087,9 +1087,9 @@ void test_zk_slist_insert_when_position_is_inside_list_range(void)
 	int node_3_data = 3;
 	int node_4_data = 4;
 
-	slist = zk_slist_append(slist, &node_1_data);
-	slist = zk_slist_append(slist, &node_2_data);
-	slist = zk_slist_append(slist, &node_4_data);
+	slist = zk_push_back(slist, &node_1_data);
+	slist = zk_push_back(slist, &node_2_data);
+	slist = zk_push_back(slist, &node_4_data);
 
 	// insert node in position 3
 	slist = zk_slist_insert(slist, &node_3_data, 3);
@@ -1108,7 +1108,7 @@ void test_zk_slist_insert_before_when_list_is_null(void)
 	zk_slist_t *sibling = NULL;
 	int node_1_data = 1;
 
-	sibling = zk_slist_append(sibling, &node_1_data);
+	sibling = zk_push_back(sibling, &node_1_data);
 
 	// if list is null then there is no way to sibling link be part of the list
 	TEST_ASSERT_NULL(zk_slist_insert_before(NULL, sibling, &node_1_data));
@@ -1125,9 +1125,9 @@ void test_zk_slist_insert_before_when_sibling_is_null(void)
 	int node_3_data = 3;
 	int node_4_data = 4;
 
-	slist = zk_slist_append(slist, &node_1_data);
-	slist = zk_slist_append(slist, &node_2_data);
-	slist = zk_slist_append(slist, &node_3_data);
+	slist = zk_push_back(slist, &node_1_data);
+	slist = zk_push_back(slist, &node_2_data);
+	slist = zk_push_back(slist, &node_3_data);
 
 	// if sibling is NULL the new data is added to the end of the list
 	slist = zk_slist_insert_before(slist, NULL, &node_4_data);
@@ -1151,9 +1151,9 @@ void test_zk_slist_insert_before_when_sibling_is_first_link_of_the_list(void)
 	int node_3_data = 3;
 	int node_4_data = 4;
 
-	slist = zk_slist_append(slist, &node_2_data);
-	slist = zk_slist_append(slist, &node_3_data);
-	slist = zk_slist_append(slist, &node_4_data);
+	slist = zk_push_back(slist, &node_2_data);
+	slist = zk_push_back(slist, &node_3_data);
+	slist = zk_push_back(slist, &node_4_data);
 
 	// sibling is the head of the list (first link of the list)
 	slist = zk_slist_insert_before(slist, slist, &node_1_data);
@@ -1174,9 +1174,9 @@ void test_zk_slist_insert_before_when_sibling_is_in_the_middle_of_the_list(void)
 	int node_3_data = 3;
 	int node_4_data = 4;
 
-	slist = zk_slist_append(slist, &node_1_data);
-	slist = zk_slist_append(slist, &node_3_data);
-	slist = zk_slist_append(slist, &node_4_data);
+	slist = zk_push_back(slist, &node_1_data);
+	slist = zk_push_back(slist, &node_3_data);
+	slist = zk_push_back(slist, &node_4_data);
 
 	// sibling is the middle of the list (second link of the list)
 	slist = zk_slist_insert_before(slist, slist->next, &node_2_data);
@@ -1213,9 +1213,9 @@ void test_zk_slist_insert_before_when_sibling_is_the_last_element_of_the_list(vo
 	int node_3_data = 3;
 	int node_4_data = 4;
 
-	slist = zk_slist_append(slist, &node_1_data);
-	slist = zk_slist_append(slist, &node_2_data);
-	slist = zk_slist_append(slist, &node_4_data);
+	slist = zk_push_back(slist, &node_1_data);
+	slist = zk_push_back(slist, &node_2_data);
+	slist = zk_push_back(slist, &node_4_data);
 
 	// sibling is last element of the list
 	slist = zk_slist_insert_before(slist, slist->next->next, &node_3_data);
@@ -1253,11 +1253,11 @@ void test_zk_slist_insert_before_when_sibling_is_not_in_the_list(void)
 	int node_3_data = 3;
 	int node_4_data = 4;
 
-	slist = zk_slist_append(slist, &node_1_data);
-	slist = zk_slist_append(slist, &node_2_data);
-	slist = zk_slist_append(slist, &node_3_data);
+	slist = zk_push_back(slist, &node_1_data);
+	slist = zk_push_back(slist, &node_2_data);
+	slist = zk_push_back(slist, &node_3_data);
 
-	slist_sibling = zk_slist_append(slist_sibling, &node_4_data);
+	slist_sibling = zk_push_back(slist_sibling, &node_4_data);
 
 	// sibling is not in the list, a new link with data is appended to list
 	slist = zk_slist_insert_before(slist, slist_sibling, &node_4_data);
@@ -1298,7 +1298,7 @@ void test_zk_slist_last_when_list_has_only_one_node(void)
 	zk_slist_t *slist_last = NULL;
 	int node_1_data = 1;
 
-	slist = zk_slist_append(slist, &node_1_data);
+	slist = zk_push_back(slist, &node_1_data);
 	slist_last = zk_slist_last(slist);
 
 	TEST_ASSERT_NOT_NULL(slist_last);
@@ -1317,9 +1317,9 @@ void test_zk_slist_last_when_list_has_more_than_one_node(void)
 	int node_2_data = 2;
 	int node_3_data = 3;
 
-	slist = zk_slist_append(slist, &node_1_data);
-	slist = zk_slist_append(slist, &node_2_data);
-	slist = zk_slist_append(slist, &node_3_data);
+	slist = zk_push_back(slist, &node_1_data);
+	slist = zk_push_back(slist, &node_2_data);
+	slist = zk_push_back(slist, &node_3_data);
 
 	slist_last = zk_slist_last(slist);
 
@@ -1341,7 +1341,7 @@ void test_zk_slist_length_when_list_has_one_element(void)
 	zk_slist_t *slist = NULL;
 	int node_1_data = 1;
 
-	slist = zk_slist_append(slist, &node_1_data);
+	slist = zk_push_back(slist, &node_1_data);
 
 	TEST_ASSERT_EQUAL(1, zk_slist_length(slist));
 
@@ -1355,9 +1355,9 @@ void test_zk_slist_length_when_list_has_3_elements(void)
 	int node_2_data = 2;
 	int node_3_data = 3;
 
-	slist = zk_slist_append(slist, &node_1_data);
-	slist = zk_slist_append(slist, &node_2_data);
-	slist = zk_slist_append(slist, &node_3_data);
+	slist = zk_push_back(slist, &node_1_data);
+	slist = zk_push_back(slist, &node_2_data);
+	slist = zk_push_back(slist, &node_3_data);
 
 	TEST_ASSERT_EQUAL(3, zk_slist_length(slist));
 
@@ -1376,9 +1376,9 @@ void test_zk_slist_nth_when_index_is_zero(void)
 	int node_2_data = 2;
 	int node_3_data = 3;
 
-	slist = zk_slist_append(slist, &node_1_data);
-	slist = zk_slist_append(slist, &node_2_data);
-	slist = zk_slist_append(slist, &node_3_data);
+	slist = zk_push_back(slist, &node_1_data);
+	slist = zk_push_back(slist, &node_2_data);
+	slist = zk_push_back(slist, &node_3_data);
 
 	TEST_ASSERT_EQUAL(3, zk_slist_length(slist));
 	TEST_ASSERT_EQUAL(slist->next->next, zk_slist_nth(slist, 0));
@@ -1393,9 +1393,9 @@ void test_zk_slist_nth_when_index_is_greater_than_list_length(void)
 	int node_2_data = 2;
 	int node_3_data = 3;
 
-	slist = zk_slist_append(slist, &node_1_data);
-	slist = zk_slist_append(slist, &node_2_data);
-	slist = zk_slist_append(slist, &node_3_data);
+	slist = zk_push_back(slist, &node_1_data);
+	slist = zk_push_back(slist, &node_2_data);
+	slist = zk_push_back(slist, &node_3_data);
 
 	TEST_ASSERT_EQUAL(3, zk_slist_length(slist));
 	TEST_ASSERT_EQUAL(slist->next->next, zk_slist_nth(slist, 4));
@@ -1410,9 +1410,9 @@ void test_zk_slist_nth_when_index_is_less_than_or_equal_to_list_length(void)
 	int node_2_data = 2;
 	int node_3_data = 3;
 
-	slist = zk_slist_append(slist, &node_1_data);
-	slist = zk_slist_append(slist, &node_2_data);
-	slist = zk_slist_append(slist, &node_3_data);
+	slist = zk_push_back(slist, &node_1_data);
+	slist = zk_push_back(slist, &node_2_data);
+	slist = zk_push_back(slist, &node_3_data);
 
 	TEST_ASSERT_EQUAL(3, zk_slist_length(slist));
 	TEST_ASSERT_EQUAL(slist->next, zk_slist_nth(slist, 2));
@@ -1426,9 +1426,9 @@ void test_zk_slist_nth_when_index_equal_to_list_length(void)
 	int node_2_data = 2;
 	int node_3_data = 3;
 
-	slist = zk_slist_append(slist, &node_1_data);
-	slist = zk_slist_append(slist, &node_2_data);
-	slist = zk_slist_append(slist, &node_3_data);
+	slist = zk_push_back(slist, &node_1_data);
+	slist = zk_push_back(slist, &node_2_data);
+	slist = zk_push_back(slist, &node_3_data);
 
 	TEST_ASSERT_EQUAL(3, zk_slist_length(slist));
 	TEST_ASSERT_EQUAL(slist->next->next, zk_slist_nth(slist, 3));
@@ -1442,9 +1442,9 @@ void test_zk_slist_nth_when_index_is_1(void)
 	int node_2_data = 2;
 	int node_3_data = 3;
 
-	slist = zk_slist_append(slist, &node_1_data);
-	slist = zk_slist_append(slist, &node_2_data);
-	slist = zk_slist_append(slist, &node_3_data);
+	slist = zk_push_back(slist, &node_1_data);
+	slist = zk_push_back(slist, &node_2_data);
+	slist = zk_push_back(slist, &node_3_data);
 
 	TEST_ASSERT_EQUAL(3, zk_slist_length(slist));
 	TEST_ASSERT_EQUAL(slist, zk_slist_nth(slist, 1));
@@ -1511,7 +1511,7 @@ void test_zk_slit_reverse_when_list_has_one_link(void)
 	zk_slist_t *slist = NULL;
 	int node1_data = 1;
 
-	slist = zk_slist_append(slist, &node1_data);
+	slist = zk_push_back(slist, &node1_data);
 	slist = zk_slist_reverse(slist);
 
 	TEST_ASSERT_NOT_NULL(slist);
@@ -1530,9 +1530,9 @@ void test_zk_slit_reverse_when_list_has_mutiple_nodes(void)
 	int node_2_data = 2;
 	int node_3_data = 3;
 
-	slist = zk_slist_append(slist, &node_1_data);
-	slist = zk_slist_append(slist, &node_2_data);
-	slist = zk_slist_append(slist, &node_3_data);
+	slist = zk_push_back(slist, &node_1_data);
+	slist = zk_push_back(slist, &node_2_data);
+	slist = zk_push_back(slist, &node_3_data);
 
 	slist = zk_slist_reverse(slist);
 	/* after reverse operation we should expect nodes of slist to be:
@@ -1585,7 +1585,7 @@ void test_zk_slist_front_back_split_when_list_has_one_link(void)
 	zk_slist_t *front = NULL;
 	zk_slist_t *back = NULL;
 
-	slist = zk_slist_append(slist, &node_data);
+	slist = zk_push_back(slist, &node_data);
 	TEST_ASSERT_NOT_NULL(slist);
 
 	_zk_slist_front_back_split(slist, &front, &back);
@@ -1607,8 +1607,8 @@ void test_zk_slist_front_back_split_when_list_has_two_links(void)
 	zk_slist_t *front = NULL;
 	zk_slist_t *back = NULL;
 
-	slist = zk_slist_append(slist, &node_data_0);
-	slist = zk_slist_append(slist, &node_data_1);
+	slist = zk_push_back(slist, &node_data_0);
+	slist = zk_push_back(slist, &node_data_1);
 	TEST_ASSERT_NOT_NULL(slist);
 
 	_zk_slist_front_back_split(slist, &front, &back);
@@ -1634,9 +1634,9 @@ void test_zk_slist_front_back_split_when_list_has_three_links(void)
 	zk_slist_t *front = NULL;
 	zk_slist_t *back = NULL;
 
-	slist = zk_slist_append(slist, &node_data_0);
-	slist = zk_slist_append(slist, &node_data_1);
-	slist = zk_slist_append(slist, &node_data_2);
+	slist = zk_push_back(slist, &node_data_0);
+	slist = zk_push_back(slist, &node_data_1);
+	slist = zk_push_back(slist, &node_data_2);
 	TEST_ASSERT_NOT_NULL(slist);
 
 	_zk_slist_front_back_split(slist, &front, &back);
@@ -1664,7 +1664,7 @@ void test_zk_slist_front_back_split_when_number_of_links_is_even(void)
 	zk_slist_t *back = NULL;
 
 	for (int i = 0; i < number_of_nodes; i++) {
-		slist = zk_slist_append(slist, &nodes_data[i]);
+		slist = zk_push_back(slist, &nodes_data[i]);
 		TEST_ASSERT_NOT_NULL(slist);
 	}
 
@@ -1703,7 +1703,7 @@ void test_zk_slist_front_back_split_when_number_of_links_is_odd(void)
 	zk_slist_t *back = NULL;
 
 	for (int i = 0; i < number_of_nodes; i++) {
-		slist = zk_slist_append(slist, &nodes_data[i]);
+		slist = zk_push_back(slist, &nodes_data[i]);
 		TEST_ASSERT_NOT_NULL(slist);
 	}
 
@@ -1739,12 +1739,12 @@ int main(void)
 {
 	UNITY_BEGIN();
 
-	{ // tests for zk_slist_append function
-		RUN_TEST(test_zk_slist_append_to_empty_list);
-		RUN_TEST(test_zk_slist_append_2_items_to_slist);
-		RUN_TEST(test_zk_slist_append_3_items_to_slist);
-		RUN_TEST(test_zk_slist_append_n_items_to_slist);
-		RUN_TEST(test_zk_slist_append_null_data_to_slist);
+	{ // tests for zk_push_back function
+		RUN_TEST(test_zk_push_back_to_empty_list);
+		RUN_TEST(test_zk_push_back_2_items_to_slist);
+		RUN_TEST(test_zk_push_back_3_items_to_slist);
+		RUN_TEST(test_zk_push_back_n_items_to_slist);
+		RUN_TEST(test_zk_push_back_null_data_to_slist);
 	}
 
 	{ // test for zk_slist_concat

@@ -20,10 +20,10 @@ int main()
 	int node4_data = 4;
 
 	// This is a list of integers.
-	list = zk_slist_append(list, &node1_data);
-	list = zk_slist_append(list, &node2_data);
-	list = zk_slist_append(list, &node3_data);
-	list = zk_slist_append(list, &node4_data);
+	list = zk_push_back(list, &node1_data);
+	list = zk_push_back(list, &node2_data);
+	list = zk_push_back(list, &node3_data);
+	list = zk_push_back(list, &node4_data);
 
 	// Find without a custom function
 	if ((list_node = zk_slist_find(list, &node2_data, NULL))) {

@@ -29,12 +29,12 @@ int main()
 	size_t index = 0;
 
 	// creates a list of integers with some NULL nodes
-	list = zk_slist_append(list, &node_1);
-	list = zk_slist_append(list, &node_2);
-	list = zk_slist_append(list, NULL);
-	list = zk_slist_append(list, &node_3);
-	list = zk_slist_append(list, NULL);
-	list = zk_slist_append(list, &node_4);
+	list = zk_push_back(list, &node_1);
+	list = zk_push_back(list, &node_2);
+	list = zk_push_back(list, NULL);
+	list = zk_push_back(list, &node_3);
+	list = zk_push_back(list, NULL);
+	list = zk_push_back(list, &node_4);
 
 	// find indexes without custom function
 	index = zk_slist_index(list, &node_2, NULL);

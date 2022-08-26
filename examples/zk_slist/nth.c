@@ -7,9 +7,9 @@ int main()
 {
 	zk_slist_t *list = NULL;
 
-	list = zk_slist_append(list, "1");
-	list = zk_slist_append(list, "2");
-	list = zk_slist_append(list, "3");
+	list = zk_push_back(list, "1");
+	list = zk_push_back(list, "2");
+	list = zk_push_back(list, "3");
 
 	// gets 1st node and print is data
 	printf("1st data: %s \n", (char *)(zk_slist_nth(list, 1)->data));

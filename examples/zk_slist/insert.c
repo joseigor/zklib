@@ -12,9 +12,9 @@ int main()
 {
 	zk_slist_t *list = NULL;
 
-	list = zk_slist_append(list, "1");
-	list = zk_slist_append(list, "2");
-	list = zk_slist_append(list, "4");
+	list = zk_push_back(list, "1");
+	list = zk_push_back(list, "2");
+	list = zk_push_back(list, "4");
 
 	// insert "0" as the first element of the list
 	list = zk_slist_insert(list, "0", 1);

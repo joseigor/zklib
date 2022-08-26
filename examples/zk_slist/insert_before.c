@@ -12,8 +12,8 @@ int main()
 {
 	zk_slist_t *list = NULL;
 
-	list = zk_slist_append(list, "1");
-	list = zk_slist_append(list, "3");
+	list = zk_push_back(list, "1");
+	list = zk_push_back(list, "3");
 
 	// uses zk_slist_insert_before() to insert a new node in the middle of the list
 	list = zk_slist_insert_before(list, list->next, "2");

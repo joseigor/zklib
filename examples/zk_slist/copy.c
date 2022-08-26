@@ -13,12 +13,12 @@ int main()
 {
 	zk_slist_t *list = NULL, *list_cp = NULL;
 
-	list = zk_slist_append(list, strdup("This"));
-	list = zk_slist_append(list, strdup("list"));
-	list = zk_slist_append(list, strdup("will"));
-	list = zk_slist_append(list, strdup("be"));
-	list = zk_slist_append(list, strdup("shallow"));
-	list = zk_slist_append(list, strdup("copied."));
+	list = zk_push_back(list, strdup("This"));
+	list = zk_push_back(list, strdup("list"));
+	list = zk_push_back(list, strdup("will"));
+	list = zk_push_back(list, strdup("be"));
+	list = zk_push_back(list, strdup("shallow"));
+	list = zk_push_back(list, strdup("copied."));
 
 	// creates a shallow copy of list
 	list_cp = zk_slist_copy(list);

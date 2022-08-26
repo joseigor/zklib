@@ -53,22 +53,6 @@ void _zk_slist_front_back_split(zk_slist_t *list, zk_slist_t **front, zk_slist_t
 }
 
 // SECTION END: Private functions
-
-zk_slist_t *zk_slist_append(zk_slist_t *list, void *const data)
-{
-	zk_slist_t *node = _zk_slist_new_node();
-	node->data = data;
-
-	if (list == NULL) {
-		list = node;
-	} else {
-		zk_slist_t *last_node = zk_slist_last(list);
-		last_node->next = node;
-	}
-
-	return list;
-}
-
 zk_slist_t *zk_slist_concat(zk_slist_t *const list_dest, zk_slist_t *const list_src)
 {
 	if (list_dest == NULL) {
@@ -195,7 +179,7 @@ size_t zk_slist_index(zk_slist_t *list, const void *const data, zk_compare_t con
 zk_slist_t *zk_slist_insert(zk_slist_t *list, void *data, size_t position)
 {
 	if (position < 1) {
-		list = zk_slist_append(list, data);
+		list = zk_slist_push_back(list, data);
 	} else if (position == 1) {
 		list = zk_slist_prepend(list, data);
 	} else {
@@ -280,6 +264,21 @@ zk_slist_t *zk_slist_prepend(zk_slist_t *list, void *data)
 	} else {
 		node->next = list;
 		list = node;
+	}
+
+	return list;
+}
+
+zk_slist_t *zk_slist_push_back(zk_slist_t *list, void *const data)
+{
+	zk_slist_t *node = _zk_slist_new_node();
+	node->data = data;
+
+	if (list == NULL) {
+		list = node;
+	} else {
+		zk_slist_t *last_node = zk_slist_last(list);
+		last_node->next = node;
 	}
 
 	return list;

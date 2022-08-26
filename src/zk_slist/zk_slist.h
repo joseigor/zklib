@@ -19,37 +19,6 @@ void _zk_slist_front_back_split(zk_slist_t *list, zk_slist_t **front, zk_slist_t
 
 /**
  * @brief
- * Adds a new element to the end of the \p list.
- * If \p list is empty the return value is the start of a new \p list.
- *
- * **Time Complexity:** O(n)
- *
- * In order to append an element to a \p list `zk_slist_append()` needs to traverse all the `list` to find its end which
- * is a \b O(n) operation. This is not a problem when few elements need to be added but if you are working with a big
- * set of elements the best approach is to first use `zk_slist_prepend()` which has time complexity \b O(1) and then
- * reverse the list calling `zk_slist_reverse()` that is a \b O(n) operation.
- *
- * @param list
- * - Type: A list of \c zk_list_t
- * - The data is owned by the caller of the function.
- *
- * @param data
- * - Type: A pointer to the data to be addded.
- * - This argument can be \c NULL.
- * - The data is owned by the caller of the function.
- *
- * @return zk_slist_t*
- * - Type: A list of \c zk_list_t.
- * - Either \p list or the new start of the \c zk_list_t if \p list was \c NULL.
- * - The data is owned by the caller of the function.
- *
- * **Example**
- * \include zk_slist/append.c
- */
-zk_slist_t *zk_slist_append(zk_slist_t *list, void *const data);
-
-/**
- * @brief
  * Adds the second list \p list_src to the end of the first list \p list_dest. Note that the elements \p list_src are
  * not copied they are used directly. This function just appends the \p list_src to the end of \p list_dest . If your
  * intent is to concat a copy of \p list_src to \p list_dest check `zk_slist_copy()` and `zk_slist_copy_deep()`.
@@ -437,6 +406,37 @@ zk_slist_t *zk_slist_nth(zk_slist_t *list, size_t n);
  *
  */
 zk_slist_t *zk_slist_prepend(zk_slist_t *list, void *data);
+
+/**
+ * @brief
+ * Adds a new element to the end of the \p list.
+ * If \p list is empty the return value is the start of a new \p list.
+ *
+ * **Time Complexity:** O(n)
+ *
+ * In order to append an element to a \p list `zk_slist_push_back()` needs to traverse all the `list` to find its end
+ * which is a \b O(n) operation. This is not a problem when few elements need to be added but if you are working with a
+ * big set of elements the best approach is to first use `zk_slist_prepend()` which has time complexity \b O(1) and then
+ * reverse the list calling `zk_slist_reverse()` that is a \b O(n) operation.
+ *
+ * @param list
+ * - Type: A list of \c zk_list_t
+ * - The data is owned by the caller of the function.
+ *
+ * @param data
+ * - Type: A pointer to the data to be addded.
+ * - This argument can be \c NULL.
+ * - The data is owned by the caller of the function.
+ *
+ * @return zk_slist_t*
+ * - Type: A list of \c zk_list_t.
+ * - Either \p list or the new start of the \c zk_list_t if \p list was \c NULL.
+ * - The data is owned by the caller of the function.
+ *
+ * **Example**
+ * \include zk_slist/push_back.c
+ */
+zk_slist_t *zk_slist_push_back(zk_slist_t *list, void *const data);
 
 /**
  * @brief Reverses a \c zk_slist_t. It simply switches the next and prev pointers of each element.

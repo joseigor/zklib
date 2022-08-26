@@ -45,15 +45,15 @@ int main()
 	node_to_delete->string = strdup("node_to_delete");
 
 	// create list_node
-	list_node = zk_slist_append(list_node, node_to_delete);
+	list_node = zk_push_back(list_node, node_to_delete);
 
 	// creates list
-	list = zk_slist_append(list, node_1_data);
-	list = zk_slist_append(list, node_2_data);
+	list = zk_push_back(list, node_1_data);
+	list = zk_push_back(list, node_2_data);
 	// insert list_node into the list
 	list = zk_slist_concat(list, list_node);
 	// add more data to list
-	list = zk_slist_append(list, node_3_data);
+	list = zk_push_back(list, node_3_data);
 
 	// print list
 	zk_slist_foreach(list, print_list, NULL);
