@@ -8,18 +8,21 @@ struct custom_data {
 	char *string;
 };
 
-void print_string_list(void *data, __attribute__((__unused__)) void *user_data)
+void print_string_list(void *data, void *user_data)
 {
+	ZK_UNUSED(user_data);
 	printf("data: %s\n", (char *)data);
 }
 
-void print_number_list(void *data, __attribute__((__unused__)) void *user_data)
+void print_number_list(void *data, void *user_data)
 {
+	ZK_UNUSED(user_data);
 	printf("data: %d\n", *((int *)data));
 }
 
-void print_custom_list(void *data, __attribute__((__unused__)) void *user_data)
+void print_custom_list(void *data, void *user_data)
 {
+	ZK_UNUSED(user_data);
 	struct custom_data *c_data = data;
 
 	printf("custom_data: %d %s\n", c_data->value, c_data->string);

@@ -9,8 +9,9 @@ struct dummy_node_data {
 	char *string;
 };
 
-void print_list(void *data, __attribute__((__unused__)) void *user_data)
+void print_list(void *data, void *user_data)
 {
+	ZK_UNUSED(user_data);
 	struct dummy_node_data *node_data = data;
 	printf("data->value: %d\n", node_data->value);
 	printf("data->string: %s\n", node_data->string);

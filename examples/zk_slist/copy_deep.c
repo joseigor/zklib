@@ -4,8 +4,9 @@
 
 #include "zk/zklib.h"
 
-void print_list(void *data, __attribute__((__unused__)) void *user_data)
+void print_list(void *data, void *user_data)
 {
+	ZK_UNUSED(user_data);
 	printf("data: %s\n", (char *)data);
 }
 
