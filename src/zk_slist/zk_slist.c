@@ -4,15 +4,6 @@
 
 // SECTION: Private functions
 
-static zk_slist *_zk_slist_new_node(void)
-{
-	zk_slist *list = malloc(sizeof(zk_slist));
-	list->data = NULL;
-	list->next = NULL;
-
-	return list;
-}
-
 static void _zk_slist_free(zk_slist **node, zk_destructor_t func)
 {
 	if (node == NULL || *node == NULL) {
@@ -230,9 +221,7 @@ zk_slist *zk_slist_nth(zk_slist *list, size_t n)
 
 zk_slist *zk_slist_prepend(zk_slist *list, void *data)
 {
-	zk_slist *node = _zk_slist_new_node();
-	node->data = data;
-	node->next = NULL;
+	zk_slist *node = zk_slist_new_node(data);
 
 	if (list == NULL) {
 		list = node;
@@ -260,6 +249,28 @@ zk_slist *zk_slist_reverse(zk_slist *list)
 	return list;
 }
 
+// Constructor
+zk_slist *zk_slist_new_node(void *const data)
+{
+	zk_slist *list = malloc(sizeof(zk_slist));
+	list->data = data;
+	list->next = NULL;
+
+	return list;
+}
+
+// Destructor
+void zk_slist_free(zk_slist **list_p, zk_destructor_t const func)
+{
+	if (list_p != NULL) {
+		while ((*list_p) != NULL) {
+			zk_slist *node = *list_p;
+			*list_p = node->next;
+			_zk_slist_free(&node, func);
+		}
+	}
+}
+
 // Iterators
 zk_slist *zk_slist_begin(zk_slist *list)
 {
@@ -284,8 +295,7 @@ void zk_slist_for_each(zk_slist *begin, zk_slist *end, zk_foreach_t const func, 
 // Modifiers
 zk_slist *zk_slist_push_back(zk_slist *list, void *const data)
 {
-	zk_slist *node = _zk_slist_new_node();
-	node->data = data;
+	zk_slist *node = zk_slist_new_node(data);
 
 	if (list == NULL) {
 		list = node;
@@ -295,15 +305,4 @@ zk_slist *zk_slist_push_back(zk_slist *list, void *const data)
 	}
 
 	return list;
-}
-
-void zk_slist_free(zk_slist **list_p, zk_destructor_t const func)
-{
-	if (list_p != NULL) {
-		while ((*list_p) != NULL) {
-			zk_slist *node = *list_p;
-			*list_p = node->next;
-			_zk_slist_free(&node, func);
-		}
-	}
 }

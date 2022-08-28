@@ -401,6 +401,12 @@ zk_slist *zk_slist_push_back(zk_slist *list, void *const data);
  */
 zk_slist *zk_slist_reverse(zk_slist *list);
 
+// Constructor
+zk_slist *zk_slist_new_node(void *const data);
+
+// Destructor
+void zk_slist_free(zk_slist **list_p, zk_destructor_t const func);
+
 // Iterators
 zk_slist *zk_slist_begin(zk_slist *list);
 
@@ -410,5 +416,3 @@ void zk_slist_for_each(zk_slist *begin, zk_slist *end, zk_foreach_t const func, 
 
 // Modifiers
 zk_slist *zk_slist_push_back(zk_slist *list, void *const data);
-
-void zk_slist_free(zk_slist **list_p, zk_destructor_t const func);

@@ -1308,6 +1308,76 @@ void test_zk_slit_reverse_when_list_has_mutiple_nodes(void)
 	TEST_ASSERT_NULL(slist);
 }
 
+/*--------------- Test Constructor ---------------*/
+// test zk_slist_new_node
+void test_zk_slist_new_node_when_data_is_null(void)
+{
+	zk_slist *list = zk_slist_new_node(NULL);
+	TEST_ASSERT_NOT_NULL(list);
+	TEST_ASSERT_NULL(list->data);
+	TEST_ASSERT_NULL(list->next);
+
+	zk_free(&list, NULL);
+}
+void test_zk_slist_new_node_when_data_is_not_null(void)
+{
+	zk_slist *list = zk_slist_new_node("data");
+	TEST_ASSERT_NOT_NULL(list);
+	TEST_ASSERT_NOT_NULL(list->data);
+	TEST_ASSERT_EQUAL("data", (char *)(list->data));
+	TEST_ASSERT_NULL(list->next);
+
+	zk_free(&list, NULL);
+}
+
+/*--------------- Test Destructor ---------------*/
+// test zk_free
+void test_zk_free_a_null_list_should_just_return(void)
+{
+	zk_slist *slist = NULL;
+	zk_free(&slist, NULL);
+	TEST_ASSERT_NULL(slist);
+}
+
+void test_zk_free_list_with_no_dynamic_allocated_node_data(void)
+{
+	zk_slist *slist = NULL;
+	int node_1_data = 1;
+	int node_2_data = 2;
+	int node_3_data = 3;
+	int node_4_data = 4;
+
+	slist = zk_push_back(slist, &node_1_data);
+	slist = zk_push_back(slist, &node_2_data);
+	slist = zk_push_back(slist, &node_3_data);
+	slist = zk_push_back(slist, &node_4_data);
+
+	zk_free(&slist, NULL);
+
+	TEST_ASSERT_NULL(slist);
+}
+
+void test_zk_free_for_list_of_strings(void)
+{
+	int number_of_nodes = 100;
+	zk_slist *slist = NULL;
+
+	for (int i = 0; i < number_of_nodes; i++) {
+		slist = zk_push_back(slist, strdup("a"));
+		TEST_ASSERT_NOT_NULL(slist);
+	}
+
+	zk_free(&slist, free);
+	TEST_ASSERT_NULL(slist);
+}
+
+void test_zk_free_for_a_null_list_should_just_return(void)
+{
+	zk_slist *slist = NULL;
+	zk_free(&slist, free);
+	TEST_ASSERT_NULL(slist);
+}
+
 /*--------------- Test Iterators ---------------*/
 
 // test for zk_begin
@@ -1606,53 +1676,6 @@ void test_zk_push_back_null_data_to_slist(void)
 	TEST_ASSERT_NULL(slist);
 }
 
-// test zk_free
-void test_zk_free_a_null_list_should_just_return(void)
-{
-	zk_slist *slist = NULL;
-	zk_free(&slist, NULL);
-	TEST_ASSERT_NULL(slist);
-}
-
-void test_zk_free_list_with_no_dynamic_allocated_node_data(void)
-{
-	zk_slist *slist = NULL;
-	int node_1_data = 1;
-	int node_2_data = 2;
-	int node_3_data = 3;
-	int node_4_data = 4;
-
-	slist = zk_push_back(slist, &node_1_data);
-	slist = zk_push_back(slist, &node_2_data);
-	slist = zk_push_back(slist, &node_3_data);
-	slist = zk_push_back(slist, &node_4_data);
-
-	zk_free(&slist, NULL);
-
-	TEST_ASSERT_NULL(slist);
-}
-
-void test_zk_free_for_list_of_strings(void)
-{
-	int number_of_nodes = 100;
-	zk_slist *slist = NULL;
-
-	for (int i = 0; i < number_of_nodes; i++) {
-		slist = zk_push_back(slist, strdup("a"));
-		TEST_ASSERT_NOT_NULL(slist);
-	}
-
-	zk_free(&slist, free);
-	TEST_ASSERT_NULL(slist);
-}
-
-void test_zk_free_for_a_null_list_should_just_return(void)
-{
-	zk_slist *slist = NULL;
-	zk_free(&slist, free);
-	TEST_ASSERT_NULL(slist);
-}
-
 /*--------------- Test Private Functions ---------------*/
 
 void test_zk_slist_front_back_split_when_list_is_null(void)
@@ -1926,6 +1949,21 @@ int main(void)
 		RUN_TEST(test_zk_slit_reverse_when_list_has_mutiple_nodes);
 	}
 
+	/*--------------- Test Constructor ---------------*/
+	{ // test zk_slist_new_node
+		RUN_TEST(test_zk_slist_new_node_when_data_is_null);
+		RUN_TEST(test_zk_slist_new_node_when_data_is_not_null);
+	}
+
+	/*--------------- Test Destructor ---------------*/
+
+	{ // test zk_free
+		RUN_TEST(test_zk_free_a_null_list_should_just_return);
+		RUN_TEST(test_zk_free_list_with_no_dynamic_allocated_node_data);
+		RUN_TEST(test_zk_free_for_list_of_strings);
+		RUN_TEST(test_zk_free_for_a_null_list_should_just_return);
+	}
+
 	/*--------------- Test Iterators ---------------*/
 
 	{ // test zk_for_each
@@ -1954,13 +1992,6 @@ int main(void)
 		RUN_TEST(test_zk_push_back_3_items_to_slist);
 		RUN_TEST(test_zk_push_back_n_items_to_slist);
 		RUN_TEST(test_zk_push_back_null_data_to_slist);
-	}
-
-	{ // test zk_free
-		RUN_TEST(test_zk_free_a_null_list_should_just_return);
-		RUN_TEST(test_zk_free_list_with_no_dynamic_allocated_node_data);
-		RUN_TEST(test_zk_free_for_list_of_strings);
-		RUN_TEST(test_zk_free_for_a_null_list_should_just_return);
 	}
 
 	/*--------------- Test Private Functions ---------------*/
