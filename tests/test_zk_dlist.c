@@ -187,6 +187,7 @@ void test_zk_push_back_to_empty_list(void)
 	TEST_ASSERT_NOT_NULL(list);
 	TEST_ASSERT_EQUAL_PTR(list->data, &data);
 	TEST_ASSERT_EQUAL(*((int *)list->data), data);
+	TEST_ASSERT_NULL(list->prev);
 	TEST_ASSERT_NULL(list->next);
 
 	zk_free(&list, NULL);
@@ -205,6 +206,7 @@ void test_zk_push_back_2_items_to_list(void)
 	TEST_ASSERT_NOT_NULL(list);
 	TEST_ASSERT_EQUAL_PTR(list->data, &node1_data);
 	TEST_ASSERT_EQUAL_PTR(*((int *)list->data), node1_data);
+	TEST_ASSERT_NULL(list->prev);
 	TEST_ASSERT_NULL(list->next);
 
 	list = zk_push_back(list, &node2_data);
@@ -213,14 +215,16 @@ void test_zk_push_back_2_items_to_list(void)
 	TEST_ASSERT_NOT_NULL(list);
 	TEST_ASSERT_EQUAL_PTR(list->data, &node1_data);
 	TEST_ASSERT_EQUAL_PTR(*((int *)list->data), node1_data);
+	TEST_ASSERT_NULL(list->prev);
 	TEST_ASSERT_NOT_NULL(list->next);
 
 	// now we check the content of the second node of the list
-	zk_dlist *node_1 = list->next;
-	TEST_ASSERT_NOT_NULL(node_1);
-	TEST_ASSERT_EQUAL_PTR(node_1->data, &node2_data);
-	TEST_ASSERT_EQUAL_PTR(*((int *)node_1->data), node2_data);
-	TEST_ASSERT_NULL(node_1->next);
+	zk_dlist *node_2 = list->next;
+	TEST_ASSERT_NOT_NULL(node_2);
+	TEST_ASSERT_EQUAL_PTR(node_2->data, &node2_data);
+	TEST_ASSERT_EQUAL_PTR(*((int *)node_2->data), node2_data);
+	TEST_ASSERT_EQUAL_PTR(list, node_2->prev);
+	TEST_ASSERT_NULL(node_2->next);
 
 	zk_free(&list, NULL);
 	TEST_ASSERT_NULL(list);
@@ -242,6 +246,7 @@ void test_zk_push_back_3_items_to_list(void)
 	TEST_ASSERT_NOT_NULL(list);
 	TEST_ASSERT_EQUAL_PTR(list->data, &node1_data);
 	TEST_ASSERT_EQUAL(*((int *)list->data), node1_data);
+	TEST_ASSERT_NULL(list->prev);
 	TEST_ASSERT_NULL(list->next);
 
 	list = zk_push_back(list, &node2_data);
@@ -250,6 +255,7 @@ void test_zk_push_back_3_items_to_list(void)
 	TEST_ASSERT_NOT_NULL(list);
 	TEST_ASSERT_EQUAL_PTR(list->data, &node1_data);
 	TEST_ASSERT_EQUAL(*((int *)list->data), node1_data);
+	TEST_ASSERT_NULL(list->prev);
 	TEST_ASSERT_NOT_NULL(list->next);
 
 	// now we check the content of the second node of the list
@@ -257,6 +263,7 @@ void test_zk_push_back_3_items_to_list(void)
 	TEST_ASSERT_NOT_NULL(node_2);
 	TEST_ASSERT_EQUAL_PTR(node_2->data, &node2_data);
 	TEST_ASSERT_EQUAL(*((int *)node_2->data), node2_data);
+	TEST_ASSERT_EQUAL_PTR(list, node_2->prev);
 	TEST_ASSERT_NULL(node_2->next);
 
 	list = zk_push_back(list, &node3_data);
@@ -265,6 +272,7 @@ void test_zk_push_back_3_items_to_list(void)
 	TEST_ASSERT_NOT_NULL(list);
 	TEST_ASSERT_EQUAL_PTR(list->data, &node1_data);
 	TEST_ASSERT_EQUAL(*((int *)list->data), node1_data);
+	TEST_ASSERT_NULL(list->prev);
 	TEST_ASSERT_NOT_NULL(list->next);
 
 	// now we check the content of the second node of the list
@@ -272,6 +280,7 @@ void test_zk_push_back_3_items_to_list(void)
 	TEST_ASSERT_NOT_NULL(node_2);
 	TEST_ASSERT_EQUAL_PTR(node_2->data, &node2_data);
 	TEST_ASSERT_EQUAL(*((int *)node_2->data), node2_data);
+	TEST_ASSERT_EQUAL_PTR(list, node_2->prev);
 	TEST_ASSERT_NOT_NULL(node_2->next);
 
 	// now we check the content of the third node of the list
@@ -280,6 +289,7 @@ void test_zk_push_back_3_items_to_list(void)
 	TEST_ASSERT_NOT_NULL(node_3);
 	TEST_ASSERT_EQUAL_PTR(node_3->data, &node3_data);
 	TEST_ASSERT_EQUAL(*((int *)node_3->data), node3_data);
+	TEST_ASSERT_EQUAL_PTR(node_2, node_3->prev);
 	TEST_ASSERT_NULL(node_3->next);
 
 	zk_free(&list, NULL);
@@ -302,6 +312,11 @@ void test_zk_push_back_n_items_to_list(void)
 	for (zk_dlist *node_i = list;; node_i = node_i->next) {
 		TEST_ASSERT_NOT_NULL(node_i);
 		TEST_ASSERT_EQUAL_PTR(node_i->data, &nodes_data[node_idx]);
+		if (node_idx == 0) {
+			TEST_ASSERT_NULL(node_i->prev);
+		} else {
+			TEST_ASSERT_NOT_NULL(node_i->prev);
+		}
 		TEST_ASSERT_EQUAL(*((int *)node_i->data), nodes_data[node_idx]);
 		if (node_i->next == NULL) {
 			break;
@@ -323,12 +338,19 @@ void test_zk_push_back_null_data_to_list(void)
 		TEST_ASSERT_NOT_NULL(list);
 	}
 
+	int i = 0;
 	for (zk_dlist *node_i = list;; node_i = node_i->next) {
 		TEST_ASSERT_NOT_NULL(node_i);
 		TEST_ASSERT_EQUAL_PTR(node_i->data, NULL);
+		if (i == 0) {
+			TEST_ASSERT_NULL(node_i->prev);
+		} else {
+			TEST_ASSERT_NOT_NULL(node_i->prev);
+		}
 		if (node_i->next == NULL) {
 			break;
 		}
+		i++;
 	}
 
 	zk_free(&list, NULL);
