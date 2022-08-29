@@ -284,7 +284,7 @@ zk_slist *zk_slist_end(zk_slist *list)
 	return NULL;
 }
 
-void zk_slist_for_each(zk_slist *begin, zk_slist *end, zk_foreach_t const func, void *user_data)
+void zk_slist_for_each(zk_slist *begin, zk_slist *const end, zk_foreach_t const func, void *const user_data)
 {
 	if (func != NULL) {
 		for (; begin != end; begin = begin->next) {
