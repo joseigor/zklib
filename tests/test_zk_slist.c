@@ -1,14 +1,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "common/test_common.h"
 #include "unity.h"
 #include "zk/zklib.h"
 #include "zk_common/zk_common.h"
-
-struct dummy_node_data {
-	int value;
-	char *string;
-};
 
 static int slist_compare_data_custom(const void *const node_data, const void *const user_data)
 {
@@ -32,21 +28,6 @@ static int slist_compare_data_custom(const void *const node_data, const void *co
 	}
 
 	return 0;
-}
-
-static void dummy_node_data_free(void *data)
-{
-	struct dummy_node_data *node_data = data;
-	free(node_data->string);
-	free(node_data);
-}
-
-static void dummy_node_data_free_foreach(void *data, void *user_data)
-{
-	ZK_UNUSED(user_data);
-	struct dummy_node_data *node_data = data;
-	free(node_data->string);
-	free(node_data);
 }
 
 static void *copy_node_data(const void *const data, void *user_data)

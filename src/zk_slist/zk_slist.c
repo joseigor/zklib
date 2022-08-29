@@ -263,6 +263,7 @@ zk_slist *zk_slist_new_node(void *const data)
 void zk_slist_free(zk_slist **list_p, zk_destructor_t const func)
 {
 	if (list_p != NULL) {
+		// TODO: use begin and end iterators
 		while ((*list_p) != NULL) {
 			zk_slist *node = *list_p;
 			*list_p = node->next;
