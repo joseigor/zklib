@@ -11,6 +11,7 @@ typedef struct zk_dlist {
 
 // Constructor
 zk_dlist *zk_dlist_new_node(void *const data);
+
 // Destructor
 void zk_dlist_free(zk_dlist **list_p, zk_destructor_t const func);
 
