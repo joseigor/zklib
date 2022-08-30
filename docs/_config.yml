@@ -36,17 +36,25 @@ plugins:
 
 
 collections:
-  versions:
-    permalink: "/:collection/:path/"
-    output: true
+  # containers:
+  #   permalink: "/:collection/:path/"
+  #   output: true
+  # versions:
+  #   permalink: "/:collection/:path/"
+  #   output: true
 
 just_the_docs:
   collections:
-    versions:
-      name: Versions
-      nav_exclude: false
-      nav_fold: true
-      search_exclude: false
+    # containers:
+    #   name: Containers
+    #   nav_exclude: false
+    #   nav_fold: true
+    #   search_exclude: false
+    # versions:
+    #   name: Versions
+    #   nav_exclude: false
+    #   nav_fold: true
+    #   search_exclude: false
 
 aux_links:
   "zklib on GitHub":
