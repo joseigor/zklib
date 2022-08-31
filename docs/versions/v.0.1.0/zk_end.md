@@ -16,28 +16,32 @@ Returns an iterator to the element following the last element of the `CONTAINER`
 ### Parameters
 
 `CONTAINER`:
-- Could be any of the types below:
+- Could be a pointer to any of the types below:
   - {% include containers_url.md container="zk_slist"%}
   - {% include containers_url.md container="zk_dlist"%}
   - {% include containers_url.md container="zk_c_slist"%}
+  - {% include containers_url.md container="zk_d_slist"%}
 - The data is owned by the caller of the function.
 
 ### Returns
- If `CONTAINER` is:
- - {% include containers_url.md container="zk_slist"%}: Iterator to the element following the last element of the `CONTAINER` which in this case is `NULL`.
- - {% include containers_url.md container="zk_dlist"%}: Iterator to the element following the last element of the `CONTAINER` which in this case is `NULL`.
- - {% include containers_url.md container="zk_c_slist"%}: Iterator to the element last element of the `CONTAINER`.
- - The data is owned by the caller of the function.
+A pointer to a `CONTAINER`. If `CONTAINER` is:
+- {% include containers_url.md container="zk_slist"%}: returns an iterator to the element following the last element of the `CONTAINER` which in this case is `NULL`.
+- {% include containers_url.md container="zk_dlist"%}: returns an iterator to the element following the last element of the `CONTAINER` which in this case is `NULL`.
+- {% include containers_url.md container="zk_c_slist"%}: returns an iterator to the element last element of the `CONTAINER`.
+- {% include containers_url.md container="zk_d_slist"%}: returns an iterator to the element last element of the `CONTAINER`.
+- The data is owned by the caller of the function.
 
 ### Time Complexity / Space Complexity:
 If `CONTAINER` is:
- - {% include containers_url.md container="zk_slist"%}: **O(1) / O(1)**.
- - {% include containers_url.md container="zk_dlist"%}: **O(1) / O(1)**.
- - {% include containers_url.md container="zk_c_slist"%}: **O(1) / O(1)**.
+- {% include containers_url.md container="zk_slist"%}: **O(1) / O(1)**.
+- {% include containers_url.md container="zk_dlist"%}: **O(1) / O(1)**.
+- {% include containers_url.md container="zk_c_slist"%}: **O(1) / O(1)**.
+- {% include containers_url.md container="zk_c_dlist"%}: **O(1) / O(1)**.
 
 ### Examples:
- - {% include examples_url.md container="zk_slist" file="zk_end.c" -%}
- - {% include examples_url.md container="zk_dlist" file="zk_end.c" -%}
- - {% include examples_url.md container="zk_c_slist" file="zk_end.c" -%}
+- {% include examples_url.md container="zk_slist" file="begin_end.c" -%}
+- {% include examples_url.md container="zk_dlist" file="begin_end.c" -%}
+- {% include examples_url.md container="zk_c_slist" file="begin_end.c" -%}
+- {% include examples_url.md container="zk_c_dlist" file="begin_end.c" -%}
 
 
