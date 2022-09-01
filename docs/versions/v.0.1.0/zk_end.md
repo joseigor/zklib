@@ -27,8 +27,8 @@ Returns an iterator to the element following the last element of the `CONTAINER`
 A pointer to a `CONTAINER`. If `CONTAINER` is:
 - {% include containers_url.md container="zk_slist"%}: returns an iterator to the element following the last element of the `CONTAINER` which in this case is `NULL`.
 - {% include containers_url.md container="zk_dlist"%}: returns an iterator to the element following the last element of the `CONTAINER` which in this case is `NULL`.
-- {% include containers_url.md container="zk_c_slist"%}: returns an iterator to the element last element of the `CONTAINER`.
-- {% include containers_url.md container="zk_d_slist"%}: returns an iterator to the element last element of the `CONTAINER`.
+- {% include containers_url.md container="zk_c_slist"%}: returns an iterator last element of the `CONTAINER`.
+- {% include containers_url.md container="zk_d_slist"%}: returns an iterator last element of the `CONTAINER`.
 - The data is owned by the caller of the function.
 
 ### Time Complexity / Space Complexity:
