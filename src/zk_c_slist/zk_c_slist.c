@@ -80,3 +80,17 @@ zk_c_slist *zk_c_slist_push_back(zk_c_slist *list, void *const data)
 
 	return node;
 }
+
+zk_c_slist *zk_c_slist_push_front(zk_c_slist *list, void *const data)
+{
+	zk_c_slist *node = zk_c_slist_new_node(data);
+
+	if (list == NULL) {
+		node->next = node;
+		list = node;
+	} else {
+		node->next = list->next;
+		list->next = node;
+	}
+	return list;
+}
