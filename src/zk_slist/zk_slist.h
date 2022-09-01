@@ -356,33 +356,6 @@ size_t zk_slist_length(zk_slist *list);
 zk_slist *zk_slist_nth(zk_slist *list, size_t n);
 
 /**
- * @brief Preprends, i.e. inserts at the head, a new node with \p data to the \p list.
- *
- * **Time Complexity:** O(1)
- *
- * @param list
- * - Type: A list of \c zk_list_t
- * - The data is owned by the caller of the function.
- *
- * @param data
- * - Type: A pointer to the data to be addded.
- * - This argument can be \c NULL.
- * - The data is owned by the caller of the function.
- *
- * @return zk_slist*
- * - Type: A list of \c zk_list_t.
- * - Either \p list or the new start of the \c zk_list_t if \p list was \c NULL.
- * - The data is owned by the caller of the function.
- *
- * **Example**
- * \include zk_slist/prepend.c
- *
- */
-zk_slist *zk_slist_prepend(zk_slist *list, void *data);
-
-zk_slist *zk_slist_push_back(zk_slist *list, void *const data);
-
-/**
  * @brief Reverses a \c zk_slist. It simply switches the next and prev pointers of each element.
  *
  * **Time Complexity:** O(n)
@@ -416,3 +389,5 @@ void zk_slist_for_each(zk_slist *begin, zk_slist *const end, zk_for_each_func co
 
 // Modifiers
 zk_slist *zk_slist_push_back(zk_slist *list, void *const data);
+
+zk_slist *zk_slist_push_front(zk_slist *list, void *const data);

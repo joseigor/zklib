@@ -64,7 +64,7 @@ zk_slist *zk_slist_copy(const zk_slist *list)
 
 	zk_slist *cp = NULL;
 	while (list != NULL) {
-		cp = zk_slist_prepend(cp, list->data);
+		cp = zk_slist_push_front(cp, list->data);
 		list = list->next;
 	}
 	cp = zk_slist_reverse(cp);
@@ -80,7 +80,7 @@ zk_slist *zk_slist_copy_deep(const zk_slist *list, zk_copy_data_t func, void *us
 	zk_slist *cp = NULL;
 	while (list != NULL) {
 		void *data = func(list->data, user_data);
-		cp = zk_slist_prepend(cp, data);
+		cp = zk_slist_push_front(cp, data);
 		list = list->next;
 	}
 	cp = zk_slist_reverse(cp);
@@ -147,7 +147,7 @@ zk_slist *zk_slist_insert(zk_slist *list, void *data, size_t position)
 	if (position < 1) {
 		list = zk_slist_push_back(list, data);
 	} else if (position == 1) {
-		list = zk_slist_prepend(list, data);
+		list = zk_slist_push_front(list, data);
 	} else {
 		zk_slist *temp = list;
 		size_t index = 1;
@@ -155,7 +155,7 @@ zk_slist *zk_slist_insert(zk_slist *list, void *data, size_t position)
 			temp = temp->next;
 			index++;
 		}
-		temp->next = zk_slist_prepend(temp->next, data);
+		temp->next = zk_slist_push_front(temp->next, data);
 	}
 
 	return list;
@@ -169,7 +169,7 @@ zk_slist *zk_slist_insert_before(zk_slist *list, zk_slist *sibling, void *data)
 
 	// sibling is the head of the list
 	if (list == sibling) {
-		list = zk_slist_prepend(list, data);
+		list = zk_slist_push_front(list, data);
 		return list;
 	}
 
@@ -179,7 +179,7 @@ zk_slist *zk_slist_insert_before(zk_slist *list, zk_slist *sibling, void *data)
 		temp = temp->next;
 	}
 
-	temp->next = zk_slist_prepend(temp->next, data);
+	temp->next = zk_slist_push_front(temp->next, data);
 
 	return list;
 }
@@ -219,20 +219,6 @@ zk_slist *zk_slist_nth(zk_slist *list, size_t n)
 	return list;
 }
 
-zk_slist *zk_slist_prepend(zk_slist *list, void *data)
-{
-	zk_slist *node = zk_slist_new_node(data);
-
-	if (list == NULL) {
-		list = node;
-	} else {
-		node->next = list;
-		list = node;
-	}
-
-	return list;
-}
-
 zk_slist *zk_slist_reverse(zk_slist *list)
 {
 	zk_slist *prev = NULL;
@@ -263,7 +249,6 @@ zk_slist *zk_slist_new_node(void *const data)
 void zk_slist_free(zk_slist **list_p, zk_destructor_t const func)
 {
 	if (list_p != NULL) {
-		// TODO: use begin and end iterators
 		while ((*list_p) != NULL) {
 			zk_slist *node = *list_p;
 			*list_p = node->next;
@@ -303,6 +288,20 @@ zk_slist *zk_slist_push_back(zk_slist *list, void *const data)
 	} else {
 		zk_slist *last_node = zk_slist_last(list);
 		last_node->next = node;
+	}
+
+	return list;
+}
+
+zk_slist *zk_slist_push_front(zk_slist *list, void *data)
+{
+	zk_slist *node = zk_slist_new_node(data);
+
+	if (list == NULL) {
+		list = node;
+	} else {
+		node->next = list;
+		list = node;
 	}
 
 	return list;

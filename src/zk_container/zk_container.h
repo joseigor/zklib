@@ -8,6 +8,16 @@
 
 // clang-format off
 
+
+// Destructor
+#define zk_free(CONTAINER, FUNC)                  \
+	_Generic((CONTAINER),                     \
+		zk_slist * * : zk_slist_free,     \
+		zk_dlist * * : zk_dlist_free,     \
+		zk_c_slist * * : zk_c_slist_free, \
+		zk_c_dlist * * : zk_c_dlist_free) \
+		(CONTAINER, FUNC)
+
 // Iterators
 #define zk_for_each(CONTAINER, FUNC, USER_DATA)     \
 	_Generic((CONTAINER),                       \
@@ -42,13 +52,10 @@
 		zk_c_dlist * : zk_c_dlist_push_back) \
 		(CONTAINER, DATA)
 
-#define zk_free(CONTAINER, FUNC)                  \
-	_Generic((CONTAINER),                     \
-		zk_slist * * : zk_slist_free,     \
-		zk_dlist * * : zk_dlist_free,     \
-		zk_c_slist * * : zk_c_slist_free, \
-		zk_c_dlist * * : zk_c_dlist_free) \
-		(CONTAINER, FUNC)
+#define zk_push_front(CONTAINER, DATA)                \
+	_Generic((CONTAINER),                         \
+		zk_slist *   : zk_slist_push_front)   \
+		(CONTAINER, DATA)
 
 // clang-format on
 #endif
