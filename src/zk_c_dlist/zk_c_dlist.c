@@ -56,7 +56,7 @@ zk_c_dlist *zk_c_dlist_end(zk_c_dlist *list)
 	return list != NULL ? list->prev : list;
 }
 
-void zk_c_dlist_for_each(zk_c_dlist *begin, zk_c_dlist *const end, zk_foreach_t const func, void *const user_data)
+void zk_c_dlist_for_each(zk_c_dlist *begin, zk_c_dlist *const end, zk_for_each_func const func, void *const user_data)
 {
 	if (func != NULL && begin != NULL) {
 		for (; begin != end; begin = begin->next) {

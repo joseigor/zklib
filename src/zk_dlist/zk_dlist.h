@@ -20,7 +20,7 @@ zk_dlist *zk_dlist_begin(zk_dlist *list);
 
 zk_dlist *zk_dlist_end(zk_dlist *list);
 
-void zk_dlist_for_each(zk_dlist *begin, zk_dlist *const end, zk_foreach_t func, void *const user_data);
+void zk_dlist_for_each(zk_dlist *begin, zk_dlist *const end, zk_for_each_func func, void *const user_data);
 
 // Modifiers
 zk_dlist *zk_dlist_push_back(zk_dlist *list, void *const data);

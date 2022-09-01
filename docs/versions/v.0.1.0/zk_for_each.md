@@ -22,7 +22,7 @@ Iterates over each element of the `CONTAINER` and calls the function `FUNC`. Thi
 - The data is owned by the caller of the function.
 
 `FUNC`:
- - Type: `zk_foreach_t`
+ - Type: `zk_for_each_func`
  - Function called for each node of the list.
  - The data is owned by the caller of the function.
 

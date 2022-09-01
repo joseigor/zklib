@@ -19,7 +19,7 @@ zk_c_slist *zk_c_slist_begin(zk_c_slist *list);
 
 zk_c_slist *zk_c_slist_end(zk_c_slist *list);
 
-void zk_c_slist_for_each(zk_c_slist *begin, zk_c_slist *const end, zk_foreach_t const func, void *const user_data);
+void zk_c_slist_for_each(zk_c_slist *begin, zk_c_slist *const end, zk_for_each_func const func, void *const user_data);
 
 // Modifiers
 zk_c_slist *zk_c_slist_push_back(zk_c_slist *list, void *const data);
