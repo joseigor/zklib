@@ -25,4 +25,6 @@ void zk_dlist_for_each(zk_dlist *begin, zk_dlist *const end, zk_for_each_func fu
 // Modifiers
 zk_dlist *zk_dlist_push_back(zk_dlist *list, void *const data);
 
+zk_dlist *zk_dlist_push_front(zk_dlist *list, void *const data);
+
 #endif

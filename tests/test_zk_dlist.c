@@ -17,7 +17,7 @@ void tearDown(void)
 }
 
 /*--------------- Test Constructor ---------------*/
-// test zk_dlist_new_node
+// tests for zk_dlist_new_node()
 void test_zk_dlist_new_node_when_data_is_null(void)
 {
 	zk_dlist *list = zk_dlist_new_node(NULL);
@@ -41,7 +41,7 @@ void test_zk_dlist_new_node_when_data_is_not_null(void)
 }
 
 /*--------------- Test Destructor ---------------*/
-// test zk_free
+// tests for zk_free()
 void test_zk_free_a_null_list_should_just_return(void)
 {
 	zk_dlist *list = NULL;
@@ -90,7 +90,7 @@ void test_zk_free_for_a_null_list_should_just_return(void)
 
 /*--------------- Test Iterators ---------------*/
 
-// test for zk_begin
+// tests for for zk_begin()
 void test_zk_begin_returns_null_when_list_is_empty(void)
 {
 	zk_dlist *list = NULL;
@@ -134,7 +134,7 @@ void test_zk_begin_returns_1st_element_when_list_has_more_than_one_element(void)
 	TEST_ASSERT_NULL(list);
 }
 
-// test for zk_end
+// tests for for zk_end()
 void test_zk_end_returns_null_when_list_is_empty(void)
 {
 	zk_dlist *list = NULL;
@@ -172,8 +172,7 @@ void test_zk_end_returns_null_when_list_has_more_than_one_element(void)
 	TEST_ASSERT_NULL(list);
 }
 
-// test zk_for_each
-
+// tests for zk_for_each()
 void test_zk_for_each_when_func_is_null(void)
 {
 	struct dummy_node_data *node_1_data = malloc(sizeof(struct dummy_node_data));
@@ -229,7 +228,7 @@ void test_zk_for_each_when_func_is_not_null(void)
 
 /*--------------- Test Modifiers ---------------*/
 
-// Test zk_push_back
+// tests for zk_push_back()
 void test_zk_push_back_to_empty_list(void)
 {
 	zk_dlist *list = NULL;
@@ -410,18 +409,97 @@ void test_zk_push_back_null_data_to_list(void)
 	TEST_ASSERT_NULL(list);
 }
 
+// tests for for zk_push_front()
+void test_zk_push_front_n_items_to_list(void)
+{
+	int number_of_nodes = 100;
+	int nodes_data[number_of_nodes];
+	zk_dlist *list = NULL;
+
+	for (int i = 0; i < number_of_nodes; i++) {
+		nodes_data[i] = i;
+		list = zk_push_front(list, &nodes_data[i]);
+		TEST_ASSERT_NOT_NULL(list);
+		TEST_ASSERT_NULL(list->prev);
+		if (i == 0) {
+			// first node
+			TEST_ASSERT_NULL(list->next);
+		} else {
+			TEST_ASSERT_NOT_NULL(list->next);
+		}
+	}
+
+	int node_idx = 1;
+	for (zk_dlist *node_i = list;; node_i = node_i->next) {
+		TEST_ASSERT_NOT_NULL(node_i);
+		TEST_ASSERT_EQUAL_PTR(node_i->data, &nodes_data[number_of_nodes - node_idx]);
+		TEST_ASSERT_EQUAL_PTR(*((int *)node_i->data), nodes_data[number_of_nodes - node_idx]);
+		if (node_i->next == NULL) {
+			break;
+		}
+		if (node_idx == 1) {
+			// first node
+			TEST_ASSERT_NULL(node_i->prev);
+		} else {
+			TEST_ASSERT_NOT_NULL(node_i->prev);
+		}
+		node_idx++;
+	}
+
+	zk_free(&list, NULL);
+	TEST_ASSERT_NULL(list);
+}
+
+void test_zk_push_front_null_data_to_list(void)
+{
+	int number_of_nodes = 100;
+	zk_dlist *list = NULL;
+
+	for (int i = 0; i < number_of_nodes; i++) {
+		list = zk_push_front(list, NULL);
+		TEST_ASSERT_NOT_NULL(list);
+		TEST_ASSERT_NULL(list->prev);
+		if (i == 0) {
+			// first node
+			TEST_ASSERT_NULL(list->next);
+		} else {
+			TEST_ASSERT_NOT_NULL(list->next);
+		}
+	}
+
+	int node_idx = 1;
+	for (zk_dlist *node_i = list;; node_i = node_i->next) {
+		TEST_ASSERT_NOT_NULL(node_i);
+		TEST_ASSERT_EQUAL_PTR(node_i->data, NULL);
+		if (node_i->next == NULL) {
+			break;
+		}
+		if (node_idx == 1) {
+			// first node
+			TEST_ASSERT_NULL(node_i->prev);
+		} else {
+			TEST_ASSERT_NOT_NULL(node_i->prev);
+		}
+
+		node_idx++;
+	}
+
+	zk_free(&list, NULL);
+	TEST_ASSERT_NULL(list);
+}
+
 int main(void)
 {
 	UNITY_BEGIN();
 
 	/*--------------- Test Constructor ---------------*/
-	{ // test zk_dlist_new_node
+	{ // tests for zk_dlist_new_node()
 		RUN_TEST(test_zk_dlist_new_node_when_data_is_null);
 		RUN_TEST(test_zk_dlist_new_node_when_data_is_not_null);
 	}
 
 	/*--------------- Test Destructor ---------------*/
-	{ // test zk_free
+	{ // tests for zk_free()
 		RUN_TEST(test_zk_free_a_null_list_should_just_return);
 		RUN_TEST(test_zk_free_list_with_no_dynamic_allocated_node_data);
 		RUN_TEST(test_zk_free_for_list_of_strings);
@@ -430,19 +508,19 @@ int main(void)
 
 	/*--------------- Test Iterators ---------------*/
 
-	{ // test zk_begin
+	{ // tests for zk_begin()
 		RUN_TEST(test_zk_begin_returns_null_when_list_is_empty);
 		RUN_TEST(test_zk_begin_returns_1st_element_when_list_has_one_element);
 		RUN_TEST(test_zk_begin_returns_1st_element_when_list_has_more_than_one_element);
 	}
 
-	{ // test zk_end
+	{ // tests for zk_end()
 		RUN_TEST(test_zk_end_returns_null_when_list_is_empty);
 		RUN_TEST(test_zk_end_returns_null_when_list_has_one_element);
 		RUN_TEST(test_zk_end_returns_null_when_list_has_more_than_one_element);
 	}
 
-	{ // test zk_for_each
+	{ // tests for zk_for_each()
 		RUN_TEST(test_zk_for_each_when_func_is_null);
 		RUN_TEST(test_zk_for_each_when_list_is_null);
 		RUN_TEST(test_zk_for_each_when_func_is_not_null);
@@ -450,12 +528,18 @@ int main(void)
 
 	/*--------------- Test Modifiers ---------------*/
 
-	{ // tests for zk_push_back function
+	{ // tests for zk_push_back()
 		RUN_TEST(test_zk_push_back_to_empty_list);
 		RUN_TEST(test_zk_push_back_2_items_to_list);
 		RUN_TEST(test_zk_push_back_3_items_to_list);
 		RUN_TEST(test_zk_push_back_n_items_to_list);
 		RUN_TEST(test_zk_push_back_null_data_to_list);
+	}
+
+	{ // tests for zk_push_front()
+
+		RUN_TEST(test_zk_push_front_n_items_to_list);
+		RUN_TEST(test_zk_push_front_null_data_to_list);
 	}
 
 	return UNITY_END();

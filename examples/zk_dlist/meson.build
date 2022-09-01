@@ -7,3 +7,4 @@ executable('for_each', sources: ['for_each.c'], include_directories: inc_dir, de
 
 # Modifiers
 executable('push_back', sources: ['push_back.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
+executable('push_front', sources: ['push_front.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
