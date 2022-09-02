@@ -77,9 +77,8 @@ zk_c_dlist *zk_c_dlist_push_back(zk_c_dlist *list, void *const data)
 		node->next = node;
 		list = node;
 	} else {
-		zk_c_dlist *tail = list->prev;
-		tail->next = node;
-		node->prev = tail;
+		list->prev->next = node;
+		node->prev = list->prev;
 		node->next = list;
 		list->prev = node;
 	}
