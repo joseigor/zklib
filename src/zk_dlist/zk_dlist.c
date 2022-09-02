@@ -74,6 +74,41 @@ void zk_dlist_for_each(zk_dlist *begin, zk_dlist *const end, zk_for_each_func co
 }
 
 // Modifiers
+zk_dlist *zk_dlist_pop_back(zk_dlist *list, zk_destructor_t const func)
+{
+	if (list != NULL) {
+		if (list->next == NULL) {
+			// list has only one element
+			_zk_dlist_free(&list, func);
+		} else {
+			zk_dlist *node = list;
+			// moves node to element before last element
+			while (node->next->next != NULL) {
+				node = node->next;
+			}
+			// remove last element form the list
+			_zk_dlist_free(&node->next, func);
+			node->next = NULL;
+		}
+	}
+	return list;
+}
+zk_dlist *zk_dlist_pop_front(zk_dlist *list, zk_destructor_t const func)
+{
+	if (list != NULL) {
+		if (list->next == NULL) {
+			// list has only one element
+			_zk_dlist_free(&list, func);
+		} else {
+			zk_dlist *front_node = list;
+			list = list->next;
+			list->prev = NULL;
+			_zk_dlist_free(&front_node, func);
+		}
+	}
+	return list;
+}
+
 zk_dlist *zk_dlist_push_back(zk_dlist *list, void *const data)
 {
 	zk_dlist *node = zk_dlist_new_node(data);

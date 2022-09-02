@@ -23,6 +23,11 @@ zk_dlist *zk_dlist_end(zk_dlist *list);
 void zk_dlist_for_each(zk_dlist *begin, zk_dlist *const end, zk_for_each_func func, void *const user_data);
 
 // Modifiers
+
+zk_dlist *zk_dlist_pop_back(zk_dlist *list, zk_destructor_t const func);
+
+zk_dlist *zk_dlist_pop_front(zk_dlist *list, zk_destructor_t const func);
+
 zk_dlist *zk_dlist_push_back(zk_dlist *list, void *const data);
 
 zk_dlist *zk_dlist_push_front(zk_dlist *list, void *const data);

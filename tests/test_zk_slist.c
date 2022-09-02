@@ -1449,7 +1449,7 @@ void test_zk_for_each_when_func_is_not_null(void)
 }
 
 /*--------------- Test Modifiers ---------------*/
-// tests for zk_pop_front()
+// tests for zk_pop_back()
 void test_zk_pop_back_when_list_is_empty(void)
 {
 	zk_slist *list = NULL;
@@ -1545,6 +1545,18 @@ void test_zk_pop_front_when_list_is_empty(void)
 	TEST_ASSERT_NULL(list);
 }
 
+void test_zk_pop_front_when_list_has_1_element(void)
+{
+	zk_slist *list = NULL;
+	char *data[] = { "0", "1" };
+	list = zk_push_back(list, data[0]);
+
+	list = zk_pop_front(list, NULL);
+	TEST_ASSERT_NULL(list);
+
+	// no need to call zk_free() as list is freed by now
+}
+
 void test_zk_pop_front_when_list_has_2_elements(void)
 {
 	zk_slist *list = NULL;
@@ -1615,7 +1627,7 @@ void test_zk_pop_front_with_free_func_when_list_has_n_elements(void)
 	// no need to call zk_free() as list is freed by now
 }
 
-// Test zk_push_back
+// tests for zk_push_back()
 void test_zk_push_back_to_empty_list(void)
 {
 	zk_slist *slist = NULL;
@@ -2138,6 +2150,7 @@ int main(void)
 
 	{ // tests for zk_pop_front()
 		RUN_TEST(test_zk_pop_front_when_list_is_empty);
+		RUN_TEST(test_zk_pop_front_when_list_has_1_element);
 		RUN_TEST(test_zk_pop_front_when_list_has_2_elements);
 		RUN_TEST(test_zk_pop_front_when_list_has_3_elements);
 		RUN_TEST(test_zk_pop_front_when_list_has_n_elements);
