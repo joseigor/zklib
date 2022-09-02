@@ -44,6 +44,16 @@
 		(CONTAINER)
 
 // Modifiers
+#define zk_pop_back(CONTAINER, FUNC)            \
+	_Generic((CONTAINER),                   \
+		zk_slist * : zk_slist_pop_back) \
+		(CONTAINER, FUNC)
+
+#define zk_pop_front(CONTAINER, FUNC)            \
+	_Generic((CONTAINER),                    \
+		zk_slist * : zk_slist_pop_front) \
+		(CONTAINER, FUNC)
+
 #define zk_push_back(CONTAINER, DATA)                \
 	_Generic((CONTAINER),                        \
 		zk_slist *   : zk_slist_push_back,   \
