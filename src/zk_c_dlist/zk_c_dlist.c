@@ -86,3 +86,21 @@ zk_c_dlist *zk_c_dlist_push_back(zk_c_dlist *list, void *const data)
 
 	return list;
 }
+
+zk_c_dlist *zk_c_dlist_push_front(zk_c_dlist *list, void *const data)
+{
+	zk_c_dlist *node = zk_c_dlist_new_node(data);
+
+	if (list == NULL) {
+		node->prev = node;
+		node->next = node;
+
+	} else {
+		node->next = list;
+		node->prev = list->prev;
+		list->prev = node;
+		node->prev->next = node;
+	}
+
+	return node;
+}

@@ -56,7 +56,8 @@
 	_Generic((CONTAINER),                             \
 		zk_slist *   : zk_slist_push_front,       \
 		zk_dlist *   : zk_dlist_push_front,       \
-		zk_c_slist *   : zk_c_slist_push_front)   \
+		zk_c_slist *   : zk_c_slist_push_front,   \
+		zk_c_dlist *   : zk_c_dlist_push_front)   \
 		(CONTAINER, DATA)
 
 // clang-format on

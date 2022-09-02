@@ -396,6 +396,78 @@ void test_zk_push_back_null_data_to_list(void)
 	zk_free(&list, NULL);
 	TEST_ASSERT_NULL(list);
 }
+// tests for for zk_push_front()
+void test_zk_push_front_n_items_to_list(void)
+{
+	int number_of_nodes = 100;
+	int nodes_data[number_of_nodes];
+	zk_c_dlist *list = NULL;
+
+	for (int i = 0; i < number_of_nodes; i++) {
+		nodes_data[i] = i;
+		list = zk_push_front(list, &nodes_data[i]);
+		TEST_ASSERT_NOT_NULL(list);
+		TEST_ASSERT_NOT_NULL(list->prev);
+		TEST_ASSERT_NOT_NULL(list->next);
+	}
+
+	int node_idx = 99;
+	zk_c_dlist *current = list; // begin of the list
+	zk_c_dlist *last = list->prev;
+	while (current != last) {
+		TEST_ASSERT_NOT_NULL(current);
+		TEST_ASSERT_EQUAL_PTR(current->data, &nodes_data[node_idx]);
+		TEST_ASSERT_EQUAL(*((int *)current->data), nodes_data[node_idx]);
+		TEST_ASSERT_NOT_NULL(current->prev);
+		TEST_ASSERT_NOT_NULL(current->next);
+		node_idx--;
+		current = current->next;
+	}
+	// checks end node
+	TEST_ASSERT_NOT_NULL(last);
+	TEST_ASSERT_EQUAL_PTR(last->data, &nodes_data[node_idx]);
+	TEST_ASSERT_EQUAL(*((int *)last->data), nodes_data[node_idx]);
+	TEST_ASSERT_NOT_NULL(last->prev);
+	TEST_ASSERT_NOT_NULL(last->next);
+	TEST_ASSERT_EQUAL_PTR(list, last->next);
+
+	zk_free(&list, NULL);
+	TEST_ASSERT_NULL(list);
+}
+
+void test_zk_push_front_null_data_to_list(void)
+{
+	int number_of_nodes = 100;
+	zk_c_dlist *list = NULL;
+
+	for (int i = 0; i < number_of_nodes; i++) {
+		list = zk_push_front(list, NULL);
+		TEST_ASSERT_NOT_NULL(list);
+		TEST_ASSERT_NOT_NULL(list->prev);
+		TEST_ASSERT_NOT_NULL(list->next);
+	}
+
+	int node_idx = 99;
+	zk_c_dlist *current = list; // begin of the list
+	zk_c_dlist *last = list->prev;
+	while (current != last) {
+		TEST_ASSERT_NOT_NULL(current);
+		TEST_ASSERT_EQUAL_PTR(current->data, NULL);
+		TEST_ASSERT_NOT_NULL(current->prev);
+		TEST_ASSERT_NOT_NULL(current->next);
+		node_idx--;
+		current = current->next;
+	}
+	// checks end node
+	TEST_ASSERT_NOT_NULL(last);
+	TEST_ASSERT_EQUAL_PTR(last->data, NULL);
+	TEST_ASSERT_NOT_NULL(last->prev);
+	TEST_ASSERT_NOT_NULL(last->next);
+	TEST_ASSERT_EQUAL_PTR(list, last->next);
+
+	zk_free(&list, NULL);
+	TEST_ASSERT_NULL(list);
+}
 
 int main(void)
 {
@@ -444,6 +516,12 @@ int main(void)
 		RUN_TEST(test_zk_push_back_3_items_to_list);
 		RUN_TEST(test_zk_push_back_n_items_to_list);
 		RUN_TEST(test_zk_push_back_null_data_to_list);
+	}
+
+	{ // tests for zk_push_front()
+
+		RUN_TEST(test_zk_push_front_n_items_to_list);
+		RUN_TEST(test_zk_push_front_null_data_to_list);
 	}
 
 	return UNITY_END();

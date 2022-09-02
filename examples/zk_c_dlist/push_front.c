@@ -11,7 +11,7 @@ void print_list(void *data, void *user_data)
 
 int main()
 {
-	zk_c_slist *list = NULL;
+	zk_c_dlist *list = NULL;
 
 	list = zk_push_back(list, "1");
 	list = zk_push_back(list, "2");
