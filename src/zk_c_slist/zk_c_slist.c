@@ -67,6 +67,43 @@ void zk_c_slist_for_each(zk_c_slist *begin, zk_c_slist *const end, zk_for_each_f
 }
 
 // Modifiers
+
+zk_c_slist *zk_c_slist_pop_back(zk_c_slist *list, zk_destructor_t const func)
+{
+	if (list != NULL) {
+		if (list == list->next) {
+			// list has only one element
+			_zk_c_slist_free(&list, func);
+		} else {
+			zk_c_slist *node = list->next; // 1st element for the list
+			// loop until node is the element previous to the last element
+			while (node->next != list) {
+				node = node->next;
+			}
+			// removes last element and set list as the new last element.
+			node->next = list->next;
+			_zk_c_slist_free(&list, func);
+			list = node;
+		}
+	}
+	return list;
+}
+
+zk_c_slist *zk_c_slist_pop_front(zk_c_slist *list, zk_destructor_t const func)
+{
+	if (list != NULL) {
+		if (list == list->next) {
+			// list has only one element
+			_zk_c_slist_free(&list, func);
+		} else {
+			zk_c_slist *front_node = list->next;
+			list->next = list->next->next;
+			_zk_c_slist_free(&front_node, func);
+		}
+	}
+	return list;
+}
+
 zk_c_slist *zk_c_slist_push_back(zk_c_slist *list, void *const data)
 {
 	zk_c_slist *node = zk_c_slist_new_node(data);

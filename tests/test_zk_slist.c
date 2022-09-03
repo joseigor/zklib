@@ -1460,7 +1460,7 @@ void test_zk_pop_back_when_list_is_empty(void)
 void test_zk_pop_back_when_list_has_1_element(void)
 {
 	zk_slist *list = NULL;
-	char *data[] = { "0", "1" };
+	char *data[] = { "0" };
 	list = zk_push_back(list, data[0]);
 
 	list = zk_pop_back(list, NULL);
@@ -1548,7 +1548,7 @@ void test_zk_pop_front_when_list_is_empty(void)
 void test_zk_pop_front_when_list_has_1_element(void)
 {
 	zk_slist *list = NULL;
-	char *data[] = { "0", "1" };
+	char *data[] = { "0" };
 	list = zk_push_back(list, data[0]);
 
 	list = zk_pop_front(list, NULL);

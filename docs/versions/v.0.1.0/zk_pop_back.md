@@ -46,7 +46,7 @@ A pointer to a `CONTAINER`. If `CONTAINER` is:
 If `CONTAINER` is:
 - {% include containers_url.md container="zk_slist"%}: **O(N) / O(1)**.
 - {% include containers_url.md container="zk_dlist"%}: **O(N) / O(1)**.
-- {% include containers_url.md container="zk_c_slist"%}: **O(1) / O(1)**.
+- {% include containers_url.md container="zk_c_slist"%}: **O(N) / O(1)**.
 - {% include containers_url.md container="zk_c_dlist"%}: **O(1) / O(1)**.
 
 ### Examples:
