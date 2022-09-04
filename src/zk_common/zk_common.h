@@ -11,4 +11,9 @@ typedef void (*zk_destructor_t)(void *data);
 
 typedef void (*zk_for_each_func)(void *data, void *user_data);
 
+enum zk_status {
+	ZK_OK = 0,
+	ZK_ERROR_ALLOC = 1,
+};
+
 #endif
