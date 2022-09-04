@@ -68,6 +68,40 @@ void zk_c_dlist_for_each(zk_c_dlist *begin, zk_c_dlist *const end, zk_for_each_f
 }
 
 // Modifiers
+
+zk_c_dlist *zk_c_dlist_pop_back(zk_c_dlist *list, zk_destructor_t const func)
+{
+	if (list != NULL) {
+		if (list == list->next) {
+			// list has only one element
+			_zk_c_dlist_free(&list, func);
+		} else {
+			zk_c_dlist *back = list->prev;
+			back->prev->next = list;
+			list->prev = back->prev;
+			_zk_c_dlist_free(&back, func);
+		}
+	}
+	return list;
+}
+
+zk_c_dlist *zk_c_dlist_pop_front(zk_c_dlist *list, zk_destructor_t const func)
+{
+	if (list != NULL) {
+		if (list == list->next) {
+			// list has only one element
+			_zk_c_dlist_free(&list, func);
+		} else {
+			zk_c_dlist *front = list;
+			list = list->next;
+			list->prev = front->prev;
+			front->prev->next = list;
+			_zk_c_dlist_free(&front, func);
+		}
+	}
+	return list;
+}
+
 zk_c_dlist *zk_c_dlist_push_back(zk_c_dlist *list, void *const data)
 {
 	zk_c_dlist *node = zk_c_dlist_new_node(data);

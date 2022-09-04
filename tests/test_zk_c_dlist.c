@@ -232,6 +232,202 @@ void test_zk_for_each_when_func_is_not_null(void)
 }
 
 /*--------------- Test Modifiers ---------------*/
+// tests for zk_pop_back()
+void test_zk_pop_back_when_list_is_empty(void)
+{
+	zk_c_dlist *list = NULL;
+	TEST_ASSERT_NULL(zk_pop_back(list, NULL));
+	TEST_ASSERT_NULL(list);
+}
+
+void test_zk_pop_back_when_list_has_1_element(void)
+{
+	zk_c_dlist *list = NULL;
+	char *data[] = { "0" };
+	list = zk_push_back(list, data[0]);
+
+	list = zk_pop_back(list, NULL);
+	TEST_ASSERT_NULL(list);
+
+	// no need to call zk_free() as list is freed by now
+}
+
+void test_zk_pop_back_when_list_has_2_elements(void)
+{
+	zk_c_dlist *list = NULL;
+	char *data[] = { "0", "1" };
+	list = zk_push_back(list, data[0]);
+	list = zk_push_back(list, data[1]);
+
+	list = zk_pop_back(list, NULL);
+
+	TEST_ASSERT_NOT_NULL(list);
+	TEST_ASSERT_EQUAL_PTR(list, list->prev);
+	TEST_ASSERT_EQUAL_PTR(list, list->next);
+	TEST_ASSERT_EQUAL_STRING(data[0], (char *)list->data);
+
+	zk_free(&list, NULL);
+	TEST_ASSERT_NULL(list);
+}
+
+void test_zk_pop_back_when_list_has_3_elements(void)
+{
+	zk_c_dlist *list = NULL;
+	list = zk_push_back(list, "0");
+	list = zk_push_back(list, "1");
+	list = zk_push_back(list, "2");
+
+	list = zk_pop_back(list, NULL);
+	TEST_ASSERT_NOT_NULL(list);
+
+	// checks 1st element
+	TEST_ASSERT_NOT_NULL(list->prev);
+	TEST_ASSERT_NOT_NULL(list->next);
+	TEST_ASSERT_EQUAL_PTR(list, list->prev->prev);
+	TEST_ASSERT_EQUAL_PTR(list, list->next->next);
+	TEST_ASSERT_EQUAL_STRING("0", (char *)list->data);
+	// checks 2nd element
+	TEST_ASSERT_EQUAL_STRING("1", (char *)list->next->data);
+
+	zk_free(&list, NULL);
+	TEST_ASSERT_NULL(list);
+}
+
+void test_zk_pop_back_when_list_has_n_elements(void)
+{
+	char *data[] = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+	zk_c_dlist *list = NULL;
+	for (size_t i = 0; i < 10; i++) {
+		list = zk_push_back(list, data[i]);
+	}
+
+	// pops all elements
+	while (list != NULL) {
+		TEST_ASSERT_NOT_NULL(list->prev);
+		TEST_ASSERT_NOT_NULL(list->next);
+		// list always point to the first element
+		TEST_ASSERT_EQUAL_STRING("0", (char *)list->data);
+		list = zk_pop_back(list, NULL);
+	}
+	// no need to call zk_free() as list is freed by now
+}
+
+void test_zk_pop_back_with_free_func_when_list_has_n_elements(void)
+{
+	zk_c_dlist *list = NULL;
+	for (size_t i = 0; i < 10; i++) {
+		list = zk_push_back(list, strdup("data"));
+	}
+
+	// pops all elements
+	while (list != NULL) {
+		TEST_ASSERT_NOT_NULL(list->prev);
+		TEST_ASSERT_NOT_NULL(list->next);
+		TEST_ASSERT_EQUAL_STRING("data", (char *)list->data);
+		list = zk_pop_back(list, free);
+	}
+
+	// no need to call zk_free() as list is freed by now
+}
+
+// tests for zk_pop_front()
+void test_zk_pop_front_when_list_is_empty(void)
+{
+	zk_c_dlist *list = NULL;
+	TEST_ASSERT_NULL(zk_pop_front(list, NULL));
+	TEST_ASSERT_NULL(list);
+}
+
+void test_zk_pop_front_when_list_has_1_element(void)
+{
+	zk_c_dlist *list = NULL;
+	char *data[] = { "0" };
+	list = zk_push_back(list, data[0]);
+
+	list = zk_pop_front(list, NULL);
+	TEST_ASSERT_NULL(list);
+
+	// no need to call zk_free() as list is freed by now
+}
+
+void test_zk_pop_front_when_list_has_2_elements(void)
+{
+	zk_c_dlist *list = NULL;
+	char *data[] = { "0", "1" };
+	list = zk_push_back(list, data[0]);
+	list = zk_push_back(list, data[1]);
+
+	list = zk_pop_front(list, NULL);
+
+	TEST_ASSERT_NOT_NULL(list);
+	TEST_ASSERT_EQUAL_PTR(list, list->prev);
+	TEST_ASSERT_EQUAL_PTR(list, list->next);
+	TEST_ASSERT_EQUAL_STRING(data[1], (char *)list->data);
+
+	zk_free(&list, NULL);
+	TEST_ASSERT_NULL(list);
+}
+
+void test_zk_pop_front_when_list_has_3_elements(void)
+{
+	zk_c_dlist *list = NULL;
+	list = zk_push_back(list, "0");
+	list = zk_push_back(list, "1");
+	list = zk_push_back(list, "2");
+
+	list = zk_pop_front(list, NULL);
+	TEST_ASSERT_NOT_NULL(list);
+
+	// checks 1st element
+	TEST_ASSERT_NOT_NULL(list->prev);
+	TEST_ASSERT_NOT_NULL(list->next);
+	TEST_ASSERT_EQUAL_PTR(list, list->prev->prev);
+	TEST_ASSERT_EQUAL_PTR(list, list->next->next);
+	TEST_ASSERT_EQUAL_STRING("1", (char *)list->data);
+	// checks 2nd element
+	TEST_ASSERT_EQUAL_STRING("2", (char *)list->next->data);
+
+	zk_free(&list, NULL);
+	TEST_ASSERT_NULL(list);
+}
+
+void test_zk_pop_front_when_list_has_n_elements(void)
+{
+	char *data[] = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+	zk_c_dlist *list = NULL;
+	for (size_t i = 0; i < 10; i++) {
+		list = zk_push_back(list, data[i]);
+	}
+
+	// pops all elements
+	size_t i = 0;
+	while (list != NULL) {
+		TEST_ASSERT_NOT_NULL(list->prev);
+		TEST_ASSERT_NOT_NULL(list->next);
+		TEST_ASSERT_EQUAL_STRING(data[i++], (char *)list->data);
+		list = zk_pop_front(list, NULL);
+	}
+	// no need to call zk_free() as list is freed by now
+}
+
+void test_zk_pop_front_with_free_func_when_list_has_n_elements(void)
+{
+	zk_c_dlist *list = NULL;
+	for (size_t i = 0; i < 10; i++) {
+		list = zk_push_back(list, strdup("data"));
+	}
+
+	// pops all elements
+	while (list != NULL) {
+		TEST_ASSERT_NOT_NULL(list->prev);
+		TEST_ASSERT_NOT_NULL(list->next);
+		TEST_ASSERT_EQUAL_STRING("data", (char *)list->data);
+		list = zk_pop_front(list, free);
+	}
+
+	// no need to call zk_free() as list is freed by now
+}
+
 // tests for zk_push_back()
 void test_zk_push_back_to_empty_list(void)
 {
@@ -509,6 +705,24 @@ int main(void)
 	}
 
 	// /*--------------- Test Modifiers ---------------*/
+
+	{ // tests for zk_pop_back()
+		RUN_TEST(test_zk_pop_back_when_list_is_empty);
+		RUN_TEST(test_zk_pop_back_when_list_has_1_element);
+		RUN_TEST(test_zk_pop_back_when_list_has_2_elements);
+		RUN_TEST(test_zk_pop_back_when_list_has_3_elements);
+		RUN_TEST(test_zk_pop_back_when_list_has_n_elements);
+		RUN_TEST(test_zk_pop_back_with_free_func_when_list_has_n_elements);
+	}
+
+	{ // tests for zk_pop_front()
+		RUN_TEST(test_zk_pop_front_when_list_is_empty);
+		RUN_TEST(test_zk_pop_front_when_list_has_1_element);
+		RUN_TEST(test_zk_pop_front_when_list_has_2_elements);
+		RUN_TEST(test_zk_pop_front_when_list_has_3_elements);
+		RUN_TEST(test_zk_pop_front_when_list_has_n_elements);
+		RUN_TEST(test_zk_pop_front_with_free_func_when_list_has_n_elements);
+	}
 
 	{ // tests for zk_push_back function()
 		RUN_TEST(test_zk_push_back_to_empty_list);
