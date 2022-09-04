@@ -3,10 +3,8 @@ inc_dir = []
 
 inc_dir += include_directories('.')
 
-subdir('zk_common')
-
+subdir('zk_c_dlist')
+subdir('zk_c_slist')
+subdir('zk_dlist')
 subdir('zk_slist')
-
 subdir('zk')
-
-

@@ -12,7 +12,7 @@ int cmp_int(const void *const data, const void *const user_data)
 
 int main()
 {
-	zk_slist_t *list = NULL, *list_node = NULL;
+	zk_slist *list = NULL, *list_node = NULL;
 
 	int node1_data = 1;
 	int node2_data = 2;
@@ -20,10 +20,10 @@ int main()
 	int node4_data = 4;
 
 	// This is a list of integers.
-	list = zk_slist_append(list, &node1_data);
-	list = zk_slist_append(list, &node2_data);
-	list = zk_slist_append(list, &node3_data);
-	list = zk_slist_append(list, &node4_data);
+	list = zk_push_back(list, &node1_data);
+	list = zk_push_back(list, &node2_data);
+	list = zk_push_back(list, &node3_data);
+	list = zk_push_back(list, &node4_data);
 
 	// Find without a custom function
 	if ((list_node = zk_slist_find(list, &node2_data, NULL))) {
@@ -36,7 +36,7 @@ int main()
 	}
 
 	// free lists after use
-	zk_slist_free(&list, NULL);
+	zk_free(&list, NULL);
 
 	return 0;
 }

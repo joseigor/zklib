@@ -1,16 +1,27 @@
-ex_zk_slist_append = executable('append', sources: ['append.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
-ex_zk_slist_concat = executable('concat', sources: ['concat.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
-ex_zk_slist_copy = executable('copy', sources: ['copy.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
-ex_zk_slist_copy_deep = executable('copy_deep', sources: ['copy_deep.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
-ex_zk_slist_delete_node = executable('delete_node', sources: ['delete_node.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
-ex_zk_slist_find = executable('find', sources: ['find.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
-ex_zk_slist_foreach = executable('foreach', sources: ['foreach.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
-ex_zk_slist_free = executable('free', sources: ['free.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
-ex_zk_slist_index = executable('index', sources: ['index.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
-ex_zk_slist_insert = executable('insert', sources: ['insert.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
-ex_zk_slist_insert_before = executable('insert_before', sources: ['insert_before.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
-ex_zk_slist_last = executable('last', sources: ['last.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
-ex_zk_slist_length = executable('length', sources: ['length.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
-ex_zk_slist_nth = executable('nth', sources: ['nth.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
-ex_zk_slist_prepend = executable('prepend', sources: ['prepend.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
-ex_zk_slist_reverse = executable('reverse', sources: ['reverse.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
+executable('concat', sources: ['concat.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
+executable('copy', sources: ['copy.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
+executable('copy_deep', sources: ['copy_deep.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
+executable('delete_node', sources: ['delete_node.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
+executable('find', sources: ['find.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
+executable('index', sources: ['index.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
+executable('insert', sources: ['insert.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
+executable('insert_before', sources: ['insert_before.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
+executable('last', sources: ['last.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
+executable('length', sources: ['length.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
+executable('nth', sources: ['nth.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
+executable('reverse', sources: ['reverse.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
+
+# Destructor
+executable('free', sources: ['free.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
+
+# Interators
+executable('begin_end', sources: ['begin_end.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
+executable('for_each', sources: ['for_each.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
+
+
+# Modifiers
+executable('pop_back', sources: ['pop_back.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
+executable('pop_front', sources: ['pop_front.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
+executable('push_back', sources: ['push_back.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
+executable('push_front', sources: ['push_front.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
+

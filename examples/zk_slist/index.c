@@ -24,17 +24,17 @@ int custom_compare_func(const void *const node_data, const void *const user_data
 
 int main()
 {
-	zk_slist_t *list = NULL;
+	zk_slist *list = NULL;
 	int node_1 = 1, node_2 = 2, node_3 = 3, node_4 = 4;
 	size_t index = 0;
 
 	// creates a list of integers with some NULL nodes
-	list = zk_slist_append(list, &node_1);
-	list = zk_slist_append(list, &node_2);
-	list = zk_slist_append(list, NULL);
-	list = zk_slist_append(list, &node_3);
-	list = zk_slist_append(list, NULL);
-	list = zk_slist_append(list, &node_4);
+	list = zk_push_back(list, &node_1);
+	list = zk_push_back(list, &node_2);
+	list = zk_push_back(list, NULL);
+	list = zk_push_back(list, &node_3);
+	list = zk_push_back(list, NULL);
+	list = zk_push_back(list, &node_4);
 
 	// find indexes without custom function
 	index = zk_slist_index(list, &node_2, NULL);
@@ -49,7 +49,7 @@ int main()
 	index = zk_slist_index(list, NULL, custom_compare_func);
 	assert(index == 3);
 
-	zk_slist_free(&list, NULL);
+	zk_free(&list, NULL);
 
 	return 0;
 }

@@ -3,18 +3,19 @@
 
 #include "zk/zklib.h"
 
-void print_list(void *data, __attribute__((__unused__)) void *user_data)
+void print_list(void *data, void *user_data)
 {
+	ZK_UNUSED(user_data);
 	printf("data: %s\n", (char *)data);
 }
 
 int main()
 {
-	zk_slist_t *list = NULL, *list_top = NULL, *list_end = NULL;
+	zk_slist *list = NULL, *list_top = NULL, *list_end = NULL;
 
-	list = zk_slist_append(list, "middle");
-	list_top = zk_slist_append(list_top, "top");
-	list_end = zk_slist_append(list_end, "end");
+	list = zk_push_back(list, "middle");
+	list_top = zk_push_back(list_top, "top");
+	list_end = zk_push_back(list_end, "end");
 
 	// add list_top to top of list
 	list = zk_slist_concat(list_top, list);
@@ -22,10 +23,10 @@ int main()
 	list = zk_slist_concat(list, list_end);
 
 	// print list
-	zk_slist_foreach(list, print_list, NULL);
+	zk_for_each(list, print_list, NULL);
 
 	// As list_top and list_list are linked to list only list needs to be freed
-	zk_slist_free(&list, NULL);
+	zk_free(&list, NULL);
 
 	return 0;
 }

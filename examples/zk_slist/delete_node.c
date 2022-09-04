@@ -9,8 +9,9 @@ struct dummy_node_data {
 	char *string;
 };
 
-void print_list(void *data, __attribute__((__unused__)) void *user_data)
+void print_list(void *data, void *user_data)
 {
+	ZK_UNUSED(user_data);
 	struct dummy_node_data *node_data = data;
 	printf("data->value: %d\n", node_data->value);
 	printf("data->string: %s\n", node_data->string);
@@ -24,8 +25,8 @@ void dummy_node_data_free(void *data)
 
 int main()
 {
-	zk_slist_t *list = NULL;
-	zk_slist_t *list_node = NULL;
+	zk_slist *list = NULL;
+	zk_slist *list_node = NULL;
 
 	// create some custom data
 	struct dummy_node_data *node_1_data = malloc(sizeof(struct dummy_node_data));
@@ -45,18 +46,18 @@ int main()
 	node_to_delete->string = strdup("node_to_delete");
 
 	// create list_node
-	list_node = zk_slist_append(list_node, node_to_delete);
+	list_node = zk_push_back(list_node, node_to_delete);
 
 	// creates list
-	list = zk_slist_append(list, node_1_data);
-	list = zk_slist_append(list, node_2_data);
+	list = zk_push_back(list, node_1_data);
+	list = zk_push_back(list, node_2_data);
 	// insert list_node into the list
 	list = zk_slist_concat(list, list_node);
 	// add more data to list
-	list = zk_slist_append(list, node_3_data);
+	list = zk_push_back(list, node_3_data);
 
 	// print list
-	zk_slist_foreach(list, print_list, NULL);
+	zk_for_each(list, print_list, NULL);
 
 	// remove list_node from list
 	list = zk_slist_delete_node(list, list_node, dummy_node_data_free);
@@ -64,10 +65,10 @@ int main()
 	printf("\nlist after list_node was delete\n");
 
 	// print list after list_node was delete
-	zk_slist_foreach(list, print_list, NULL);
+	zk_for_each(list, print_list, NULL);
 
 	// free list
-	zk_slist_free(&list, dummy_node_data_free);
+	zk_free(&list, dummy_node_data_free);
 
 	// There is no need to free list_node as zk_slist_delete_node() already did it.
 

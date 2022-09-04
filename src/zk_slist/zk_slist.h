@@ -2,51 +2,20 @@
 
 #include <stddef.h>
 
-#include "zk_common/zk_types.h"
+#include "zk_common/zk_common.h"
 
 /**
  * @brief Single linked list struct
  *
  */
-typedef struct zk_slist_t {
+typedef struct zk_slist {
 	void *data;
-	struct zk_slist_t *next;
-} zk_slist_t;
+	struct zk_slist *next;
+} zk_slist;
 
 #if UNIT_TEST
-void _zk_slist_front_back_split(zk_slist_t *list, zk_slist_t **front, zk_slist_t **back);
+void _zk_slist_front_back_split(zk_slist *list, zk_slist **front, zk_slist **back);
 #endif
-
-/**
- * @brief
- * Adds a new element to the end of the \p list.
- * If \p list is empty the return value is the start of a new \p list.
- *
- * **Time Complexity:** O(n)
- *
- * In order to append an element to a \p list `zk_slist_append()` needs to traverse all the `list` to find its end which
- * is a \b O(n) operation. This is not a problem when few elements need to be added but if you are working with a big
- * set of elements the best approach is to first use `zk_slist_prepend()` which has time complexity \b O(1) and then
- * reverse the list calling `zk_slist_reverse()` that is a \b O(n) operation.
- *
- * @param list
- * - Type: A list of \c zk_list_t
- * - The data is owned by the caller of the function.
- *
- * @param data
- * - Type: A pointer to the data to be addded.
- * - This argument can be \c NULL.
- * - The data is owned by the caller of the function.
- *
- * @return zk_slist_t*
- * - Type: A list of \c zk_list_t.
- * - Either \p list or the new start of the \c zk_list_t if \p list was \c NULL.
- * - The data is owned by the caller of the function.
- *
- * **Example**
- * \include zk_slist/append.c
- */
-zk_slist_t *zk_slist_append(zk_slist_t *list, void *const data);
 
 /**
  * @brief
@@ -63,23 +32,23 @@ zk_slist_t *zk_slist_append(zk_slist_t *list, void *const data);
  *
  * @param list_src
  * - Type: A list of \c zk_list_t
- * - The \c zk_slist_t to add to the end of the first zk_slist_t, this must point to the top of the list.
+ * - The \c zk_slist to add to the end of the first zk_slist, this must point to the top of the list.
  * - This argument can be \c NULL
  * - The data is owned by the caller of the function.
  *
- * @return zk_slist_t*
- * - Type: A list of \c zk_slist_t
- * - The start of the new \c zk_slist_t or if \p list_dest is \c NULL returns \c NULL.
+ * @return zk_slist*
+ * - Type: A list of \c zk_slist
+ * - The start of the new \c zk_slist or if \p list_dest is \c NULL returns \c NULL.
  * - The data is owned by the caller of the function.
  *
  * **Example**
  * \include zk_slist/concat.c
  */
-zk_slist_t *zk_slist_concat(zk_slist_t *const list_dest, zk_slist_t *const list_src);
+zk_slist *zk_slist_concat(zk_slist *const list_dest, zk_slist *const list_src);
 
 /**
  * @brief
- * Copies a \c zk_slist_t. Note that this is a "shallow" copy. If the \p list elements consist of pointers to data,
+ * Copies a \c zk_slist. Note that this is a "shallow" copy. If the \p list elements consist of pointers to data,
  * the pointers are copied but the actual data is not. See `zk_slist_copy_deep()` if you need to copy the data as well.
  *
  * **Time Complexity:** O(n)
@@ -88,19 +57,19 @@ zk_slist_t *zk_slist_concat(zk_slist_t *const list_dest, zk_slist_t *const list_
  * - Type: A list of \c zk_list_t
  * - The data is owned by the caller of the function.
  *
- * @return zk_slist_t*
- * - Type: A list of \c zk_slist_t
+ * @return zk_slist*
+ * - Type: A list of \c zk_slist
  * - The start of the new list that holds the same data as list.
  * - The data is owned by the caller of the function.
  *
  * **Example**
  * \include zk_slist/copy.c
  */
-zk_slist_t *zk_slist_copy(const zk_slist_t *list);
+zk_slist *zk_slist_copy(const zk_slist *list);
 
 /**
  * @brief
- * Makes a full (deep) copy of a \c zk_slist_t.
+ * Makes a full (deep) copy of a \c zk_slist.
  *
  * In contrast with `zk_slist_copy()`, this function uses \p func to make a copy of each list element, in addition to
  * copying the list container itself. \p func as a `zk_copy_data_t` takes two arguments, the `data` to be copied and a
@@ -120,8 +89,8 @@ zk_slist_t *zk_slist_copy(const zk_slist_t *list);
  * - User data passed to the copy function \p func, or \c NULL.
  * - The data is owned by the caller of the function.
  *
- * @return zk_slist_t*
- * - Type: A list of \c zk_slist_t
+ * @return zk_slist*
+ * - Type: A list of \c zk_slist
  * - The start of the new list that holds the same data as \p list or \c NULL if \p list or \p func is \c NULL
  * - Use `zk_slist_free_full()` to free it.
  * - The data is owned by the called function
@@ -129,7 +98,7 @@ zk_slist_t *zk_slist_copy(const zk_slist_t *list);
  * **Example**
  * \include zk_slist/copy_deep.c
  */
-zk_slist_t *zk_slist_copy_deep(const zk_slist_t *list, zk_copy_data_t func, void *user_data);
+zk_slist *zk_slist_copy_deep(const zk_slist *list, zk_copy_data_t func, void *user_data);
 
 /**
  * @brief
@@ -151,7 +120,7 @@ zk_slist_t *zk_slist_copy_deep(const zk_slist_t *list, zk_copy_data_t func, void
  * - Type: A function pointer of type `zk_destructor_t()` used to free the \p node data.
  * - It can be \c NULL.
  *
- * @return zk_slist_t*
+ * @return zk_slist*
  * - Type: A list of \c zk_list_t
  * - The new head of the \p list .
  * - The data is owned by the caller of the function.
@@ -159,14 +128,14 @@ zk_slist_t *zk_slist_copy_deep(const zk_slist_t *list, zk_copy_data_t func, void
  * **Example**
  * \include zk_slist/delete_node.c
  */
-zk_slist_t *zk_slist_delete_node(zk_slist_t *list, zk_slist_t *node, zk_destructor_t const func);
+zk_slist *zk_slist_delete_node(zk_slist *list, zk_slist *node, zk_destructor_t const func);
 
 /**
  * @brief
  * Finds the node from the \p list that contains \p data. If \p list contains more than one node with \p data the first
  * match is returned. User can provide a custom function \p func to performe the comparison which will be called for
  * each node of the list. The provided user function function should return 0 when the desired node is found. The
- * function takes two arguments, the zk_slist_t node’s data as the first argument and the given user data as second
+ * function takes two arguments, the zk_slist node’s data as the first argument and the given user data as second
  * argument.
  *
  * **Time Complexity:** O(n)
@@ -187,7 +156,7 @@ zk_slist_t *zk_slist_delete_node(zk_slist_t *list, zk_slist_t *node, zk_destruct
  * - This argument can be \c NULL in which case simple comparison is performed.
  * - The data is owned by the caller of the function.
  *
- * @return zk_slist_t*
+ * @return zk_slist*
  * - Type: A list of \c zk_list_t
  * - The found \c zk_list_t element, or \c NULL if it is not found.
  * - The data is owned by the caller of the function.
@@ -197,38 +166,11 @@ zk_slist_t *zk_slist_delete_node(zk_slist_t *list, zk_slist_t *node, zk_destruct
  * **Example**
  * \include zk_slist/find.c
  */
-zk_slist_t *zk_slist_find(zk_slist_t *list, const void *const data, zk_compare_t func);
+zk_slist *zk_slist_find(zk_slist *list, const void *const data, zk_compare_t func);
 
 /**
  * @brief
- * Iterates over \p list and calls the function \p func for each node of the \p list. This function takes two
- * arguments, the zk_slist_t node’s data as the first argument and the given \p user_data as second argument.
- *
- * **Time Complexity:** O(n)
- *
- * @param list
- * - Type: A list of \c zk_list_t
- * - The data is owned by the caller of the function.
- *
- * @param func
- * - Type: zk_foreach_t
- * - Function called for each node of the list.
- * - The data is owned by the caller of the function.
- *
- * @param user_data
- * - Type: Pointer to void
- * - User data to be passed as second argument of \p func.
- * - It can be NULL.
- * - The data is owned by the caller of the function.
- *
- * **Example**
- * \include zk_slist/foreach.c
- */
-void zk_slist_foreach(zk_slist_t *list, zk_foreach_t const func, void *user_data);
-
-/**
- * @brief
- * Frees a zk_slist_t and set it to NULL. If \p func is provided it will be called for every node of \p list. \p func
+ * Frees a zk_slist and set it to NULL. If \p func is provided it will be called for every node of \p list. \p func
  * receives as argument the node`s data. So if you need to free the node but also the data the node is pointing
  * to you can do it by providing your own implementation for \p func, see example below. If you just want to free the
  * \p list but not the data each node is pointing to then \p func can be NULL.
@@ -250,14 +192,14 @@ void zk_slist_foreach(zk_slist_t *list, zk_foreach_t const func, void *user_data
  * **Example**
  * \include zk_slist/free.c
  */
-void zk_slist_free(zk_slist_t **list_p, zk_destructor_t const func);
+void zk_slist_free(zk_slist **list_p, zk_destructor_t const func);
 
 /**
  * @brief
  * Finds first node that contains \p data and returns its index. If \p list contains more than one node with \p data the
  * index of the first match is returned. User can provide a custom function \p func to performe the comparison which
  * will be called for each node of the list. The provided user function should return 0 when the desired data is found.
- * The function takes two arguments, the zk_slist_t node’s data as the first argument and the given user data as second
+ * The function takes two arguments, the zk_slist node’s data as the first argument and the given user data as second
  * argument.
  *
  * **Time Complexity:** O(n)
@@ -288,7 +230,7 @@ void zk_slist_free(zk_slist_t **list_p, zk_destructor_t const func);
  * **Example**
  * \include zk_slist/index.c
  */
-size_t zk_slist_index(zk_slist_t *list, const void *const data, zk_compare_t const func);
+size_t zk_slist_index(zk_slist *list, const void *const data, zk_compare_t const func);
 
 /**
  * @brief Inserts a new  node with \p data at the given \p position.
@@ -312,7 +254,7 @@ size_t zk_slist_index(zk_slist_t *list, const void *const data, zk_compare_t con
  * - If \p postion is 0 or greater than the number of nodes that list contains the new node is inserted at the
  * end of the list.
  *
- * @return zk_slist_t*
+ * @return zk_slist*
  * - Type: A list of \c zk_list_t
  * - The head of the new \p list which contains the new node with \p data.
  * - The data is owned by the caller of the function.
@@ -320,7 +262,7 @@ size_t zk_slist_index(zk_slist_t *list, const void *const data, zk_compare_t con
  * **Example**
  * \include zk_slist/insert.c
  */
-zk_slist_t *zk_slist_insert(zk_slist_t *list, void *data, size_t position);
+zk_slist *zk_slist_insert(zk_slist *list, void *data, size_t position);
 
 /**
  * @brief Inserts a node before \p sibling containing data.
@@ -341,7 +283,7 @@ zk_slist_t *zk_slist_insert(zk_slist_t *list, void *data, size_t position);
  * - This argument can be \c NULL .
  * - The data is owned by the caller of the function.
  *
- * @return zk_slist_t*
+ * @return zk_slist*
  * - Type: A list of \c zk_list_t
  * - Thenew head of the \p list.
  * - The data is owned by the caller of the function.
@@ -349,7 +291,7 @@ zk_slist_t *zk_slist_insert(zk_slist_t *list, void *data, size_t position);
  * **Example**
  * \include zk_slist/insert_before.c
  */
-zk_slist_t *zk_slist_insert_before(zk_slist_t *list, zk_slist_t *sibling, void *data);
+zk_slist *zk_slist_insert_before(zk_slist *list, zk_slist *sibling, void *data);
 
 /**
  * @brief Gets last node of \p list.
@@ -358,7 +300,7 @@ zk_slist_t *zk_slist_insert_before(zk_slist_t *list, zk_slist_t *sibling, void *
  * - Type: A list of \c zk_list_t
  * - The data is owned by the caller of the function.
  *
- * @return zk_slist_t*
+ * @return zk_slist*
  * - Type: A list of \c zk_list_t
  * - Last node of the \p list of NULL if \p list is NULL.
  * - The data is owned by the caller of the function.
@@ -367,7 +309,7 @@ zk_slist_t *zk_slist_insert_before(zk_slist_t *list, zk_slist_t *sibling, void *
  * \include zk_slist/last.c
  */
 
-zk_slist_t *zk_slist_last(zk_slist_t *list);
+zk_slist *zk_slist_last(zk_slist *list);
 
 /**
  * @brief Get the length of the list.
@@ -385,7 +327,7 @@ zk_slist_t *zk_slist_last(zk_slist_t *list);
  * **Example**
  * \include zk_slist/length.c
  */
-size_t zk_slist_length(zk_slist_t *list);
+size_t zk_slist_length(zk_slist *list);
 
 /**
  * @brief Gets the \p list node at a given position \p n.
@@ -401,7 +343,7 @@ size_t zk_slist_length(zk_slist_t *list);
  * - The node position.
  * - First node of the list is at position 1.
  *
- * @return zk_slist_t*
+ * @return zk_slist*
  * - Type: A list of \c zk_list_t
  * - The node at position \p n.
  * - If \p n is 0 or greater than the number of nodes that \p list contains the the last node is returned.
@@ -411,35 +353,10 @@ size_t zk_slist_length(zk_slist_t *list);
  * **Example**
  * \include zk_slist/nth.c
  */
-zk_slist_t *zk_slist_nth(zk_slist_t *list, size_t n);
+zk_slist *zk_slist_nth(zk_slist *list, size_t n);
 
 /**
- * @brief Preprends, i.e. inserts at the head, a new node with \p data to the \p list.
- *
- * **Time Complexity:** O(1)
- *
- * @param list
- * - Type: A list of \c zk_list_t
- * - The data is owned by the caller of the function.
- *
- * @param data
- * - Type: A pointer to the data to be addded.
- * - This argument can be \c NULL.
- * - The data is owned by the caller of the function.
- *
- * @return zk_slist_t*
- * - Type: A list of \c zk_list_t.
- * - Either \p list or the new start of the \c zk_list_t if \p list was \c NULL.
- * - The data is owned by the caller of the function.
- *
- * **Example**
- * \include zk_slist/prepend.c
- *
- */
-zk_slist_t *zk_slist_prepend(zk_slist_t *list, void *data);
-
-/**
- * @brief Reverses a \c zk_slist_t. It simply switches the next and prev pointers of each element.
+ * @brief Reverses a \c zk_slist. It simply switches the next and prev pointers of each element.
  *
  * **Time Complexity:** O(n)
  *
@@ -447,7 +364,7 @@ zk_slist_t *zk_slist_prepend(zk_slist_t *list, void *data);
  * - Type: A list of \c zk_list_t
  * - The data is owned by the caller of the function.
  *
- * @return zk_slist_t*
+ * @return zk_slist*
  * - Type: A list of \c zk_list_t
  * - The start of the reversed list.
  * - The data is owned by the caller of the function.
@@ -455,4 +372,26 @@ zk_slist_t *zk_slist_prepend(zk_slist_t *list, void *data);
  * **Example**
  * \include zk_slist/reverse.c
  */
-zk_slist_t *zk_slist_reverse(zk_slist_t *list);
+zk_slist *zk_slist_reverse(zk_slist *list);
+
+// Constructor
+zk_slist *zk_slist_new_node(void *const data);
+
+// Destructor
+void zk_slist_free(zk_slist **list_p, zk_destructor_t const func);
+
+// Iterators
+zk_slist *zk_slist_begin(zk_slist *list);
+
+zk_slist *zk_slist_end(zk_slist *list);
+
+void zk_slist_for_each(zk_slist *begin, zk_slist *const end, zk_for_each_func const func, void *const user_data);
+
+// Modifiers
+zk_slist *zk_slist_pop_back(zk_slist *list, zk_destructor_t const func);
+
+zk_slist *zk_slist_pop_front(zk_slist *list, zk_destructor_t const func);
+
+zk_slist *zk_slist_push_back(zk_slist *list, void *const data);
+
+zk_slist *zk_slist_push_front(zk_slist *list, void *const data);
