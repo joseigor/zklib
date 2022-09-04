@@ -11,9 +11,10 @@ typedef void (*zk_destructor_t)(void *data);
 
 typedef void (*zk_for_each_func)(void *data, void *user_data);
 
-enum zk_status {
+typedef enum zk_status {
 	ZK_OK = 0,
 	ZK_ERROR_ALLOC = 1,
-};
+	ZK_INVALID_ARGUMENT = 2,
+} zk_status;
 
 #endif
