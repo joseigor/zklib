@@ -9,7 +9,7 @@ typedef struct zk_c_slist {
 } zk_c_slist;
 
 // Constructor
-zk_c_slist *zk_c_slist_new_node(void *const data);
+zk_status zk_c_slist_new_node(zk_c_slist **node_p, void *const data);
 
 // Destructor
 void zk_c_slist_free(zk_c_slist **list_p, zk_destructor_t const func);
@@ -23,12 +23,12 @@ void zk_c_slist_for_each(zk_c_slist *begin, zk_c_slist *const end, zk_for_each_f
 
 // Modifiers
 
-zk_c_slist *zk_c_slist_pop_back(zk_c_slist *list, zk_destructor_t const func);
+zk_status zk_c_slist_pop_back(zk_c_slist **list_p, zk_destructor_t const func);
 
-zk_c_slist *zk_c_slist_pop_front(zk_c_slist *list, zk_destructor_t const func);
+zk_status zk_c_slist_pop_front(zk_c_slist **list_p, zk_destructor_t const func);
 
-zk_c_slist *zk_c_slist_push_back(zk_c_slist *list, void *const data);
+zk_status zk_c_slist_push_back(zk_c_slist **list_p, void *const data);
 
-zk_c_slist *zk_c_slist_push_front(zk_c_slist *list, void *const data);
+zk_status zk_c_slist_push_front(zk_c_slist **list_p, void *const data);
 
 #endif
