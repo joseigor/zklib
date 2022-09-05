@@ -17,7 +17,7 @@ void tearDown(void)
 
 /*--------------- Test Constructor ---------------*/
 // tests for zk_c_slist_new_node()
-void test_zk_dlist_new_node_when_reference_is_null(void)
+void test_zk_c_slist_new_node_when_reference_is_null(void)
 {
 	zk_c_slist **list = NULL;
 	TEST_ASSERT_EQUAL(ZK_INVALID_ARGUMENT, zk_c_slist_new_node(list, NULL));
@@ -660,7 +660,7 @@ int main(void)
 
 	/*--------------- Test Constructor ---------------*/
 	{ // tests for zk_c_slist_new_node()
-		RUN_TEST(test_zk_dlist_new_node_when_reference_is_null);
+		RUN_TEST(test_zk_c_slist_new_node_when_reference_is_null);
 		RUN_TEST(test_zk_c_slist_new_node_when_data_is_null);
 		RUN_TEST(test_zk_c_slist_new_node_when_data_is_not_null);
 	}

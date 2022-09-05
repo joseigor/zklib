@@ -49,7 +49,7 @@
 		zk_slist *    : zk_slist_pop_back,   \
 		zk_dlist **   : zk_dlist_pop_back,   \
 		zk_c_slist ** : zk_c_slist_pop_back, \
-		zk_c_dlist *  : zk_c_dlist_pop_back) \
+		zk_c_dlist ** : zk_c_dlist_pop_back) \
 		(CONTAINER, FUNC)
 
 #define zk_pop_front(CONTAINER, FUNC)                 \
@@ -57,7 +57,7 @@
 		zk_slist *    : zk_slist_pop_front,   \
 		zk_dlist **   : zk_dlist_pop_front,   \
 		zk_c_slist ** : zk_c_slist_pop_front, \
-		zk_c_dlist *  : zk_c_dlist_pop_front) \
+		zk_c_dlist ** : zk_c_dlist_pop_front) \
 		(CONTAINER, FUNC)
 
 #define zk_push_back(CONTAINER, DATA)                 \
@@ -65,7 +65,7 @@
 		zk_slist *    : zk_slist_push_back,   \
 		zk_dlist **   : zk_dlist_push_back,   \
 		zk_c_slist ** : zk_c_slist_push_back, \
-		zk_c_dlist *  : zk_c_dlist_push_back) \
+		zk_c_dlist ** : zk_c_dlist_push_back) \
 		(CONTAINER, DATA)
 
 #define zk_push_front(CONTAINER, DATA)                   \
@@ -73,7 +73,7 @@
 		zk_slist *    : zk_slist_push_front,     \
 		zk_dlist **   : zk_dlist_push_front,     \
 		zk_c_slist ** : zk_c_slist_push_front,   \
-		zk_c_dlist *  : zk_c_dlist_push_front)   \
+		zk_c_dlist ** : zk_c_dlist_push_front)   \
 		(CONTAINER, DATA)
 
 // clang-format on
