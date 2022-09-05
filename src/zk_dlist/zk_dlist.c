@@ -153,12 +153,11 @@ zk_status zk_dlist_push_front(zk_dlist **list_p, void *const data)
 	if (zk_dlist_new_node(&node, data) != ZK_OK)
 		return ZK_ERROR_ALLOC;
 
-	if (*list_p == NULL) {
-		(*list_p) = node;
-	} else {
+	if (*list_p != NULL) {
 		node->next = (*list_p);
 		(*list_p)->prev = node;
-		(*list_p) = node;
 	}
+
+	(*list_p) = node;
 	return ZK_OK;
 }
