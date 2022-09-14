@@ -21,8 +21,15 @@ int main()
 	zk_slist *end = zk_end(list);
 
 	// Uses begin and end to iterate the list.
-	for (; begin != end; begin = begin->next) {
-		print_list(begin->data, NULL);
+	while (begin != end) {
+		void *data = NULL;
+		if (zk_get_data(begin, &data) != ZK_OK)
+			break;
+
+		print_list(data, NULL);
+
+		if (zk_next(begin, &begin) != ZK_OK)
+			break;
 	}
 
 	// frees list

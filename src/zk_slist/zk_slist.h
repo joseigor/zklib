@@ -4,22 +4,19 @@
 
 #include "zk_common/zk_common.h"
 
-/**
- * @brief Single linked list struct
- *
- */
-typedef struct zk_slist {
-	void *data;
-	struct zk_slist *next;
-} zk_slist;
-
+typedef struct zk_slist zk_slist;
 // Constructor
 zk_status zk_slist_new_node(zk_slist **node_p, void *const data);
 
 // Destructor
 void zk_slist_free(zk_slist **list_p, zk_destructor_t const func);
 
+// Element access
+zk_status zk_slist_get_data(const zk_slist *const list, void **data);
+
 // Iterators
+zk_status zk_slist_next(const zk_slist *const list, zk_slist **next);
+
 zk_slist *zk_slist_begin(zk_slist *list);
 
 zk_slist *zk_slist_end(zk_slist *list);
