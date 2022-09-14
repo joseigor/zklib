@@ -18,14 +18,20 @@ static void _zk_c_dlist_free(zk_c_dlist **node, zk_destructor_t const func)
 }
 
 // Constructor
-zk_c_dlist *zk_c_dlist_new_node(void *const data)
+zk_status zk_c_dlist_new_node(zk_c_dlist **node_p, void *const data)
 {
-	zk_c_dlist *list = malloc(sizeof(zk_c_dlist));
-	list->data = data;
-	list->prev = NULL;
-	list->next = NULL;
+	if (node_p == NULL)
+		return ZK_INVALID_ARGUMENT;
 
-	return list;
+	*node_p = malloc(sizeof(zk_c_dlist));
+	if (*node_p == NULL)
+		return ZK_ERROR_ALLOC;
+
+	(*node_p)->data = data;
+	(*node_p)->prev = NULL;
+	(*node_p)->next = NULL;
+
+	return ZK_OK;
 }
 
 // Destructor
@@ -69,71 +75,87 @@ void zk_c_dlist_for_each(zk_c_dlist *begin, zk_c_dlist *const end, zk_for_each_f
 
 // Modifiers
 
-zk_c_dlist *zk_c_dlist_pop_back(zk_c_dlist *list, zk_destructor_t const func)
+zk_status zk_c_dlist_pop_back(zk_c_dlist **list_p, zk_destructor_t const func)
 {
-	if (list != NULL) {
-		if (list == list->next) {
-			// list has only one element
-			_zk_c_dlist_free(&list, func);
+	if (list_p == NULL)
+		return ZK_INVALID_ARGUMENT;
+
+	if ((*list_p) != NULL) {
+		if ((*list_p) == (*list_p)->next) {
+			// (*list_p) has only one element
+			_zk_c_dlist_free(&(*list_p), func);
 		} else {
-			zk_c_dlist *back = list->prev;
-			back->prev->next = list;
-			list->prev = back->prev;
+			zk_c_dlist *back = (*list_p)->prev;
+			back->prev->next = (*list_p);
+			(*list_p)->prev = back->prev;
 			_zk_c_dlist_free(&back, func);
 		}
 	}
-	return list;
+	return ZK_OK;
 }
 
-zk_c_dlist *zk_c_dlist_pop_front(zk_c_dlist *list, zk_destructor_t const func)
+zk_status zk_c_dlist_pop_front(zk_c_dlist **list_p, zk_destructor_t const func)
 {
-	if (list != NULL) {
-		if (list == list->next) {
-			// list has only one element
-			_zk_c_dlist_free(&list, func);
+	if (list_p == NULL)
+		return ZK_INVALID_ARGUMENT;
+
+	if ((*list_p) != NULL) {
+		if ((*list_p) == (*list_p)->next) {
+			// (*list_p) has only one element
+			_zk_c_dlist_free(&(*list_p), func);
 		} else {
-			zk_c_dlist *front = list;
-			list = list->next;
-			list->prev = front->prev;
-			front->prev->next = list;
+			zk_c_dlist *front = (*list_p);
+			(*list_p) = (*list_p)->next;
+			(*list_p)->prev = front->prev;
+			front->prev->next = (*list_p);
 			_zk_c_dlist_free(&front, func);
 		}
 	}
-	return list;
+	return ZK_OK;
 }
 
-zk_c_dlist *zk_c_dlist_push_back(zk_c_dlist *list, void *const data)
+zk_status zk_c_dlist_push_back(zk_c_dlist **list_p, void *const data)
 {
-	zk_c_dlist *node = zk_c_dlist_new_node(data);
+	if (list_p == NULL)
+		return ZK_INVALID_ARGUMENT;
 
-	if (list == NULL) {
+	zk_c_dlist *node = NULL;
+	if (zk_c_dlist_new_node(&node, data) != ZK_OK)
+		return ZK_ERROR_ALLOC;
+
+	if ((*list_p) == NULL) {
 		node->prev = node;
 		node->next = node;
-		list = node;
+		(*list_p) = node;
 	} else {
-		list->prev->next = node;
-		node->prev = list->prev;
-		node->next = list;
-		list->prev = node;
+		(*list_p)->prev->next = node;
+		node->prev = (*list_p)->prev;
+		node->next = (*list_p);
+		(*list_p)->prev = node;
 	}
 
-	return list;
+	return ZK_OK;
 }
 
-zk_c_dlist *zk_c_dlist_push_front(zk_c_dlist *list, void *const data)
+zk_status zk_c_dlist_push_front(zk_c_dlist **list_p, void *const data)
 {
-	zk_c_dlist *node = zk_c_dlist_new_node(data);
+	if (list_p == NULL)
+		return ZK_INVALID_ARGUMENT;
 
-	if (list == NULL) {
+	zk_c_dlist *node = NULL;
+	if (zk_c_dlist_new_node(&node, data) != ZK_OK)
+		return ZK_ERROR_ALLOC;
+
+	if ((*list_p) == NULL) {
 		node->prev = node;
 		node->next = node;
-
 	} else {
-		node->next = list;
-		node->prev = list->prev;
-		list->prev = node;
+		node->next = (*list_p);
+		node->prev = (*list_p)->prev;
+		(*list_p)->prev = node;
 		node->prev->next = node;
 	}
 
-	return node;
+	(*list_p) = node;
+	return ZK_OK;
 }

@@ -14,13 +14,13 @@ int main()
 {
 	zk_dlist *list = NULL;
 
-	list = zk_push_back(list, strdup("0"));
-	list = zk_push_back(list, strdup("1"));
-	list = zk_push_back(list, strdup("2"));
-	list = zk_push_back(list, strdup("3"));
+	zk_push_back(&list, strdup("0"));
+	zk_push_back(&list, strdup("1"));
+	zk_push_back(&list, strdup("2"));
+	zk_push_back(&list, strdup("3"));
 
 	// remove last element and use free function to free the element`s data
-	list = zk_pop_back(list, free);
+	zk_pop_back(&list, free);
 
 	// calls zk_for_each() to print each node`s data of the list
 	zk_for_each(list, print_list, NULL);

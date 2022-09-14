@@ -13,9 +13,9 @@ int main()
 {
 	zk_c_dlist *list = NULL, *begin = NULL, *end = NULL;
 
-	list = zk_push_back(list, "top");
-	list = zk_push_back(list, "middle");
-	list = zk_push_back(list, "end");
+	zk_push_back(&list, "top");
+	zk_push_back(&list, "middle");
+	zk_push_back(&list, "end");
 
 	begin = zk_begin(list);
 	end = zk_end(list);

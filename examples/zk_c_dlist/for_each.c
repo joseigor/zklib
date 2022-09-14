@@ -13,9 +13,9 @@ int main()
 {
 	zk_c_dlist *list = NULL;
 
-	list = zk_push_back(list, "top");
-	list = zk_push_back(list, "middle");
-	list = zk_push_back(list, "end");
+	zk_push_back(&list, "top");
+	zk_push_back(&list, "middle");
+	zk_push_back(&list, "end");
 
 	// calls zk_for_each() to print each node`s data of the list
 	zk_for_each(list, print_list, NULL);

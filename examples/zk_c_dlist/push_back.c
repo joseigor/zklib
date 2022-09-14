@@ -36,21 +36,21 @@ int main()
 	int node2_data = 2;
 
 	// This is a list of integers.
-	number_list = zk_push_back(number_list, &node1_data);
-	number_list = zk_push_back(number_list, &node2_data);
+	zk_push_back(&number_list, &node1_data);
+	zk_push_back(&number_list, &node2_data);
 
 	// This is a list of strings.
-	string_list = zk_push_back(string_list, "first");
-	string_list = zk_push_back(string_list, "second");
+	zk_push_back(&string_list, "first");
+	zk_push_back(&string_list, "second");
 
 	struct custom_data custom_node_1 = { .value = 1, .string = "node1" };
 	struct custom_data custom_node_2 = { .value = 2, .string = "node2" };
 	struct custom_data custom_node_3 = { .value = 3, .string = "node3" };
 
 	// This is a list of custom data.
-	custom_list = zk_push_back(custom_list, &custom_node_1);
-	custom_list = zk_push_back(custom_list, &custom_node_2);
-	custom_list = zk_push_back(custom_list, &custom_node_3);
+	zk_push_back(&custom_list, &custom_node_1);
+	zk_push_back(&custom_list, &custom_node_2);
+	zk_push_back(&custom_list, &custom_node_3);
 
 	// print all lists
 	printf("number_list\n");

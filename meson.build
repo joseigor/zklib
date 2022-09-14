@@ -9,10 +9,6 @@ project(
 #  options
 unit_test = get_option('unit_test')
 
-if unit_test
-    add_project_arguments('-DUNIT_TEST', language : 'c')
-endif
-
 subdir('src')
 subdir('examples')
 

@@ -13,12 +13,12 @@ int main()
 {
 	zk_dlist *list = NULL;
 
-	list = zk_push_back(list, "1");
-	list = zk_push_back(list, "2");
-	list = zk_push_back(list, "3");
+	zk_push_back(&list, "1");
+	zk_push_back(&list, "2");
+	zk_push_back(&list, "3");
 
 	// prepends new node with data to the list.
-	list = zk_push_front(list, "0");
+	zk_push_front(&list, "0");
 
 	// calls zk_for_each() to print each node`s data of the list
 	zk_for_each(list, print_list, NULL);

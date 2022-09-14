@@ -26,9 +26,9 @@ int main()
 	struct custom_data custom_node_3 = { .value = 3, .string = "node3" };
 
 	// this is a list of custom data.
-	list = zk_push_back(list, &custom_node_1);
-	list = zk_push_back(list, &custom_node_2);
-	list = zk_push_back(list, &custom_node_3);
+	zk_push_back(&list, &custom_node_1);
+	zk_push_back(&list, &custom_node_2);
+	zk_push_back(&list, &custom_node_3);
 
 	// use your list ...
 
@@ -51,9 +51,9 @@ int main()
 	node_3_data->value = 3;
 	node_3_data->string = strdup("node_3");
 
-	list = zk_push_back(list, node_1_data);
-	list = zk_push_back(list, node_2_data);
-	list = zk_push_back(list, node_3_data);
+	zk_push_back(&list, node_1_data);
+	zk_push_back(&list, node_2_data);
+	zk_push_back(&list, node_3_data);
 
 	// use your list ..
 
