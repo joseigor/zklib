@@ -18,6 +18,12 @@
 		zk_c_dlist ** : zk_c_dlist_free) \
 		(CONTAINER, FUNC)
 
+// Element access
+#define zk_get_data(CONTAINER, DATA)            \
+	_Generic((CONTAINER),                   \
+		zk_slist * : zk_slist_get_data) \
+		(CONTAINER, DATA)
+
 // Iterators
 #define zk_for_each(CONTAINER, FUNC, USER_DATA)     \
 	_Generic((CONTAINER),                       \
@@ -42,6 +48,11 @@
 		zk_c_slist * : zk_c_slist_end, \
 		zk_c_dlist * : zk_c_dlist_end) \
 		(CONTAINER)
+
+#define zk_next(CONTAINER, NEXT)            \
+	_Generic((CONTAINER),               \
+		zk_slist * : zk_slist_next) \
+		(CONTAINER, NEXT)
 
 // Modifiers
 #define zk_pop_back(CONTAINER, FUNC)                 \
