@@ -3,7 +3,7 @@
 #include "zk_slist/zk_slist.h"
 
 /**
- * @brief Single linked list struct
+ * @brief Singly linked list struct
  *
  */
 struct zk_slist {
