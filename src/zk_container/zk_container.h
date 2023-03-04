@@ -8,7 +8,6 @@
 
 // clang-format off
 
-
 // Destructor
 #define zk_free(CONTAINER, FUNC)                 \
 	_Generic((CONTAINER),                    \
@@ -31,7 +30,12 @@
 		zk_dlist *   : zk_dlist_for_each,   \
 		zk_c_slist * : zk_c_slist_for_each, \
 		zk_c_dlist * : zk_c_dlist_for_each) \
-		(zk_begin(CONTAINER), zk_end(CONTAINER), FUNC, USER_DATA)
+		(                                   \
+			zk_begin(CONTAINER),        \
+			zk_end(CONTAINER),          \
+			FUNC,                       \
+			USER_DATA                   \
+		)
 
 #define zk_begin(CONTAINER)                      \
 	_Generic((CONTAINER),                    \
@@ -46,7 +50,7 @@
 		zk_slist *   : zk_slist_end,   \
 		zk_dlist *   : zk_dlist_end,   \
 		zk_c_slist * : zk_c_slist_end, \
-		zk_c_dlist * : zk_c_dlist_end) \
+		zk_c_dlist * :zk_c_dlist_end)  \
 		(CONTAINER)
 
 #define zk_next(CONTAINER, NEXT)            \
@@ -87,5 +91,4 @@
 		zk_c_dlist ** : zk_c_dlist_push_front)   \
 		(CONTAINER, DATA)
 
-// clang-format on
 #endif
