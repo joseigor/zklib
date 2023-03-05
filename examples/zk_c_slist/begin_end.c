@@ -12,6 +12,7 @@ void print_list(void *data, void *user_data)
 int main()
 {
 	zk_c_slist *list = NULL;
+	void *data = NULL;
 
 	zk_push_back(&list, "top");
 	zk_push_back(&list, "middle");
@@ -21,11 +22,14 @@ int main()
 	zk_c_slist *end = zk_end(list);
 
 	// Uses begin and end to iterate the list.
-	for (; begin != end; begin = begin->next) {
-		print_list(begin->data, NULL);
+	while (begin != end) {
+		zk_get_data(begin, &data);
+		print_list(data, NULL);
+		zk_next(begin, &begin);
 	}
 	// print last element
-	print_list(end->data, NULL);
+	zk_get_data(begin, &data);
+	print_list(data, NULL);
 
 	// frees list
 	zk_free(&list, NULL);
