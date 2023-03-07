@@ -2,6 +2,15 @@
 
 #include "zk_c_dlist/zk_c_dlist.h"
 
+/**
+ * @brief A circular doubly linked list node.
+ */
+struct zk_c_dlist {
+	void *data;
+	struct zk_c_dlist *prev;
+	struct zk_c_dlist *next;
+};
+
 // Private functions
 static void _zk_c_dlist_free(zk_c_dlist **node, zk_destructor_t const func)
 {
@@ -51,7 +60,38 @@ void zk_c_dlist_free(zk_c_dlist **list_p, zk_destructor_t const func)
 	}
 }
 
+// Element access
+zk_status zk_c_dlist_get_data(const zk_c_dlist *const list, void **data)
+{
+	if (list == NULL)
+		return ZK_INVALID_ARGUMENT;
+
+	*data = list->data;
+
+	return ZK_OK;
+}
+
 // Iterators
+zk_status zk_c_dlist_next(const zk_c_dlist *const list, zk_c_dlist **next)
+{
+	if (list == NULL)
+		return ZK_INVALID_ARGUMENT;
+
+	*next = list->next;
+
+	return ZK_OK;
+}
+
+zk_status zk_c_dlist_prev(const zk_c_dlist *const list, zk_c_dlist **prev)
+{
+	if (list == NULL)
+		return ZK_INVALID_ARGUMENT;
+
+	*prev = list->prev;
+
+	return ZK_OK;
+}
+
 zk_c_dlist *zk_c_dlist_begin(zk_c_dlist *list)
 {
 	return list;

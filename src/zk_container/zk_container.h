@@ -22,7 +22,8 @@
 	_Generic((CONTAINER),                       \
 		zk_slist *   : zk_slist_get_data,   \
 		zk_dlist *   : zk_dlist_get_data,   \
-		zk_c_slist * : zk_c_slist_get_data) \
+		zk_c_slist * : zk_c_slist_get_data, \
+		zk_c_dlist * : zk_c_dlist_get_data) \
 		(CONTAINER, DATA)
 
 // Iterators
@@ -59,12 +60,14 @@
 	_Generic((CONTAINER),                   \
 		zk_slist *   : zk_slist_next,   \
 		zk_dlist *   : zk_dlist_next,   \
-		zk_c_slist * : zk_c_slist_next) \
+		zk_c_slist * : zk_c_slist_next, \
+		zk_c_dlist * : zk_c_dlist_next) \
 		(CONTAINER, NEXT)
 
-#define zk_prev(CONTAINER, NEXT)            \
-	_Generic((CONTAINER),               \
-		zk_dlist * : zk_dlist_prev) \
+#define zk_prev(CONTAINER, NEXT)                \
+	_Generic((CONTAINER),                   \
+		zk_dlist * : zk_dlist_prev,     \
+		zk_c_dlist * : zk_c_dlist_prev) \
 		(CONTAINER, NEXT)
 
 // Modifiers
