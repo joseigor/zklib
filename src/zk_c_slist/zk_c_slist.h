@@ -3,10 +3,7 @@
 
 #include "zk_common/zk_common.h"
 
-typedef struct zk_c_slist {
-	void *data;
-	struct zk_c_slist *next;
-} zk_c_slist;
+typedef struct zk_c_slist zk_c_slist;
 
 // Constructor
 zk_status zk_c_slist_new_node(zk_c_slist **node_p, void *const data);
@@ -14,7 +11,12 @@ zk_status zk_c_slist_new_node(zk_c_slist **node_p, void *const data);
 // Destructor
 void zk_c_slist_free(zk_c_slist **list_p, zk_destructor_t const func);
 
+// Element access
+zk_status zk_c_slist_get_data(const zk_c_slist *const list, void **data);
+
 // Iterators
+zk_status zk_c_slist_next(const zk_c_slist *const list, zk_c_slist **next);
+
 zk_c_slist *zk_c_slist_begin(zk_c_slist *list);
 
 zk_c_slist *zk_c_slist_end(zk_c_slist *list);

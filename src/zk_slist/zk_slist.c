@@ -2,6 +2,15 @@
 
 #include "zk_slist/zk_slist.h"
 
+/**
+ * @brief Singly linked list struct
+ *
+ */
+struct zk_slist {
+	void *data;
+	struct zk_slist *next;
+};
+
 // Private functions
 static void _zk_slist_free(zk_slist **node, zk_destructor_t func)
 {
@@ -54,7 +63,28 @@ void zk_slist_free(zk_slist **list_p, zk_destructor_t const func)
 	}
 }
 
+// Element access
+zk_status zk_slist_get_data(const zk_slist *const list, void **data)
+{
+	if (list == NULL)
+		return ZK_INVALID_ARGUMENT;
+
+	*data = list->data;
+
+	return ZK_OK;
+}
+
 // Iterators
+zk_status zk_slist_next(const zk_slist *const list, zk_slist **next)
+{
+	if (list == NULL)
+		return ZK_INVALID_ARGUMENT;
+
+	*next = list->next;
+
+	return ZK_OK;
+}
+
 zk_slist *zk_slist_begin(zk_slist *list)
 {
 	return list;

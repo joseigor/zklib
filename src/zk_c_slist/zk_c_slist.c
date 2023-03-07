@@ -2,6 +2,16 @@
 
 #include "zk_c_slist/zk_c_slist.h"
 
+/**
+ * @brief Circular singly linked list struct
+ * Internally this list is managed in a way that it always points to the last node for efficient operations.
+ */
+
+struct zk_c_slist {
+	void *data;
+	struct zk_c_slist *next;
+};
+
 // Private functions
 static void _zk_c_slist_free(zk_c_slist **node, zk_destructor_t const func)
 {
@@ -50,7 +60,28 @@ void zk_c_slist_free(zk_c_slist **list_p, zk_destructor_t const func)
 	}
 }
 
+// Element access
+zk_status zk_c_slist_get_data(const zk_c_slist *const list, void **data)
+{
+	if (list == NULL)
+		return ZK_INVALID_ARGUMENT;
+
+	*data = list->data;
+
+	return ZK_OK;
+}
+
 // Iterators
+zk_status zk_c_slist_next(const zk_c_slist *const list, zk_c_slist **next)
+{
+	if (list == NULL)
+		return ZK_INVALID_ARGUMENT;
+
+	*next = list->next;
+
+	return ZK_OK;
+}
+
 zk_c_slist *zk_c_slist_begin(zk_c_slist *list)
 {
 	return list != NULL ? list->next : list;

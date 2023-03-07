@@ -2,6 +2,15 @@
 
 #include "zk_dlist/zk_dlist.h"
 
+/**
+ * @brief: Doubly linked list struct
+ */
+struct zk_dlist {
+	void *data;
+	struct zk_dlist *prev;
+	struct zk_dlist *next;
+};
+
 // SECTION: Private functions
 static zk_dlist *zk_dlist_back(zk_dlist *list)
 {
@@ -59,7 +68,38 @@ void zk_dlist_free(zk_dlist **list_p, zk_destructor_t const func)
 	}
 }
 
+// Element access
+zk_status zk_dlist_get_data(const zk_dlist *const list, void **data)
+{
+	if (list == NULL)
+		return ZK_INVALID_ARGUMENT;
+
+	*data = list->data;
+
+	return ZK_OK;
+}
+
 // Iterators
+zk_status zk_dlist_next(const zk_dlist *const list, zk_dlist **next)
+{
+	if (list == NULL)
+		return ZK_INVALID_ARGUMENT;
+
+	*next = list->next;
+
+	return ZK_OK;
+}
+
+zk_status zk_dlist_prev(const zk_dlist *const list, zk_dlist **prev)
+{
+	if (list == NULL)
+		return ZK_INVALID_ARGUMENT;
+
+	*prev = list->prev;
+
+	return ZK_OK;
+}
+
 zk_dlist *zk_dlist_begin(zk_dlist *list)
 {
 	return list;

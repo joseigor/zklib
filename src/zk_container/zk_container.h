@@ -8,7 +8,6 @@
 
 // clang-format off
 
-
 // Destructor
 #define zk_free(CONTAINER, FUNC)                 \
 	_Generic((CONTAINER),                    \
@@ -18,6 +17,15 @@
 		zk_c_dlist ** : zk_c_dlist_free) \
 		(CONTAINER, FUNC)
 
+// Element access
+#define zk_get_data(CONTAINER, DATA)                \
+	_Generic((CONTAINER),                       \
+		zk_slist *   : zk_slist_get_data,   \
+		zk_dlist *   : zk_dlist_get_data,   \
+		zk_c_slist * : zk_c_slist_get_data, \
+		zk_c_dlist * : zk_c_dlist_get_data) \
+		(CONTAINER, DATA)
+
 // Iterators
 #define zk_for_each(CONTAINER, FUNC, USER_DATA)     \
 	_Generic((CONTAINER),                       \
@@ -25,7 +33,12 @@
 		zk_dlist *   : zk_dlist_for_each,   \
 		zk_c_slist * : zk_c_slist_for_each, \
 		zk_c_dlist * : zk_c_dlist_for_each) \
-		(zk_begin(CONTAINER), zk_end(CONTAINER), FUNC, USER_DATA)
+		(                                   \
+			zk_begin(CONTAINER),        \
+			zk_end(CONTAINER),          \
+			FUNC,                       \
+			USER_DATA                   \
+		)
 
 #define zk_begin(CONTAINER)                      \
 	_Generic((CONTAINER),                    \
@@ -42,6 +55,20 @@
 		zk_c_slist * : zk_c_slist_end, \
 		zk_c_dlist * : zk_c_dlist_end) \
 		(CONTAINER)
+
+#define zk_next(CONTAINER, NEXT)                \
+	_Generic((CONTAINER),                   \
+		zk_slist *   : zk_slist_next,   \
+		zk_dlist *   : zk_dlist_next,   \
+		zk_c_slist * : zk_c_slist_next, \
+		zk_c_dlist * : zk_c_dlist_next) \
+		(CONTAINER, NEXT)
+
+#define zk_prev(CONTAINER, NEXT)                \
+	_Generic((CONTAINER),                   \
+		zk_dlist * : zk_dlist_prev,     \
+		zk_c_dlist * : zk_c_dlist_prev) \
+		(CONTAINER, NEXT)
 
 // Modifiers
 #define zk_pop_back(CONTAINER, FUNC)                 \
@@ -76,5 +103,4 @@
 		zk_c_dlist ** : zk_c_dlist_push_front)   \
 		(CONTAINER, DATA)
 
-// clang-format on
 #endif
