@@ -103,4 +103,18 @@
 		zk_c_dlist ** : zk_c_dlist_push_front)   \
 		(CONTAINER, DATA)
 
+/**
+ * @brief Reverse the order of the elements in the container.
+ *
+ * @param CONTAINER A pointer to the container to reverse.
+ *
+ * @return ZK_OK if the operation was successful, ZK_INVALID_ARGUMENT if the container is invalid.
+ *
+ * @note This function is only available for the following containers:
+ *      - zk_slist
+*/
+#define zk_reverse(CONTAINER)                     \
+	_Generic((CONTAINER),                     \
+		zk_slist **   : zk_slist_reverse) \
+		(CONTAINER)
 #endif

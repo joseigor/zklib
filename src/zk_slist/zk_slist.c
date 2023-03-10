@@ -176,3 +176,24 @@ zk_status zk_slist_push_front(zk_slist **list_p, void *const data)
 	(*list_p) = node;
 	return ZK_OK;
 }
+
+zk_status zk_slist_reverse(zk_slist **list_p)
+{
+	if (list_p == NULL || *list_p == NULL)
+		return ZK_INVALID_ARGUMENT;
+
+	zk_slist *prev = NULL;
+	zk_slist *curr = *list_p;
+	zk_slist *next = NULL;
+
+	while (curr != NULL) {
+		next = curr->next;
+		curr->next = prev;
+		prev = curr;
+		curr = next;
+	}
+
+	*list_p = prev;
+
+	return ZK_OK;
+}
