@@ -12,3 +12,5 @@ executable('pop_front', sources: ['pop_front.c'], include_directories: inc_dir, 
 executable('push_back', sources: ['push_back.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
 executable('push_front', sources: ['push_front.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
 
+executable('reverse', sources: ['reverse.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
+executable('length', sources: ['length.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])

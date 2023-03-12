@@ -31,3 +31,26 @@ zk_status zk_slist_pop_front(zk_slist **list_p, zk_destructor_t const func);
 zk_status zk_slist_push_back(zk_slist **list_p, void *const data);
 
 zk_status zk_slist_push_front(zk_slist **list_p, void *const data);
+
+/**
+ * @brief Reverses the order of the elements in the list.
+ *
+ * @param list_p Pointer to the list to reverse.
+ *
+ * @return ZK_OK if the list was reversed successfully. ZK_INVALID_ARGUMENT if list_p is NULL or *list_p is NULL.
+ *
+ * @note This function is O(n).
+ */
+zk_status zk_slist_reverse(zk_slist **list_p);
+
+/**
+ * @brief Returns the number of elements in the list.
+ *
+ * @param list Pointer to the list.
+ *
+ * @return The number of elements in the list.
+ * @return 0 if list is NULL.
+ *
+ * @note This function is O(n).
+ */
+size_t zk_slist_length(const zk_slist *const list);
