@@ -197,3 +197,12 @@ zk_status zk_slist_reverse(zk_slist **list_p)
 
 	return ZK_OK;
 }
+
+size_t zk_slist_length(const zk_slist *const list)
+{
+	size_t length = 0;
+	for (const zk_slist *node = list; node != NULL; node = node->next) {
+		length++;
+	}
+	return length;
+}

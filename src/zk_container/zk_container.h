@@ -118,3 +118,18 @@
 		zk_slist **   : zk_slist_reverse) \
 		(CONTAINER)
 #endif
+
+/**
+ * @brief Return the number of elements in the container.
+ *
+ * @param CONTAINER A pointer to the container.
+ *
+ * @return The number of elements in the container.
+ *
+ * @note This function is only available for the following containers:
+ *     - zk_slist
+*/
+#define zk_length(CONTAINER)                    \
+	_Generic((CONTAINER),                   \
+		zk_slist *   : zk_slist_length) \
+		(CONTAINER)
