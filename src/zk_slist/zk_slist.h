@@ -53,4 +53,4 @@ zk_status zk_slist_reverse(zk_slist **list_p);
  *
  * @note This function is O(n).
  */
-size_t zk_slist_length(const zk_slist *const list);
+size_t zk_slist_size(const zk_slist *const list);

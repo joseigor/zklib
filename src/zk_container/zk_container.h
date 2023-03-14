@@ -129,7 +129,7 @@
  * @note This function is only available for the following containers:
  *     - zk_slist
 */
-#define zk_length(CONTAINER)                    \
+#define zk_size(CONTAINER)                    \
 	_Generic((CONTAINER),                   \
-		zk_slist *   : zk_slist_length) \
+		zk_slist *   : zk_slist_size) \
 		(CONTAINER)
