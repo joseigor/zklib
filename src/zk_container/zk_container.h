@@ -117,8 +117,6 @@
 	_Generic((CONTAINER),                     \
 		zk_slist **   : zk_slist_reverse) \
 		(CONTAINER)
-#endif
-
 /**
  * @brief Return the number of elements in the container.
  *
@@ -130,6 +128,44 @@
  *     - zk_slist
 */
 #define zk_size(CONTAINER)                    \
-	_Generic((CONTAINER),                   \
+	_Generic((CONTAINER),                 \
 		zk_slist *   : zk_slist_size) \
 		(CONTAINER)
+
+
+/**
+ * @brief Merge two sorted containers. The result is stored in the first container. The second container is set to NULL.
+ *
+ * @param FIRST_CONTAINER A pointer to the first container.
+ * @param SECOND_CONTAINER A pointer to the second container.
+ * @param FUNC A pointer to the comparison function.
+ *             The comparison function must return a negative value if a < b, 0 if a == b, and a positive value if a > b.
+ *
+ * @return ZK_OK if the operation was successful, ZK_INVALID_ARGUMENT if arguments are invalid.
+ *
+ * @note This function is only available for the following containers:
+ *     - zk_slist
+*/
+#define zk_merge(FIRST_CONTAINER, SECOND_CONTAINER, FUNC) \
+	_Generic((FIRST_CONTAINER),                       \
+		zk_slist **   : zk_slist_merge)           \
+		(FIRST_CONTAINER, SECOND_CONTAINER, FUNC)
+
+/**
+ * @brief Sort the elements in the container.
+ *
+ * @param CONTAINER A pointer to the container.
+ * @param FUNC A pointer to the comparison function.
+ *             The comparison function must return a negative value if a < b, 0 if a == b, and a positive value if a > b.
+ *
+ * @return ZK_OK if the operation was successful, ZK_INVALID_ARGUMENT if arguments are invalid.
+ *
+ * @note This function is only available for the following containers:
+ *     - zk_slist
+*/
+#define zk_sort(CONTAINER, FUNC)               \
+	_Generic((CONTAINER),                  \
+		zk_slist **   : zk_slist_sort) \
+		(CONTAINER, FUNC)
+
+#endif /* ZK_CONTAINER_H */
