@@ -64,7 +64,7 @@ size_t zk_slist_size(const zk_slist *const list);
  * @return ZK_OK if the list was sorted successfully. ZK_INVALID_ARGUMENT if list_p is NULL or *list_p is NULL or func
  * is NULL.
  *
- * @note This function is O(n log n)
+ * @note This function is O(n log n), it uses iterative merge sort algorithm.
  * @note The comparison function must return a negative value if a < b, 0 if a == b, and a positive value if a > b
  * @note This sort algorithm is stable.
  * @note This sort algorithm is in-place.
@@ -81,7 +81,7 @@ zk_status zk_slist_sort(zk_slist **list_p, zk_compare_func const func);
  * @return ZK_OK if the lists were merged successfully. ZK_INVALID_ARGUMENT if list is NULL or other is NULL or func is
  * NULL.
  *
- * @note This function is O(n), where n is the number of elements of the bigest list.
+ * @note This function is O(n), where n is the number of elements of the biggest list.
  * @note The comparison function must return a negative value if a < b, 0 if a == b, and a positive value if a > b
  * @note This merge algorithm is stable.
  * @note This merge algorithm is in-place.

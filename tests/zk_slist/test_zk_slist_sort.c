@@ -54,7 +54,7 @@ void test_zk_list_sort_when_list_has_n_elements()
 	zk_slist *list = NULL, *current = NULL;
 	void *node_data = NULL;
 
-	// Dynamically create a list that varies in size from 1 t0 101 and sort them
+	// Dynamically create a list that varies in size from 1 to 101 and sort them
 	for (size_t i = 1; i <= 101; i += 10) {
 		int *data = malloc(sizeof(int) * i);
 		for (size_t j = 0; j < i; j++)
