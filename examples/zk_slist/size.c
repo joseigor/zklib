@@ -11,7 +11,7 @@ int main()
 	for (int i = 0; i < 10; i++)
 		zk_push_back(&list, "1");
 
-	printf("List length: %ld\n", zk_length(list));
+	printf("List length: %ld\n", zk_size(list));
 
 	// frees list
 	zk_free(&list, NULL);

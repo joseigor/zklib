@@ -1,12 +1,12 @@
 ---
 layout: page
-title: zk_length
+title: zk_size
 parent: 0.1.0
 grand_parent: Releases
 ---
 
 ``` c
-size_t zk_length(CONTAINER)
+size_t zk_size(CONTAINER)
 ```
 
 Return the number of elements in the `CONTAINER`.
@@ -29,4 +29,4 @@ If `CONTAINER` is:
 
 ### Examples -->
 
-- {% include examples_url.md container="zk_slist" file="length.c" -%}
+- {% include examples_url.md container="zk_slist" file="size.c" -%}

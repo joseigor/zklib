@@ -8,7 +8,7 @@ void tearDown(void) {}
 void test_length_when_list_is_null(void)
 {
 	zk_slist *list = NULL;
-	TEST_ASSERT_EQUAL(0, zk_length(list));
+	TEST_ASSERT_EQUAL(0, zk_size(list));
 }
 
 void test_length_when_list_has_one_element(void)
@@ -18,7 +18,7 @@ void test_length_when_list_has_one_element(void)
 
 	zk_push_front(&list, &data);
 
-	TEST_ASSERT_EQUAL(1, zk_length(list));
+	TEST_ASSERT_EQUAL(1, zk_size(list));
 
 	zk_free(&list, NULL);
 }
@@ -31,7 +31,7 @@ void test_length_when_list_has_multiple_elements(void)
 	for (int i = 0; i < 5; i++)
 		zk_push_front(&list, &data[i]);
 
-	TEST_ASSERT_EQUAL(5, zk_length(list));
+	TEST_ASSERT_EQUAL(5, zk_size(list));
 
 	zk_free(&list, NULL);
 }
