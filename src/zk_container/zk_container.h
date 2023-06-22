@@ -157,6 +157,7 @@
  * @param CONTAINER A pointer to the container.
  * @param FUNC A pointer to the comparison function.
  *             The comparison function must return a negative value if a < b, 0 if a == b, and a positive value if a > b.
+ *             Signature: int (*func)(const void *const a, const void *const b);
  *
  * @return ZK_OK if the operation was successful, ZK_INVALID_ARGUMENT if arguments are invalid.
  *

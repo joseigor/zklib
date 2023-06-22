@@ -12,5 +12,8 @@ executable('pop_front', sources: ['pop_front.c'], include_directories: inc_dir, 
 executable('push_back', sources: ['push_back.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
 executable('push_front', sources: ['push_front.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
 
+executable('merge', sources: ['merge.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
 executable('reverse', sources: ['reverse.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
 executable('size', sources: ['size.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
+executable('sort', sources: ['sort.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
+

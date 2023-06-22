@@ -23,7 +23,7 @@ References and iterators to the erased element becomes invalid.
 `zk_status`:
 
 - `ZK_OK` if the operation was successful
-- `ZK_INVALID_ARGUMENT` if the cotainer is invalid.
+- `ZK_INVALID_ARGUMENT` if the container is invalid.
 
 ### Time Complexity / Space Complexity
 
