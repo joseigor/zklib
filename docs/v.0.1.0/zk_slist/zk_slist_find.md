@@ -23,8 +23,7 @@ Find the first element in the list that matches the given data using the given c
 
 `func`:
 
-- A pointer to a comparison function. On match, the function should return `0`.
-- Type is [`zk_compare_func`](../zk_compare_func.html).
+- A pointer to a comparison function. On match, the function should return `0` see [`zk_compare_func`](../zk_compare_func.html).
 
 ### Returns
 

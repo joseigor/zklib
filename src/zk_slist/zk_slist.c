@@ -325,62 +325,79 @@ zk_status zk_slist_sort(zk_slist **list_p, zk_compare_func const func)
 		zk_slist *left = NULL;
 		zk_slist *right = NULL;
 		zk_slist_split_left_right_tail(&head, &left, &right, p / 2);
-		zk_slist_merge(&left, &right, func);
+		left = zk_slist_merge(left, right, func);
 		head = left;
 	}
 	*list_p = head;
 	return ZK_OK;
 }
 
-zk_status zk_slist_merge(zk_slist **list_p, zk_slist **other_p, zk_compare_func const func)
+/**
+ * @brief Merges two sorted lists. Merges in ascending order if func(a, b) <= 0 and  in descending order if func(a, b) >
+ *        0. As the merge happens in place, first and second lists are invalid after the merge as they are merged into
+ *        a the list that is returned by the function.
+ *
+ * @param list Pointer to the first list.
+ * @param other Pointer to the second list.
+ * @param func Pointer to the comparison function. Must not be NULL.
+ *             The comparison function must return a negative value if a < b, 0 if a == b, and a positive value if a >
+ *             b.
+ *
+ * @return Pointer to the merged list or `NULL` if function fails.
+ *
+ * @note Time complexity: O(n), where n is the number of elements in the bigger list.
+ * @note Space complexity: O(1)
+ * @note This merge algorithm is stable.
+ * @note This merge algorithm is in-place.
+ */
+zk_slist *zk_slist_merge(zk_slist *list, zk_slist *other, zk_compare_func const func)
 {
-	if (list_p == NULL || other_p == NULL || func == NULL)
-		return ZK_INVALID_ARGUMENT;
+	if (func == NULL)
+		return NULL;
 
-	if (*list_p == NULL) {
-		*list_p = *other_p;
-		*other_p = NULL;
-		return ZK_OK;
+	if (list == NULL) {
+		list = other;
+		other = NULL;
+		return list;
 	}
 
-	if (*other_p == NULL)
-		return ZK_OK;
+	if (other == NULL)
+		return list;
 
 	zk_slist *head = NULL;
 	zk_slist *tail = NULL;
 
-	while (*list_p != NULL && *other_p != NULL) {
-		if (func((*list_p)->data, (*other_p)->data) <= 0) {
+	while (list != NULL && other != NULL) {
+		if (func((list)->data, (other)->data) <= 0) {
 			if (head == NULL) {
-				head = *list_p;
-				tail = *list_p;
+				head = list;
+				tail = list;
 			} else {
-				tail->next = *list_p;
+				tail->next = list;
 				tail = tail->next;
 			}
-			*list_p = (*list_p)->next;
+			list = (list)->next;
 		} else {
 			if (head == NULL) {
-				head = *other_p;
-				tail = *other_p;
+				head = other;
+				tail = other;
 			} else {
-				tail->next = *other_p;
+				tail->next = other;
 				tail = tail->next;
 			}
-			*other_p = (*other_p)->next;
+			other = (other)->next;
 		}
 	}
 
-	if (*list_p != NULL) {
-		tail->next = *list_p;
-	} else if (*other_p != NULL) {
-		tail->next = *other_p;
-	}
+	if (list != NULL)
+		tail->next = list;
+	else if (other != NULL)
+		tail->next = other;
 
-	*list_p = head;
-	*other_p = NULL;
+	list = head;
+	other = NULL;
 
-	return ZK_OK;
+	return list;
 }
 
 /**
