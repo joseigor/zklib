@@ -56,22 +56,7 @@ size_t zk_slist_size(const zk_slist *const list);
  */
 zk_status zk_slist_sort(zk_slist **list_p, zk_compare_func const func);
 
-/**
- * @brief Merges two sorted lists. If function succeeds list will contain the merged list and other will be set to NULL.
- *
- * @param list Pointer to the first list.
- * @param other Pointer to the second list.
- * @param func Pointer to the comparison function.
- *
- * @return ZK_OK if the lists were merged successfully. ZK_INVALID_ARGUMENT if list is NULL or other is NULL or func is
- * NULL.
- *
- * @note This function is O(n), where n is the number of elements of the biggest list.
- * @note The comparison function must return a negative value if a < b, 0 if a == b, and a positive value if a > b
- * @note This merge algorithm is stable.
- * @note This merge algorithm is in-place.
- */
-zk_status zk_slist_merge(zk_slist **list_p, zk_slist **other, zk_compare_func const func);
+zk_slist *zk_slist_merge(zk_slist *list, zk_slist *other, zk_compare_func const func);
 
 zk_slist *zk_slist_find(zk_slist *list, const void *const data, zk_compare_func const func);
 

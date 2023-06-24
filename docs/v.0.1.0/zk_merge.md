@@ -5,7 +5,7 @@ parent: v0.1.0
 ---
 
 ``` c
-size_t zk_merge(CONTAINER_1, CONTAINER_2, FUNC)
+zk_status zk_merge(CONTAINER_1, CONTAINER_2, FUNC)
 ```
 
 Merge the elements of `CONTAINER_2` into `CONTAINER_1` using the `FUNC` function.

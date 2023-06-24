@@ -24,18 +24,18 @@ int main()
 	int other_data[] = { 1, 2, 3, 4, 5 };
 
 	for(int i = 0; i < 5; i++){
-		zk_push_back(&list, &list_data[i]);
-		zk_push_back(&other, &other_data[i]);
+		zk_slist_push_back(&list, &list_data[i]);
+		zk_slist_push_back(&other, &other_data[i]);
 	}
 
 	// merge the two lists
-	zk_merge(&list, &other, zk_int_cmp);
+	list = zk_slist_merge(list, other, zk_int_cmp);
 
 	// print the merged list
-	zk_for_each(list, print_list, NULL);
+	zk_slist_for_each(zk_begin(list), zk_end(list), print_list, NULL);
 	printf("\n");
 
-	// free the list, other_list was already freed by zk_merge
+	// free the list, other_list was already freed by zk_slist_merge
 	zk_free(&list, NULL);
 
 	return 0;
