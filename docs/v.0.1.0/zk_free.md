@@ -1,8 +1,7 @@
 ---
 layout: page
 title: zk_free
-parent: 0.1.0
-grand_parent: Releases
+parent: v0.1.0
 ---
 
 ```

@@ -169,4 +169,9 @@
 		zk_slist **   : zk_slist_sort) \
 		(CONTAINER, FUNC)
 
+#define zk_find(CONTAINER, DATA, FUNC)        \
+	_Generic((CONTAINER),                 \
+		zk_slist *   : zk_slist_find) \
+		(CONTAINER, DATA, FUNC)
+
 #endif /* ZK_CONTAINER_H */

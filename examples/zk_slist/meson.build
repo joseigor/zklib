@@ -3,6 +3,8 @@ executable('free', sources: ['free.c'], include_directories: inc_dir, dependenci
 
 # Interators
 executable('begin_end', sources: ['begin_end.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
+executable('find', sources: ['find.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
+executable('find_index', sources: ['find_index.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
 executable('for_each', sources: ['for_each.c'], include_directories: inc_dir, dependencies: [ zklib_dep ])
 
 

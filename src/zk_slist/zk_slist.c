@@ -2,15 +2,6 @@
 
 #include "zk_slist/zk_slist.h"
 
-/**
- * @brief Singly linked list struct
- *
- */
-struct zk_slist {
-	void *data;
-	struct zk_slist *next;
-};
-
 // Private functions
 static void _zk_slist_free(zk_slist **node, zk_destructor_t func)
 {
@@ -383,4 +374,55 @@ zk_status zk_slist_merge(zk_slist **list_p, zk_slist **other_p, zk_compare_func 
 	*other_p = NULL;
 
 	return ZK_OK;
+}
+
+/**
+ * @brief Finds the first element in the list that matches the given data.
+ *
+ * @param list Pointer to the list.
+ * @param data Pointer to the data to find.
+ * @param func A pointer to a comparison function. On match, the function should return `0`.
+ *
+ * @return Pointer to the first element in the list that matches the given data or NULL if no match is found.
+ *
+ * @note Time complexity: O(n)
+ * @note Space complexity: O(1)
+ */
+zk_slist *zk_slist_find(zk_slist *list, const void *const data, zk_compare_func const func)
+{
+	if (list == NULL || func == NULL)
+		return NULL;
+
+	while (list != NULL) {
+		if (func(list->data, data) == 0)
+			break;
+		list = list->next;
+	}
+	return list;
+}
+
+/**
+ * @brief Find the element at the given index.
+ *
+ * @param list Pointer to the list.
+ * @param index Index of the element to be found.
+ *
+ * @return - Pointer to the element at the given index or NULL if no match is found.
+ *
+ * @note Time complexity: O(n)
+ * @note Space complexity: O(1)
+ */
+zk_slist *zk_slist_find_index(zk_slist *list, size_t const index)
+{
+	if (list == NULL)
+		return NULL;
+
+	size_t i = 0;
+	while (list != NULL) {
+		if (i == index)
+			break;
+		list = list->next;
+		i++;
+	}
+	return list;
 }

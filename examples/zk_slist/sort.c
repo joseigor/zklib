@@ -23,16 +23,15 @@ int zk_int_cmp_desc(const void *const a, const void *const b)
 int main()
 {
 	zk_slist *list = NULL;
-	int *data = malloc(sizeof(int)*10);
 
 	// initialize list with random data
 	srand((unsigned int)time(NULL));
 
-	for (int i = 0; i < 10; i++)
-		data[i] = rand() % 100;
-
-	for (int i = 0; i < 10; i++)
-		zk_push_back(&list, &data[i]);
+	for (int i = 0; i < 10; i++) {
+		int *p = malloc(sizeof(int));
+		*p = rand() % 100;
+		zk_push_front(&list, p);
+	}
 
 	printf("Before sorting:\n");
 	zk_for_each(list, print_list, NULL);
@@ -52,7 +51,7 @@ int main()
 	printf("\n");
 
 	// frees list
-	zk_free(&list, NULL);
+	zk_free(&list, free);
 
 	return 0;
 }

@@ -1,17 +1,16 @@
 ---
 layout: page
-title: zk_begin
-parent: 0.1.0
-grand_parent: Releases
+title: zk_end
+parent: v0.1.0
 ---
 
 ```
-CONTAINER *zk_begin(CONTAINER)
+CONTAINER *zk_end(CONTAINER)
 ```
 
-Returns an iterator to the first element of the `CONTAINER`.
+Returns an iterator to the element following the last element of the `CONTAINER`.
 
-If the `CONTAINER` is empty, the returned iterator will be equal to [`zk_end()`](zk_end.html).
+**Note:** For circular linked lists {% include containers_url.md container="zk_c_slist"%} and {% include containers_url.md container="zk_c_dlist"%} it returns the last element of the list **NOT** the element follwing it.
 
 ### Parameters
 
@@ -20,15 +19,15 @@ If the `CONTAINER` is empty, the returned iterator will be equal to [`zk_end()`]
   - {% include containers_url.md container="zk_slist"%}
   - {% include containers_url.md container="zk_dlist"%}
   - {% include containers_url.md container="zk_c_slist"%}
-  - {% include containers_url.md container="zk_c_dlist"%}
+  - {% include containers_url.md container="zk_d_slist"%}
 - The data is owned by the caller of the function.
 
 ### Returns
 A pointer to a `CONTAINER`. If `CONTAINER` is:
-- {% include containers_url.md container="zk_slist"%}: returns an iterator to the first element of the `CONTAINER`.
-- {% include containers_url.md container="zk_dlist"%}: returns an iterator to the first element of the `CONTAINER`.
-- {% include containers_url.md container="zk_c_slist"%}: returns an iterator to the first element of the `CONTAINER`.
-- {% include containers_url.md container="zk_c_dlist"%}: returns an iterator to the first element of the `CONTAINER`.
+- {% include containers_url.md container="zk_slist"%}: returns an iterator to the element following the last element of the `CONTAINER` which in this case is `NULL`.
+- {% include containers_url.md container="zk_dlist"%}: returns an iterator to the element following the last element of the `CONTAINER` which in this case is `NULL`.
+- {% include containers_url.md container="zk_c_slist"%}: returns an iterator last element of the `CONTAINER`.
+- {% include containers_url.md container="zk_d_slist"%}: returns an iterator last element of the `CONTAINER`.
 - The data is owned by the caller of the function.
 
 ### Time Complexity / Space Complexity:

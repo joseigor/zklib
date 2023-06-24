@@ -1,15 +1,14 @@
 ---
 layout: page
-title: zk_push_front
-parent: 0.1.0
-grand_parent: Releases
+title: zk_push_back
+parent: v0.1.0
 ---
 
 ```
-CONTAINER *zk_push_front(CONTAINER, DATA)
+CONTAINER *zk_push_back(CONTAINER, DATA)
 ```
 
-Prepends the given element value to the beginning of the `CONTAINER`.
+Adds a new element to the end of the `CONTAINER`.
 
 ### Parameters
 
@@ -37,15 +36,15 @@ A pointer to a `CONTAINER`. If `CONTAINER` is:
 
 ### Time Complexity / Space Complexity:
 If `CONTAINER` is:
-- {% include containers_url.md container="zk_slist"%}: **O(1) / O(1)**.
-- {% include containers_url.md container="zk_dlist"%}: **O(1) / O(1)**.
+- {% include containers_url.md container="zk_slist"%}: **O(N) / O(1)**.
+- {% include containers_url.md container="zk_dlist"%}: **O(N) / O(1)**.
 - {% include containers_url.md container="zk_c_slist"%}: **O(1) / O(1)**.
 - {% include containers_url.md container="zk_c_dlist"%}: **O(1) / O(1)**.
 
 ### Examples:
-- {% include examples_url.md container="zk_slist" file="push_front.c" -%}
-- {% include examples_url.md container="zk_dlist" file="push_front.c" -%}
-- {% include examples_url.md container="zk_c_slist" file="push_front.c" -%}
-- {% include examples_url.md container="zk_c_dlist" file="push_front.c" -%}
+- {% include examples_url.md container="zk_slist" file="push_back.c" -%}
+- {% include examples_url.md container="zk_dlist" file="push_back.c" -%}
+- {% include examples_url.md container="zk_c_slist" file="push_back.c" -%}
+- {% include examples_url.md container="zk_c_dlist" file="push_back.c" -%}
 
 

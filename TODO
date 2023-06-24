@@ -1,0 +1,58 @@
+TODO: Add test for zk_prev, zk_next, zk_get_data
+TODO: Add examples for zk_prev, zk_next, zk_get_data
+TODO: in zk_container.h add PTR where  pointer shall be received in the macro
+TODO: use parametrized tests
+TODO: zk_begin and zk_end  not return a node but take a pointer to it as argument.
+TODO: change zk_c_dlist_for_each to receive only the container and internally find the begin and end, check is is in accord to CPP interface for for eah
+TODO: review all examples
+TODO: review all function and add documentation
+TODO: implement zk_prev to all containers
+
+
+
+# Implement the following functions
+ Sort the list
+ merge a sorted list with another sorted list
+
+3bfb7ac8ce62a7a7e3 - new
+
+
+3e002d92e84da91c929442 - old
+
+cd docs &&  bundle exec jekyll serve
+
+
+zk_status zk_slist_remove(zk_slist **list_p, void *const data, zk_compare_func const func);
+
+zk_status zk_slist_remove_index(zk_slist **list_p, size_t const index, zk_destructor_t const destructor);
+
+zk_status zk_slist_remove_if(zk_slist **list_p,
+                             void *const user_data,
+                             zk_predicate_func const func,
+                             zk_destructor_t const destructor);
+
+zk_status zk_slist_remove_duplicates(zk_slist *list, zk_compare_func const func, zk_destructor_t const destructor);
+
+zk_status zk_slist_remove_cycle(zk_slist *list, zk_destructor_t const destructor);
+
+zk_slist *zk_slist_has_cycle(zk_slist *list);
+
+zk_status *zk_slist_has_duplicates(zk_slist *list, zk_compare_func const func);
+
+zk_slist *zk_slist_has_intersection(zk_slist *list, zk_slist *other, zk_compare_func const func);
+
+zk_status zk_slist_copy(zk_slist **dest, const zk_slist *const src, zk_copy_data_t const func, void *const user_data);
+
+zk_slist *zk_slist_split_after(zk_slist *list, zk_slist *node);
+
+zk_status zk_slist_split_before(zk_slist *list, zk_slist *node, zk_slist **new_list);
+
+zk_status zk_slist_split_at(zk_slist *list, size_t const index, zk_slist **new_list);
+
+zk_status zk_slist_split_if(zk_slist *list, void *const user_data, zk_predicate_func const func, zk_slist **new_list);
+
+zk_status zk_slist_split(zk_slist *list, zk_slist *node, zk_slist **new_list);
+
+zk_status zk_slist_split_n(zk_slist *list, size_t const n, zk_slist **new_list);
+
+zk_status zk_slist_split_last(zk_slist *list, zk_slist **new_list);
