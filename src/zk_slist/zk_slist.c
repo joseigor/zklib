@@ -185,6 +185,17 @@ zk_slist *zk_slist_reverse(zk_slist *list)
 	return prev;
 }
 
+/**
+ * @brief Returns the number of elements in the list.
+ *
+ * @param list Pointer to the list.
+ *
+ * @return The number of elements in the list.
+ * @return 0 if list is NULL.
+ *
+ * @note Time complexity: O(n)
+ * @note Space complexity: O(1)
+ */
 size_t zk_slist_size(const zk_slist *const list)
 {
 	size_t length = 0;
