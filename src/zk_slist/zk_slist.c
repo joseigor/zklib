@@ -2,7 +2,6 @@
 
 #include "zk_slist/zk_slist.h"
 
-// Private functions
 static void _zk_slist_free(zk_slist **node, zk_destructor_t func)
 {
 	if (node == NULL || *node == NULL) {
@@ -26,7 +25,6 @@ static zk_slist *zk_slist_last(zk_slist *list)
 	return list;
 }
 
-// Constructor
 zk_status zk_slist_new_node(zk_slist **node_p, void *const data)
 {
 	if (node_p == NULL)
@@ -42,7 +40,6 @@ zk_status zk_slist_new_node(zk_slist **node_p, void *const data)
 	return ZK_OK;
 }
 
-// Destructor
 void zk_slist_free(zk_slist **list_p, zk_destructor_t const func)
 {
 	if (list_p != NULL) {
@@ -54,7 +51,6 @@ void zk_slist_free(zk_slist **list_p, zk_destructor_t const func)
 	}
 }
 
-// Element access
 zk_status zk_slist_get_data(const zk_slist *const list, void **data)
 {
 	if (list == NULL)
@@ -65,7 +61,6 @@ zk_status zk_slist_get_data(const zk_slist *const list, void **data)
 	return ZK_OK;
 }
 
-// Iterators
 zk_status zk_slist_next(const zk_slist *const list, zk_slist **next)
 {
 	if (list == NULL)
@@ -96,7 +91,6 @@ void zk_slist_for_each(zk_slist *begin, zk_slist *const end, zk_for_each_func co
 	}
 }
 
-// Modifiers
 zk_status zk_slist_pop_back(zk_slist **list_p, zk_destructor_t const func)
 {
 	if (list_p == NULL)
@@ -168,25 +162,27 @@ zk_status zk_slist_push_front(zk_slist **list_p, void *const data)
 	return ZK_OK;
 }
 
-zk_status zk_slist_reverse(zk_slist **list_p)
+/**
+ * @brief Reverses the order of the elements in the list.
+ *
+ * @param list Pointer to the list to reverse.
+ *
+ * @return Pointer to the reversed list.
+ *
+ * @note Time complexity: O(n)
+ * @note Space complexity: O(1)
+ */
+zk_slist *zk_slist_reverse(zk_slist *list)
 {
-	if (list_p == NULL || *list_p == NULL)
-		return ZK_INVALID_ARGUMENT;
-
 	zk_slist *prev = NULL;
-	zk_slist *curr = *list_p;
 	zk_slist *next = NULL;
-
-	while (curr != NULL) {
-		next = curr->next;
-		curr->next = prev;
-		prev = curr;
-		curr = next;
+	while (list != NULL) {
+		next = list->next;
+		list->next = prev;
+		prev = list;
+		list = next;
 	}
-
-	*list_p = prev;
-
-	return ZK_OK;
+	return prev;
 }
 
 size_t zk_slist_size(const zk_slist *const list)
