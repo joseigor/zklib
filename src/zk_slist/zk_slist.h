@@ -4,7 +4,16 @@
 
 #include "zk_common/zk_common.h"
 
+/**
+ * @brief Singly linked list
+ *
+ */
+struct zk_slist {
+	void *data;
+	struct zk_slist *next;
+};
 typedef struct zk_slist zk_slist;
+
 // Constructor
 zk_status zk_slist_new_node(zk_slist **node_p, void *const data);
 
@@ -87,3 +96,7 @@ zk_status zk_slist_sort(zk_slist **list_p, zk_compare_func const func);
  * @note This merge algorithm is in-place.
  */
 zk_status zk_slist_merge(zk_slist **list_p, zk_slist **other, zk_compare_func const func);
+
+zk_slist *zk_slist_find(zk_slist *list, const void *const data, zk_compare_func const func);
+
+zk_slist *zk_slist_find_index(zk_slist *list, size_t const index);

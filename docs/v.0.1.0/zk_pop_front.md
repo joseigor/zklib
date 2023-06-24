@@ -1,15 +1,14 @@
 ---
 layout: page
-title: zk_pop_back
-parent: 0.1.0
-grand_parent: Releases
+title: zk_pop_front
+parent: v0.1.0
 ---
 
 ```
-CONTAINER *zk_pop_back(CONTAINER, FUNC)
+CONTAINER *zk_pop_front(CONTAINER, FUNC)
 ```
 
-Removes the last element of the `CONTAINER`. If there are no elements in the container `NULL` is returned.
+Removes the first element of the `CONTAINER`. If there are no elements in the container `NULL` is returned.
 
 If `FUNC` is provided it will be called for every element of `CONTAINER`. `FUNC` receives as argument the element's data.
 So if you need to free the element but also the data the element is pointing to you can do it by providing your own implementation for `FUNC`, see examples below.
@@ -44,15 +43,15 @@ A pointer to a `CONTAINER`. If `CONTAINER` is:
 
 ### Time Complexity / Space Complexity:
 If `CONTAINER` is:
-- {% include containers_url.md container="zk_slist"%}: **O(N) / O(1)**.
-- {% include containers_url.md container="zk_dlist"%}: **O(N) / O(1)**.
-- {% include containers_url.md container="zk_c_slist"%}: **O(N) / O(1)**.
+- {% include containers_url.md container="zk_slist"%}: **O(1) / O(1)**.
+- {% include containers_url.md container="zk_dlist"%}: **O(1) / O(1)**.
+- {% include containers_url.md container="zk_c_slist"%}: **O(1) / O(1)**.
 - {% include containers_url.md container="zk_c_dlist"%}: **O(1) / O(1)**.
 
 ### Examples:
-- {% include examples_url.md container="zk_slist" file="pop_back.c" -%}
-- {% include examples_url.md container="zk_dlist" file="pop_back.c" -%}
-- {% include examples_url.md container="zk_c_slist" file="pop_back.c" -%}
-- {% include examples_url.md container="zk_c_dlist" file="pop_back.c" -%}
+- {% include examples_url.md container="zk_slist" file="pop_front.c" -%}
+- {% include examples_url.md container="zk_dlist" file="pop_front.c" -%}
+- {% include examples_url.md container="zk_c_slist" file="pop_front.c" -%}
+- {% include examples_url.md container="zk_c_dlist" file="pop_front.c" -%}
 
 

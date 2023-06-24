@@ -52,5 +52,23 @@
             "INFO",
         ],
     },
-    "editor.formatOnSave": true,
+    "files.associations": {
+        "unity.h": "c",
+        "zklib.h": "c",
+        "zk_container.h": "c",
+        "stdbool.h": "c",
+        "zk_slist.h": "c"
+    },
+    "C_Cpp.default.compilerPath": "/usr/bin/gcc",
+    "cSpell.words": [
+        "slist"
+    ],
+    // "editor.formatOnSave": true,
+    // "files.associations": {
+    //     "*zk_container.h": "test"
+    // },
+    // "[test]": {
+    //     "editor.formatOnSave": false
+    // },
+
 }
