@@ -14,16 +14,12 @@ struct zk_slist {
 };
 typedef struct zk_slist zk_slist;
 
-// Constructor
 zk_status zk_slist_new_node(zk_slist **node_p, void *const data);
 
-// Destructor
 void zk_slist_free(zk_slist **list_p, zk_destructor_t const func);
 
-// Element access
 zk_status zk_slist_get_data(const zk_slist *const list, void **data);
 
-// Iterators
 zk_status zk_slist_next(const zk_slist *const list, zk_slist **next);
 
 zk_slist *zk_slist_begin(zk_slist *list);
@@ -32,7 +28,6 @@ zk_slist *zk_slist_end(zk_slist *list);
 
 void zk_slist_for_each(zk_slist *begin, zk_slist *const end, zk_for_each_func const func, void *const user_data);
 
-// Modifiers
 zk_status zk_slist_pop_back(zk_slist **list_p, zk_destructor_t const func);
 
 zk_status zk_slist_pop_front(zk_slist **list_p, zk_destructor_t const func);
@@ -41,18 +36,8 @@ zk_status zk_slist_push_back(zk_slist **list_p, void *const data);
 
 zk_status zk_slist_push_front(zk_slist **list_p, void *const data);
 
-zk_slist * zk_slist_reverse(zk_slist *list);
+zk_slist *zk_slist_reverse(zk_slist *list);
 
-/**
- * @brief Returns the number of elements in the list.
- *
- * @param list Pointer to the list.
- *
- * @return The number of elements in the list.
- * @return 0 if list is NULL.
- *
- * @note This function is O(n).
- */
 size_t zk_slist_size(const zk_slist *const list);
 
 /**
