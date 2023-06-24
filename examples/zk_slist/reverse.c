@@ -17,20 +17,19 @@ int main()
 {
 	zk_slist *list = NULL;
 
-	zk_push_back(&list, "1");
-	zk_push_back(&list, "2");
-	zk_push_back(&list, "3");
+	zk_slist_push_back(&list, "1");
+	zk_slist_push_back(&list, "2");
+	zk_slist_push_back(&list, "3");
 
 	printf("Original list:\n");
-	zk_for_each(list, print_list, NULL);
+	zk_slist_for_each(zk_slist_begin(list), zk_slist_end(list), print_list, NULL);
 
-	zk_reverse(&list);
+	list = zk_slist_reverse(list);
 
 	printf("Reversed list:\n");
-	zk_for_each(list, print_list, NULL);
+	zk_slist_for_each(zk_slist_begin(list), zk_slist_end(list), print_list, NULL);
 
-	// frees list
-	zk_free(&list, NULL);
+	zk_slist_free(&list, NULL);
 
 	return 0;
 }
