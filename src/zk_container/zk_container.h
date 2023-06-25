@@ -164,9 +164,9 @@
  * @note This function is only available for the following containers:
  *     - zk_slist
 */
-#define zk_sort(CONTAINER, FUNC)               \
-	_Generic((CONTAINER),                  \
-		zk_slist **   : zk_slist_sort) \
+#define zk_sort(CONTAINER, FUNC)            \
+	_Generic((CONTAINER),               \
+		zk_slist * : zk_slist_sort) \
 		(CONTAINER, FUNC)
 
 #define zk_find(CONTAINER, DATA, FUNC)        \

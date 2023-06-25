@@ -232,15 +232,28 @@ static void zk_slist_split_left_right_tail(zk_slist **list_p, zk_slist **left_p,
 		end_node->next = NULL;
 }
 
-zk_status zk_slist_sort(zk_slist **list_p, zk_compare_func const func)
+/**
+ * @brief Sorts list in ascending order if func(a, b) <= 0 and in descending order if func(a, b) > 0.
+ *        The original list is invalid after the sort as it is sorted in place.
+ *
+ * @param list Pointer to the list to sort.
+ * @param func Pointer to the comparison function. The comparison function must return a negative value if a < b, 0 if
+ *             a == b, and a positive value if a > b. If `NULL`, the list is returned unsorted.
+ *
+ * @return Pointer to the sorted list.
+ *
+ * @note Time complexity: O(n log n), it uses iterative merge sort algorithm.
+ * @note Space complexity: O(1)
+ * @note This sort algorithm is stable.
+ * @note This sort algorithm is in-place.
+ */
+zk_slist *zk_slist_sort(zk_slist *list, zk_compare_func const func)
 {
-	ZK_UNUSED(list_p);
-	ZK_UNUSED(func);
-	if (list_p == NULL || *list_p == NULL || func == NULL)
-		return ZK_INVALID_ARGUMENT;
+	if (func == NULL)
+		return list;
 
-	const size_t length = zk_slist_size(*list_p);
-	zk_slist *head = *list_p;
+	const size_t length = zk_slist_size(list);
+	zk_slist *head = list;
 
 	// number of passes is log2(length)
 	size_t p = 1;
@@ -328,8 +341,8 @@ zk_status zk_slist_sort(zk_slist **list_p, zk_compare_func const func)
 		left = zk_slist_merge(left, right, func);
 		head = left;
 	}
-	*list_p = head;
-	return ZK_OK;
+
+	return head;
 }
 
 /**

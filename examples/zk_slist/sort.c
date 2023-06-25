@@ -30,28 +30,28 @@ int main()
 	for (int i = 0; i < 10; i++) {
 		int *p = malloc(sizeof(int));
 		*p = rand() % 100;
-		zk_push_front(&list, p);
+		zk_slist_push_front(&list, p);
 	}
 
 	printf("Before sorting:\n");
-	zk_for_each(list, print_list, NULL);
+	zk_slist_for_each(list, NULL, print_list, NULL);
 	printf("\n");
 
 	// sorts the list
-	zk_sort(&list, zk_int_cmp_asc);
+	list = zk_slist_sort(list, zk_int_cmp_asc);
 
 	printf("After sorting ascending:\n");
-	zk_for_each(list, print_list, NULL);
+	zk_slist_for_each(list, NULL, print_list, NULL);
 	printf("\n");
 
 	// sort the list descending
-	zk_sort(&list, zk_int_cmp_desc);
+	list = zk_slist_sort(list, zk_int_cmp_desc);
 	printf("After sorting descending:\n");
-	zk_for_each(list, print_list, NULL);
+	zk_slist_for_each(list, NULL, print_list, NULL);
 	printf("\n");
 
 	// frees list
-	zk_free(&list, free);
+	zk_slist_free(&list, free);
 
 	return 0;
 }
