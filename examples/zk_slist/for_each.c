@@ -13,15 +13,15 @@ int main()
 {
 	zk_slist *list = NULL;
 
-	zk_push_back(&list, "top");
-	zk_push_back(&list, "middle");
-	zk_push_back(&list, "end");
+	list = zk_slist_push_back(list, "top");
+	list = zk_slist_push_back(list, "middle");
+	list = zk_slist_push_back(list, "end");
 
 	// calls zk_for_each() to print each node`s data of the list
-	zk_for_each(list, print_list, NULL);
+	zk_slist_for_each(zk_slist_begin(list), zk_slist_end(list), print_list, NULL);
 
 	// frees list
-	zk_free(&list, NULL);
+	zk_slist_free(&list, NULL);
 
 	return 0;
 }

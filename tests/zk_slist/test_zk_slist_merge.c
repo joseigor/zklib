@@ -19,7 +19,7 @@ void test_zk_slist_merge_when_first_list_is_null(void)
 	// fill second list with some sorted data
 	int data[] = { 1, 2, 3, 4, 5 };
 	for (int i = 0; i < 5; i++)
-		zk_slist_push_back(&second, &data[i]);
+		second = zk_slist_push_back(second, &data[i]);
 
 	merged = zk_slist_merge(first, second, compare_int);
 
@@ -42,7 +42,7 @@ void test_zk_slist_merge_when_second_list_is_null(void)
 	// fill first list with some sorted data
 	int data[] = { 1, 2, 3, 4, 5 };
 	for (int i = 0; i < 5; i++)
-		zk_slist_push_back(&first, &data[i]);
+		first = zk_slist_push_back(first, &data[i]);
 
 	merged = zk_slist_merge(first, second, compare_int);
 
@@ -64,8 +64,8 @@ void test_zk_slist_merge_when_function_pointer_is_null(void)
 	// fill first and second list with some sorted data
 	int data[] = { 1, 2, 3, 4, 5 };
 	for (int i = 0; i < 5; i++) {
-		zk_slist_push_back(&first, &data[i]);
-		zk_slist_push_back(&second, &data[i]);
+		first = zk_slist_push_back(first, &data[i]);
+		second = zk_slist_push_back(second, &data[i]);
 	}
 
 	TEST_ASSERT_NULL(zk_slist_merge(first, second, NULL));
@@ -91,7 +91,7 @@ void test_zk_slist_merge_when_first_list_is_empty(void)
 	// fill second list with some sorted data
 	int data[] = { 1, 2, 3, 4, 5 };
 	for (int i = 0; i < 5; i++)
-		zk_slist_push_back(&second, &data[i]);
+		second = zk_slist_push_back(second, &data[i]);
 
 	merged = zk_slist_merge(first, second, compare_int);
 
@@ -114,7 +114,7 @@ void test_zk_slist_merge_when_second_list_is_empty(void)
 	// fill first list with some sorted data
 	int data[] = { 1, 2, 3, 4, 5 };
 	for (int i = 0; i < 5; i++)
-		zk_slist_push_back(&first, &data[i]);
+		first = zk_slist_push_back(first, &data[i]);
 
 	merged = zk_slist_merge(first, second, compare_int);
 
@@ -137,12 +137,12 @@ void test_zk_slist_merge_when_both_lists_are_not_empty(void)
 	// fill first list with some sorted data
 	int data1[] = { 1, 3, 5, 7, 9 };
 	for (int i = 0; i < 5; i++)
-		zk_slist_push_back(&first, &data1[i]);
+		first = zk_slist_push_back(first, &data1[i]);
 
 	// fill second list with some sorted data
 	int data2[] = { 2, 4, 6, 8, 10 };
 	for (int i = 0; i < 5; i++)
-		zk_slist_push_back(&second, &data2[i]);
+		second = zk_slist_push_back(second, &data2[i]);
 
 	merged = zk_slist_merge(first, second, compare_int);
 
@@ -165,12 +165,12 @@ void test_zk_slist_merge_is_stable(void)
 	// fill first list with some sorted data
 	int data1[] = { 1, 1, 1, 1, 1 };
 	for (int i = 0; i < 5; i++)
-		zk_slist_push_back(&first, &data1[i]);
+		first = zk_slist_push_back(first, &data1[i]);
 
 	// fill second list with some sorted data
 	int data2[] = { 1, 1, 1, 1, 1 };
 	for (int i = 0; i < 5; i++)
-		zk_slist_push_back(&second, &data2[i]);
+		second = zk_slist_push_back(second, &data2[i]);
 
 	merged = zk_slist_merge(first, second, compare_int);
 

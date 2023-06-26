@@ -17,9 +17,9 @@ int main()
 {
 	zk_slist *list = NULL;
 
-	zk_slist_push_back(&list, "1");
-	zk_slist_push_back(&list, "2");
-	zk_slist_push_back(&list, "3");
+	list = zk_slist_push_back(list, "1");
+	list = zk_slist_push_back(list, "2");
+	list = zk_slist_push_back(list, "3");
 
 	printf("Original list:\n");
 	zk_slist_for_each(zk_slist_begin(list), zk_slist_end(list), print_list, NULL);

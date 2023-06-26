@@ -89,7 +89,7 @@
 
 #define zk_push_back(CONTAINER, DATA)                 \
 	_Generic((CONTAINER),                         \
-		zk_slist **   : zk_slist_push_back,   \
+		zk_slist *   : zk_slist_push_back,   \
 		zk_dlist **   : zk_dlist_push_back,   \
 		zk_c_slist ** : zk_c_slist_push_back, \
 		zk_c_dlist ** : zk_c_dlist_push_back) \
