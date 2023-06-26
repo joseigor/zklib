@@ -23,7 +23,7 @@ void test_zk_slist_find_index_when_index_is_out_of_bounds(void)
 	// fill list with some sorted data
 	int data_list[] = { 1, 2, 3, 4, 5 };
 	for (int i = 0; i < 5; i++)
-		zk_slist_push_back(&list, &data_list[i]);
+		list = zk_slist_push_back(list, &data_list[i]);
 
 	TEST_ASSERT_NULL(zk_slist_find_index(list, index));
 
@@ -38,7 +38,7 @@ void test_zk_slist_find_index_when_index_is_valid(void)
 	// fill list with some sorted data
 	int data_list[] = { 1, 2, 3, 4, 5 };
 	for (int i = 0; i < 5; i++)
-		zk_slist_push_back(&list, &data_list[i]);
+		list = zk_slist_push_back(list, &data_list[i]);
 
 	zk_slist *node = zk_slist_find_index(list, index);
 	TEST_ASSERT_EQUAL_INT(4, *(int *)node->data);

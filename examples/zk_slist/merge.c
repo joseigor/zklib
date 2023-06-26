@@ -24,8 +24,8 @@ int main()
 	int other_data[] = { 1, 2, 3, 4, 5 };
 
 	for (int i = 0; i < 5; i++) {
-		zk_slist_push_back(&list, &list_data[i]);
-		zk_slist_push_back(&other, &other_data[i]);
+		list = zk_slist_push_back(list, &list_data[i]);
+		list = zk_slist_push_back(other, &other_data[i]);
 	}
 
 	// merge the two lists
@@ -36,7 +36,7 @@ int main()
 	printf("\n");
 
 	// free the list, other_list was already freed by zk_slist_merge
-	zk_free(&list, NULL);
+	zk_slist_free(&list, NULL);
 
 	return 0;
 }

@@ -14,7 +14,7 @@ struct zk_slist {
 };
 typedef struct zk_slist zk_slist;
 
-zk_status zk_slist_new_node(zk_slist **node_p, void *const data);
+zk_slist *zk_slist_new_node(void *const data);
 
 void zk_slist_free(zk_slist **list_p, zk_destructor_t const func);
 
@@ -32,7 +32,7 @@ zk_status zk_slist_pop_back(zk_slist **list_p, zk_destructor_t const func);
 
 zk_status zk_slist_pop_front(zk_slist **list_p, zk_destructor_t const func);
 
-zk_status zk_slist_push_back(zk_slist **list_p, void *const data);
+zk_slist *zk_slist_push_back(zk_slist *list, void *const data);
 
 zk_slist *zk_slist_push_front(zk_slist *list, void *const data);
 

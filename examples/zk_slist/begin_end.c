@@ -13,27 +13,21 @@ int main()
 {
 	zk_slist *list = NULL;
 
-	zk_push_back(&list, "top");
-	zk_push_back(&list, "middle");
-	zk_push_back(&list, "end");
+	list = zk_slist_push_back(list, "top");
+	list = zk_slist_push_back(list, "middle");
+	list = zk_slist_push_back(list, "end");
 
-	zk_slist *begin = zk_begin(list);
-	zk_slist *end = zk_end(list);
+	zk_slist *begin = zk_slist_begin(list);
+	zk_slist *end = zk_slist_end(list);
 
 	// Uses begin and end to iterate the list.
 	while (begin != end) {
-		void *data = NULL;
-		if (zk_get_data(begin, &data) != ZK_OK)
-			break;
-
-		print_list(data, NULL);
-
-		if (zk_next(begin, &begin) != ZK_OK)
-			break;
+		print_list(begin->data, NULL);
+		begin = begin->next;
 	}
 
 	// frees list
-	zk_free(&list, NULL);
+	zk_slist_free(&list, NULL);
 
 	return 0;
 }

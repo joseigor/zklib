@@ -27,7 +27,7 @@ void test_zk_slist_find_when_function_pointer_is_null(void)
 
 	int data = 1;
 	for (int i = 0; i < 5; i++)
-		zk_slist_push_back(&list, &data_list[i]);
+		list = zk_slist_push_back(list, &data_list[i]);
 
 	TEST_ASSERT_NULL(zk_slist_find(list, &data, NULL));
 
@@ -51,7 +51,7 @@ void test_zk_slist_find_when_list_has_n_elements(void)
 	int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
 	for (int i = 0; i < 10; i++) {
-		zk_slist_push_back(&list, &data[i]);
+		list = zk_slist_push_back(list, &data[i]);
 	}
 
 	// find all elements
@@ -71,7 +71,7 @@ void test_zk_slist_find_when_list_has_n_elements_and_element_is_not_found(void)
 	int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
 	for (int i = 0; i < 10; i++) {
-		zk_slist_push_back(&list, &data[i]);
+		list = zk_slist_push_back(list, &data[i]);
 	}
 
 	int not_found = 10;

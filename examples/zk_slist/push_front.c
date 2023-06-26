@@ -13,9 +13,9 @@ int main()
 {
 	zk_slist *list = NULL;
 
-	zk_push_back(&list, "1");
-	zk_push_back(&list, "2");
-	zk_push_back(&list, "3");
+	list = zk_slist_push_back(list, "1");
+	list = zk_slist_push_back(list, "2");
+	list = zk_slist_push_back(list, "3");
 
 	// prepends new node with data to the list.
 	list = zk_slist_push_front(list, "0");

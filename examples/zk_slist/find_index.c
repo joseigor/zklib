@@ -26,7 +26,7 @@ int main()
 	};
 
 	for (int i = 0; i < 4; i++) {
-		zk_slist_push_back(&list, &persons[i]);
+		list = zk_slist_push_back(list, &persons[i]);
 	}
 
 	// find person at index 2

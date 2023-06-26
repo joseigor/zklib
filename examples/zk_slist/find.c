@@ -25,7 +25,7 @@ int main()
 		{ "John", 30, "jonh@email.com" },
 	};
 	for (int i = 0; i < 4; i++) {
-		zk_slist_push_back(&list, &persons[i]);
+		list = zk_slist_push_back(list, &persons[i]);
 	}
 
 	char *emails_to_find[] = { "simon@email.com", "andrew@email.com", "jose@email.com" };

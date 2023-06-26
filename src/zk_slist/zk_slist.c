@@ -25,19 +25,26 @@ static zk_slist *zk_slist_last(zk_slist *list)
 	return list;
 }
 
-zk_status zk_slist_new_node(zk_slist **node_p, void *const data)
+/**
+ * @brief Creates a new node with data.
+ *
+ * @param data Pointer to the data to be stored in the node. Caller is responsible for the memory management of the
+ * data.
+ *
+ * @return Pointer to the new node or NULL if function fails. This function can only fail in case of memory allocation
+ *
+ * @note Time complexity: O(1)
+ * @note Space complexity: O(1)
+ */
+zk_slist *zk_slist_new_node(void *const data)
 {
-	if (node_p == NULL)
-		return ZK_INVALID_ARGUMENT;
+	zk_slist *node = malloc(sizeof(zk_slist));
+	if (node == NULL)
+		return NULL;
 
-	*node_p = malloc(sizeof(zk_slist));
-	if (*node_p == NULL)
-		return ZK_ERROR_ALLOC;
-
-	(*node_p)->data = data;
-	(*node_p)->next = NULL;
-
-	return ZK_OK;
+	node->data = data;
+	node->next = NULL;
+	return node;
 }
 
 void zk_slist_free(zk_slist **list_p, zk_destructor_t const func)
@@ -127,23 +134,30 @@ zk_status zk_slist_pop_front(zk_slist **list_p, zk_destructor_t const func)
 	return ZK_OK;
 }
 
-zk_status zk_slist_push_back(zk_slist **list_p, void *const data)
+/**
+ * @brief Appends new node with data to the list.
+ *
+ * @param list Pointer to the list.
+ * @param data Pointer to the data to be appended. Caller is responsible for the memory management of the data.
+ *
+ * @return Pointer to the new head of the list or NULL if function fails. This function can only fail in case of memory
+ * allocation failure.
+ *
+ * @note Time complexity: O(n)
+ * @note Space complexity: O(1)
+ */
+zk_slist *zk_slist_push_back(zk_slist *list, void *const data)
 {
-	if (list_p == NULL)
-		return ZK_INVALID_ARGUMENT;
+	zk_slist *tail = zk_slist_new_node(data);
+	if (tail == NULL)
+		return NULL;
 
-	zk_slist *node = NULL;
-	if (zk_slist_new_node(&node, data) != ZK_OK)
-		return ZK_ERROR_ALLOC;
+	if (list)
+		zk_slist_last(list)->next = tail;
+	else
+		list = tail;
 
-	if ((*list_p) == NULL) {
-		(*list_p) = node;
-	} else {
-		zk_slist *last_node = zk_slist_last((*list_p));
-		last_node->next = node;
-	}
-
-	return ZK_OK;
+	return list;
 }
 
 /**
@@ -152,16 +166,16 @@ zk_status zk_slist_push_back(zk_slist **list_p, void *const data)
  * @param list Pointer to the list.
  * @param data Pointer to the data to be prepended. Caller is responsible for the memory management of the data.
  *
- * @return Pointer to the new head of the list or NULL if function fails. This function can only fail if the memory
- * allocation.
+ * @return Pointer to the new head of the list or NULL if function fails. This function can only fail in case of memory
+ * allocation failure.
  *
  * @note Time complexity: O(1)
  * @note Space complexity: O(1)
  */
 zk_slist *zk_slist_push_front(zk_slist *list, void *const data)
 {
-	zk_slist *head = NULL;
-	if (zk_slist_new_node(&head, data) != ZK_OK)
+	zk_slist *head = zk_slist_new_node(data);
+	if (head == NULL)
 		return NULL;
 
 	head->next = list;
