@@ -54,6 +54,30 @@ test_zk_slist_push_front = \
         include_directories : [inc_dir, tests_inc_dir]
     )
 
+test_zk_slist_push_back = \
+    executable(
+        'test_zk_slist_push_back',
+        sources: ['test_zk_slist_push_back.c'],
+        dependencies: [ unity_dep, zklib_dep ],
+        include_directories : [inc_dir, tests_inc_dir]
+    )
+
+test_zk_slist_pop_front = \
+    executable(
+        'test_zk_slist_pop_front',
+        sources: ['test_zk_slist_pop_front.c'],
+        dependencies: [ unity_dep, zklib_dep ],
+        include_directories : [inc_dir, tests_inc_dir]
+    )
+
+test_zk_slist_pop_back = \
+    executable(
+        'test_zk_slist_pop_back',
+        sources: ['test_zk_slist_pop_back.c'],
+        dependencies: [ unity_dep, zklib_dep ],
+        include_directories : [inc_dir, tests_inc_dir]
+    )
+
 test('test_zk_slist_reverse', test_zk_slist_reverse, suite: 'zk_slist')
 test('test_zk_slist_size', test_zk_slist_size, suite: 'zk_slist')
 test('test_zk_slist_merge', test_zk_slist_merge, suite: 'zk_slist')
@@ -61,4 +85,7 @@ test('test_zk_slist_sort', test_zk_slist_sort, suite: 'zk_slist')
 test('test_zk_slist_find', test_zk_slist_find, suite: 'zk_slist')
 test('test_zk_slist_find_index', test_zk_slist_find_index, suite: 'zk_slist')
 test('test_zk_slist_push_front', test_zk_slist_push_front, suite: 'zk_slist')
+test('test_zk_slist_push_back', test_zk_slist_push_back, suite: 'zk_slist')
+test('test_zk_slist_pop_front', test_zk_slist_pop_front, suite: 'zk_slist')
+test('test_zk_slist_pop_back', test_zk_slist_pop_back, suite: 'zk_slist')
 
