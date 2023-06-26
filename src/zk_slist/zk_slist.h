@@ -34,7 +34,7 @@ zk_status zk_slist_pop_front(zk_slist **list_p, zk_destructor_t const func);
 
 zk_status zk_slist_push_back(zk_slist **list_p, void *const data);
 
-zk_status zk_slist_push_front(zk_slist **list_p, void *const data);
+zk_slist *zk_slist_push_front(zk_slist *list, void *const data);
 
 zk_slist *zk_slist_reverse(zk_slist *list);
 

@@ -23,7 +23,7 @@ int main()
 	int list_data[] = { 6, 7, 8, 9, 10 };
 	int other_data[] = { 1, 2, 3, 4, 5 };
 
-	for(int i = 0; i < 5; i++){
+	for (int i = 0; i < 5; i++) {
 		zk_slist_push_back(&list, &list_data[i]);
 		zk_slist_push_back(&other, &other_data[i]);
 	}

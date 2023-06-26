@@ -46,10 +46,19 @@ test_zk_slist_find_index = \
         include_directories : [inc_dir, tests_inc_dir]
     )
 
+test_zk_slist_push_front = \
+    executable(
+        'test_zk_slist_push_front',
+        sources: ['test_zk_slist_push_front.c'],
+        dependencies: [ unity_dep, zklib_dep ],
+        include_directories : [inc_dir, tests_inc_dir]
+    )
+
 test('test_zk_slist_reverse', test_zk_slist_reverse, suite: 'zk_slist')
 test('test_zk_slist_size', test_zk_slist_size, suite: 'zk_slist')
 test('test_zk_slist_merge', test_zk_slist_merge, suite: 'zk_slist')
 test('test_zk_slist_sort', test_zk_slist_sort, suite: 'zk_slist')
 test('test_zk_slist_find', test_zk_slist_find, suite: 'zk_slist')
 test('test_zk_slist_find_index', test_zk_slist_find_index, suite: 'zk_slist')
+test('test_zk_slist_push_front', test_zk_slist_push_front, suite: 'zk_slist')
 
