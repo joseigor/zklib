@@ -16,7 +16,7 @@ void test_length_when_list_has_one_element(void)
 	zk_slist *list = NULL;
 	int data = 1;
 
-	zk_slist_push_front(&list, &data);
+	list = zk_slist_push_front(list, &data);
 
 	TEST_ASSERT_EQUAL(1, zk_slist_size(list));
 
@@ -29,7 +29,7 @@ void test_length_when_list_has_multiple_elements(void)
 	int data[] = { 1, 2, 3, 4, 5 };
 
 	for (int i = 0; i < 5; i++)
-		zk_slist_push_front(&list, &data[i]);
+		list = zk_slist_push_front(list, &data[i]);
 
 	TEST_ASSERT_EQUAL(5, zk_slist_size(list));
 

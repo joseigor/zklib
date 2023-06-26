@@ -46,7 +46,6 @@ void test_zk_slist_find_index_when_index_is_valid(void)
 	zk_slist_free(&list, NULL);
 }
 
-
 int main(void)
 {
 	UNITY_BEGIN();

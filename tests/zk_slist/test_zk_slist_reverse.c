@@ -16,7 +16,7 @@ void test_reverse_when_list_has_one_element(void)
 	zk_slist *list = NULL, *next = NULL;
 	int data = 1;
 
-	zk_slist_push_front(&list, &data);
+	list = zk_slist_push_front(list, &data);
 	list = zk_slist_reverse(list);
 
 	TEST_ASSERT_NOT_NULL(list);
@@ -37,7 +37,7 @@ void test_reverse_when_list_has_multiple_elements(void)
 	int data[] = { 1, 2, 3, 4, 5 };
 
 	for (int i = 0; i < 5; i++)
-		zk_slist_push_front(&list, &data[i]);
+		list = zk_slist_push_front(list, &data[i]);
 
 	// reverse the list
 	list = zk_slist_reverse(list);

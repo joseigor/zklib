@@ -18,13 +18,13 @@ int main()
 	zk_push_back(&list, "3");
 
 	// prepends new node with data to the list.
-	zk_push_front(&list, "0");
+	list = zk_slist_push_front(list, "0");
 
 	// calls zk_for_each() to print each node`s data of the list
-	zk_for_each(list, print_list, NULL);
+	zk_slist_for_each(zk_slist_begin(list), zk_slist_end(list), print_list, NULL);
 
 	// frees list
-	zk_free(&list, NULL);
+	zk_slist_free(&list, NULL);
 
 	return 0;
 }

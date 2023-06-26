@@ -146,20 +146,26 @@ zk_status zk_slist_push_back(zk_slist **list_p, void *const data)
 	return ZK_OK;
 }
 
-zk_status zk_slist_push_front(zk_slist **list_p, void *const data)
+/**
+ * @brief Prepends new node with data to the list.
+ *
+ * @param list Pointer to the list.
+ * @param data Pointer to the data to be prepended. Caller is responsible for the memory management of the data.
+ *
+ * @return Pointer to the new head of the list or NULL if function fails. This function can only fail if the memory
+ * allocation.
+ *
+ * @note Time complexity: O(1)
+ * @note Space complexity: O(1)
+ */
+zk_slist *zk_slist_push_front(zk_slist *list, void *const data)
 {
-	if (list_p == NULL)
-		return ZK_INVALID_ARGUMENT;
+	zk_slist *head = NULL;
+	if (zk_slist_new_node(&head, data) != ZK_OK)
+		return NULL;
 
-	zk_slist *node = NULL;
-	if (zk_slist_new_node(&node, data) != ZK_OK)
-		return ZK_ERROR_ALLOC;
-
-	if ((*list_p) != NULL)
-		node->next = (*list_p);
-
-	(*list_p) = node;
-	return ZK_OK;
+	head->next = list;
+	return head;
 }
 
 /**

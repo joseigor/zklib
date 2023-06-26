@@ -30,7 +30,7 @@ int main()
 	for (int i = 0; i < 10; i++) {
 		int *p = malloc(sizeof(int));
 		*p = rand() % 100;
-		zk_slist_push_front(&list, p);
+		list = zk_slist_push_front(list, p);
 	}
 
 	printf("Before sorting:\n");

@@ -670,64 +670,6 @@ void test_zk_push_back_null_data_to_slist(void)
 	TEST_ASSERT_NULL(list);
 }
 
-// Tests for zk_push_front()
-void test_zk_push_front_when_reference_is_null(void)
-{
-	zk_slist **list_p = NULL;
-	TEST_ASSERT_EQUAL(ZK_INVALID_ARGUMENT, zk_push_front(list_p, NULL));
-}
-
-void test_zk_push_front_n_items_to_slist(void)
-{
-	int number_of_nodes = 100;
-	int nodes_data[number_of_nodes];
-	zk_slist *list = NULL;
-	void *element_data = NULL;
-
-	for (int i = 0; i < number_of_nodes; i++) {
-		nodes_data[i] = i;
-		zk_push_front(&list, &nodes_data[i]);
-		TEST_ASSERT_NOT_NULL(list);
-	}
-
-	int node_idx = 1;
-	zk_slist *node_i = list;
-	while (node_i != NULL) {
-		TEST_ASSERT_NOT_NULL(node_i);
-		zk_get_data(node_i, &element_data);
-		TEST_ASSERT_EQUAL_PTR(element_data, &nodes_data[number_of_nodes - node_idx]);
-		TEST_ASSERT_EQUAL(*((int *)element_data), nodes_data[number_of_nodes - node_idx]);
-		zk_next(node_i, &node_i);
-		node_idx++;
-	}
-
-	zk_free(&list, NULL);
-	TEST_ASSERT_NULL(list);
-}
-
-void test_zk_push_front_null_data_to_slist(void)
-{
-	int number_of_nodes = 100;
-	zk_slist *list = NULL;
-	void *element_data = NULL;
-
-	for (int i = 0; i < number_of_nodes; i++) {
-		zk_push_front(&list, NULL);
-		TEST_ASSERT_NOT_NULL(list);
-	}
-
-	zk_slist *node_i = list;
-	while (node_i != NULL) {
-		TEST_ASSERT_NOT_NULL(node_i);
-		zk_get_data(node_i, &element_data);
-		TEST_ASSERT_EQUAL_PTR(element_data, NULL);
-		zk_next(node_i, &node_i);
-	}
-
-	zk_free(&list, NULL);
-	TEST_ASSERT_NULL(list);
-}
-
 int main(void)
 {
 	UNITY_BEGIN();
@@ -796,12 +738,6 @@ int main(void)
 		RUN_TEST(test_zk_push_back_3_items_to_slist);
 		RUN_TEST(test_zk_push_back_n_items_to_slist);
 		RUN_TEST(test_zk_push_back_null_data_to_slist);
-	}
-
-	{ // tests for zk_push_front()
-		RUN_TEST(test_zk_push_front_when_reference_is_null);
-		RUN_TEST(test_zk_push_front_n_items_to_slist);
-		RUN_TEST(test_zk_push_front_null_data_to_slist);
 	}
 
 	return UNITY_END();
