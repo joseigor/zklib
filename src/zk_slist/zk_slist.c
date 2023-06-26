@@ -39,7 +39,7 @@ static zk_slist *zk_slist_last(zk_slist *list)
 zk_slist *zk_slist_new_node(void *const data)
 {
 	zk_slist *node = malloc(sizeof(zk_slist));
-	if (node == NULL)
+	if (!node)
 		return NULL;
 
 	node->data = data;
@@ -98,40 +98,56 @@ void zk_slist_for_each(zk_slist *begin, zk_slist *const end, zk_for_each_func co
 	}
 }
 
-zk_status zk_slist_pop_back(zk_slist **list_p, zk_destructor_t const func)
+/**
+ * @brief Removes the last element from the list.
+ *
+ * @param list Pointer to the list.
+ * @param func Pointer to the destructor function. If NULL, the data is not freed.
+ *
+ * @return Pointer to the new head of the list.
+ *
+ * @note Time complexity: O(n)
+ * @note Space complexity: O(1)
+ */
+zk_slist *zk_slist_pop_back(zk_slist *list, zk_destructor_t const func)
 {
-	if (list_p == NULL)
-		return ZK_INVALID_ARGUMENT;
-
-	if ((*list_p) != NULL) {
-		// (*list_p) has only one element
-		if ((*list_p)->next == NULL) {
-			_zk_slist_free(&(*list_p), func);
-		} else {
-			zk_slist *node = (*list_p);
+	if (list) {
+		// list has only one element
+		if (list->next == NULL)
+			_zk_slist_free(&list, func);
+		else {
+			zk_slist *node = list;
 			// moves node to element before last element
-			while (node->next->next != NULL) {
+			while (node->next->next != NULL)
 				node = node->next;
-			}
-			// remove last element form the (*list_p)
+
+			// remove last element from the list
 			_zk_slist_free(&node->next, func);
 			node->next = NULL;
 		}
 	}
-	return ZK_OK;
+	return list;
 }
 
-zk_status zk_slist_pop_front(zk_slist **list_p, zk_destructor_t const func)
+/**
+ * @brief Removes the first element from the list.
+ *
+ * @param list Pointer to the list.
+ * @param func Pointer to the destructor function. If NULL, the data is not freed.
+ *
+ * @return Pointer to the new head of the list.
+ *
+ * @note Time complexity: O(1)
+ * @note Space complexity: O(1)
+ */
+zk_slist *zk_slist_pop_front(zk_slist *list, zk_destructor_t const func)
 {
-	if (list_p == NULL)
-		return ZK_INVALID_ARGUMENT;
-
-	if ((*list_p) != NULL) {
-		zk_slist *front_node = (*list_p);
-		(*list_p) = (*list_p)->next;
-		_zk_slist_free(&front_node, func);
+	if (list) {
+		zk_slist *old_head = list;
+		list = list->next;
+		_zk_slist_free(&old_head, func);
 	}
-	return ZK_OK;
+	return list;
 }
 
 /**

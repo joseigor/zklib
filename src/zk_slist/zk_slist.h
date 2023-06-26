@@ -28,9 +28,9 @@ zk_slist *zk_slist_end(zk_slist *list);
 
 void zk_slist_for_each(zk_slist *begin, zk_slist *const end, zk_for_each_func const func, void *const user_data);
 
-zk_status zk_slist_pop_back(zk_slist **list_p, zk_destructor_t const func);
+zk_slist *zk_slist_pop_back(zk_slist *list, zk_destructor_t const func);
 
-zk_status zk_slist_pop_front(zk_slist **list_p, zk_destructor_t const func);
+zk_slist *zk_slist_pop_front(zk_slist *list, zk_destructor_t const func);
 
 zk_slist *zk_slist_push_back(zk_slist *list, void *const data);
 

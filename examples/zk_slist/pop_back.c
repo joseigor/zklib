@@ -20,7 +20,7 @@ int main()
 	list = zk_slist_push_back(list, strdup("3"));
 
 	// remove last element and use free function to free the element`s data
-	zk_slist_pop_back(&list, free);
+	list = zk_slist_pop_back(list, free);
 
 	// calls zk_for_each() to print each node`s data of the list
 	zk_slist_for_each(zk_slist_begin(list), zk_slist_end(list), print_list, NULL);
