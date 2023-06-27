@@ -18,9 +18,8 @@ static void _zk_slist_free(zk_slist **node, zk_destructor_t func)
 
 static zk_slist *zk_slist_last(zk_slist *list)
 {
-	while (list != NULL && list->next != NULL) {
+	while (list != NULL && list->next != NULL)
 		list = list->next;
-	}
 
 	return list;
 }
@@ -47,10 +46,19 @@ zk_slist *zk_slist_new_node(void *const data)
 	return node;
 }
 
+/**
+ * @brief Frees the list and its nodes if `func` is provided.
+ *
+ * @param list_p Pointer to the list. It is set to NULL after the list is freed.
+ * @param func Pointer to the destructor function. If NULL, the data is not freed.
+ *
+ * @note Time complexity: O(n)
+ * @note Space complexity: O(1)
+ */
 void zk_slist_free(zk_slist **list_p, zk_destructor_t const func)
 {
-	if (list_p != NULL) {
-		while ((*list_p) != NULL) {
+	if (list_p) {
+		while (*list_p) {
 			zk_slist *node = *list_p;
 			*list_p = node->next;
 			_zk_slist_free(&node, func);
