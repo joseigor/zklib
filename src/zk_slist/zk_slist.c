@@ -24,46 +24,31 @@ static zk_slist *zk_slist_last(zk_slist *list)
 	return list;
 }
 
-/**
- * @brief Creates a new node with data.
- *
- * @param data Pointer to the data to be stored in the node. Caller is responsible for the memory management of the
- * data.
- *
- * @return Pointer to the new node or NULL if function fails. This function can only fail in case of memory allocation
- *
- * @note Time complexity: O(1)
- * @note Space complexity: O(1)
- */
-zk_slist *zk_slist_new_node(void *const data)
+static void zk_slist_split_left_right_tail(zk_slist **list_p, zk_slist **left_p, zk_slist **right_p, size_t l_r_size)
 {
-	zk_slist *node = malloc(sizeof(zk_slist));
-	if (!node)
-		return NULL;
-
-	node->data = data;
-	node->next = NULL;
-	return node;
-}
-
-/**
- * @brief Frees the list and its nodes if `func` is provided.
- *
- * @param list_p Pointer to the list. It is set to NULL after the list is freed.
- * @param func Pointer to the destructor function. If NULL, the data is not freed.
- *
- * @note Time complexity: O(n)
- * @note Space complexity: O(1)
- */
-void zk_slist_free(zk_slist **list_p, zk_destructor_t const func)
-{
-	if (list_p) {
-		while (*list_p) {
-			zk_slist *node = *list_p;
-			*list_p = node->next;
-			_zk_slist_free(&node, func);
-		}
+	zk_slist *end_node = NULL;
+	*left_p = *list_p;
+	*right_p = NULL;
+	// loop through the list until l_r_size is reached to get the end of the left list
+	for (size_t i = 0; i < l_r_size && *list_p != NULL; i++) {
+		end_node = *list_p;
+		*list_p = (*list_p)->next;
 	}
+
+	if (end_node != NULL)
+		end_node->next = NULL;
+
+	// loop through the list until l_r_size is reached to get the end of the right list
+	*right_p = *list_p;
+	for (size_t j = 0; j < l_r_size && *list_p != NULL; j++) {
+		// TODO: check if we can start merging from here instead of going through the list again
+		// maybe we can we can iterate the left list and the right list at the same time
+		end_node = *list_p;
+		*list_p = (*list_p)->next;
+	}
+
+	if (end_node != NULL)
+		end_node->next = NULL;
 }
 
 /**
@@ -96,6 +81,57 @@ zk_slist *zk_slist_end(zk_slist *list)
 }
 
 /**
+ * @brief Finds the first element in the list that matches the given data.
+ *
+ * @param list Pointer to the list.
+ * @param data Pointer to the data to find.
+ * @param func A pointer to a comparison function. On match, the function should return `0`.
+ *
+ * @return Pointer to the first element in the list that matches the given data or NULL if no match is found.
+ *
+ * @note Time complexity: O(n)
+ * @note Space complexity: O(1)
+ */
+zk_slist *zk_slist_find(zk_slist *list, const void *const data, zk_compare_func const func)
+{
+	if (list == NULL || func == NULL)
+		return NULL;
+
+	while (list != NULL) {
+		if (func(list->data, data) == 0)
+			break;
+		list = list->next;
+	}
+	return list;
+}
+
+/**
+ * @brief Find the element at the given index.
+ *
+ * @param list Pointer to the list.
+ * @param index Index of the element to be found.
+ *
+ * @return - Pointer to the element at the given index or NULL if no match is found.
+ *
+ * @note Time complexity: O(n)
+ * @note Space complexity: O(1)
+ */
+zk_slist *zk_slist_find_index(zk_slist *list, size_t const index)
+{
+	if (list == NULL)
+		return NULL;
+
+	size_t i = 0;
+	while (list != NULL) {
+		if (i == index)
+			break;
+		list = list->next;
+		i++;
+	}
+	return list;
+}
+
+/**
  * @brief Applies the given function to each element in the list.
  *
  * @param begin Iterator to the first element of the list.
@@ -114,6 +150,116 @@ void zk_slist_for_each(zk_slist *begin, zk_slist *const end, zk_for_each_func co
 			begin = begin->next;
 		}
 	}
+}
+
+/**
+ * @brief Frees the list and its nodes if `func` is provided.
+ *
+ * @param list_p Pointer to the list. It is set to NULL after the list is freed.
+ * @param func Pointer to the destructor function. If NULL, the data is not freed.
+ *
+ * @note Time complexity: O(n)
+ * @note Space complexity: O(1)
+ */
+void zk_slist_free(zk_slist **list_p, zk_destructor_t const func)
+{
+	if (list_p) {
+		while (*list_p) {
+			zk_slist *node = *list_p;
+			*list_p = node->next;
+			_zk_slist_free(&node, func);
+		}
+	}
+}
+
+/**
+ * @brief Merges two sorted lists. Merges in ascending order if func(a, b) <= 0 and  in descending order if func(a, b) >
+ *        0. As the merge happens in place, first and second lists are invalid after the merge as they are merged into
+ *        a the list that is returned by the function.
+ *
+ * @param list Pointer to the first list.
+ * @param other Pointer to the second list.
+ * @param func Pointer to the comparison function. Must not be NULL.
+ *             The comparison function must return a negative value if a < b, 0 if a == b, and a positive value if a >
+ *             b.
+ *
+ * @return Pointer to the merged list or `NULL` if function fails.
+ *
+ * @note Time complexity: O(n), where n is the number of elements in the bigger list.
+ * @note Space complexity: O(1)
+ * @note This merge algorithm is stable.
+ * @note This merge algorithm is in-place.
+ */
+zk_slist *zk_slist_merge(zk_slist *list, zk_slist *other, zk_compare_func const func)
+{
+	if (func == NULL)
+		return NULL;
+
+	if (list == NULL) {
+		list = other;
+		other = NULL;
+		return list;
+	}
+
+	if (other == NULL)
+		return list;
+
+	zk_slist *head = NULL;
+	zk_slist *tail = NULL;
+
+	while (list != NULL && other != NULL) {
+		if (func((list)->data, (other)->data) <= 0) {
+			if (head == NULL) {
+				head = list;
+				tail = list;
+			} else {
+				tail->next = list;
+				tail = tail->next;
+			}
+			list = (list)->next;
+		} else {
+			if (head == NULL) {
+				head = other;
+				tail = other;
+			} else {
+				tail->next = other;
+				tail = tail->next;
+			}
+			other = (other)->next;
+		}
+	}
+
+	if (list != NULL)
+		tail->next = list;
+	else if (other != NULL)
+		tail->next = other;
+
+	list = head;
+	other = NULL;
+
+	return list;
+}
+
+/**
+ * @brief Creates a new node with data.
+ *
+ * @param data Pointer to the data to be stored in the node. Caller is responsible for the memory management of the
+ * data.
+ *
+ * @return Pointer to the new node or NULL if function fails. This function can only fail in case of memory allocation
+ *
+ * @note Time complexity: O(1)
+ * @note Space complexity: O(1)
+ */
+zk_slist *zk_slist_new_node(void *const data)
+{
+	zk_slist *node = malloc(sizeof(zk_slist));
+	if (!node)
+		return NULL;
+
+	node->data = data;
+	node->next = NULL;
+	return node;
 }
 
 /**
@@ -259,33 +405,6 @@ size_t zk_slist_size(const zk_slist *const list)
 	return length;
 }
 
-static void zk_slist_split_left_right_tail(zk_slist **list_p, zk_slist **left_p, zk_slist **right_p, size_t l_r_size)
-{
-	zk_slist *end_node = NULL;
-	*left_p = *list_p;
-	*right_p = NULL;
-	// loop through the list until l_r_size is reached to get the end of the left list
-	for (size_t i = 0; i < l_r_size && *list_p != NULL; i++) {
-		end_node = *list_p;
-		*list_p = (*list_p)->next;
-	}
-
-	if (end_node != NULL)
-		end_node->next = NULL;
-
-	// loop through the list until l_r_size is reached to get the end of the right list
-	*right_p = *list_p;
-	for (size_t j = 0; j < l_r_size && *list_p != NULL; j++) {
-		// TODO: check if we can start merging from here instead of going through the list again
-		// maybe we can we can iterate the left list and the right list at the same time
-		end_node = *list_p;
-		*list_p = (*list_p)->next;
-	}
-
-	if (end_node != NULL)
-		end_node->next = NULL;
-}
-
 /**
  * @brief Sorts list in ascending order if func(a, b) <= 0 and in descending order if func(a, b) > 0.
  *        The original list is invalid after the sort as it is sorted in place.
@@ -397,123 +516,4 @@ zk_slist *zk_slist_sort(zk_slist *list, zk_compare_func const func)
 	}
 
 	return head;
-}
-
-/**
- * @brief Merges two sorted lists. Merges in ascending order if func(a, b) <= 0 and  in descending order if func(a, b) >
- *        0. As the merge happens in place, first and second lists are invalid after the merge as they are merged into
- *        a the list that is returned by the function.
- *
- * @param list Pointer to the first list.
- * @param other Pointer to the second list.
- * @param func Pointer to the comparison function. Must not be NULL.
- *             The comparison function must return a negative value if a < b, 0 if a == b, and a positive value if a >
- *             b.
- *
- * @return Pointer to the merged list or `NULL` if function fails.
- *
- * @note Time complexity: O(n), where n is the number of elements in the bigger list.
- * @note Space complexity: O(1)
- * @note This merge algorithm is stable.
- * @note This merge algorithm is in-place.
- */
-zk_slist *zk_slist_merge(zk_slist *list, zk_slist *other, zk_compare_func const func)
-{
-	if (func == NULL)
-		return NULL;
-
-	if (list == NULL) {
-		list = other;
-		other = NULL;
-		return list;
-	}
-
-	if (other == NULL)
-		return list;
-
-	zk_slist *head = NULL;
-	zk_slist *tail = NULL;
-
-	while (list != NULL && other != NULL) {
-		if (func((list)->data, (other)->data) <= 0) {
-			if (head == NULL) {
-				head = list;
-				tail = list;
-			} else {
-				tail->next = list;
-				tail = tail->next;
-			}
-			list = (list)->next;
-		} else {
-			if (head == NULL) {
-				head = other;
-				tail = other;
-			} else {
-				tail->next = other;
-				tail = tail->next;
-			}
-			other = (other)->next;
-		}
-	}
-
-	if (list != NULL)
-		tail->next = list;
-	else if (other != NULL)
-		tail->next = other;
-
-	list = head;
-	other = NULL;
-
-	return list;
-}
-
-/**
- * @brief Finds the first element in the list that matches the given data.
- *
- * @param list Pointer to the list.
- * @param data Pointer to the data to find.
- * @param func A pointer to a comparison function. On match, the function should return `0`.
- *
- * @return Pointer to the first element in the list that matches the given data or NULL if no match is found.
- *
- * @note Time complexity: O(n)
- * @note Space complexity: O(1)
- */
-zk_slist *zk_slist_find(zk_slist *list, const void *const data, zk_compare_func const func)
-{
-	if (list == NULL || func == NULL)
-		return NULL;
-
-	while (list != NULL) {
-		if (func(list->data, data) == 0)
-			break;
-		list = list->next;
-	}
-	return list;
-}
-
-/**
- * @brief Find the element at the given index.
- *
- * @param list Pointer to the list.
- * @param index Index of the element to be found.
- *
- * @return - Pointer to the element at the given index or NULL if no match is found.
- *
- * @note Time complexity: O(n)
- * @note Space complexity: O(1)
- */
-zk_slist *zk_slist_find_index(zk_slist *list, size_t const index)
-{
-	if (list == NULL)
-		return NULL;
-
-	size_t i = 0;
-	while (list != NULL) {
-		if (i == index)
-			break;
-		list = list->next;
-		i++;
-	}
-	return list;
 }
