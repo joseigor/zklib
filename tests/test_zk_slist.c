@@ -79,10 +79,8 @@ void test_zk_begin_returns_1st_element_when_slist_has_one_element(void)
 
 	TEST_ASSERT_EQUAL_PTR(list, begin);
 
-	void *data = NULL;
-	zk_get_data(list, &data);
-	TEST_ASSERT_NOT_NULL(data);
-	TEST_ASSERT_EQUAL(node_1_data, *((int *)data));
+	TEST_ASSERT_NOT_NULL(list->data);
+	TEST_ASSERT_EQUAL(node_1_data, *((int *)list->data));
 
 	zk_free(&list, NULL);
 	TEST_ASSERT_NULL(list);
@@ -103,10 +101,7 @@ void test_zk_begin_returns_1st_element_when_slist_has_more_than_one_element(void
 
 	TEST_ASSERT_EQUAL_PTR(list, begin);
 
-	void *begin_data, *list_data = NULL;
-	zk_get_data(begin, &begin_data);
-	zk_get_data(list, &list_data);
-	TEST_ASSERT_EQUAL(list_data, begin_data);
+	TEST_ASSERT_EQUAL(list->data, begin->data);
 
 	zk_free(&list, NULL);
 	TEST_ASSERT_NULL(list);

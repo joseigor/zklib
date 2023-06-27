@@ -20,7 +20,6 @@
 // Element access
 #define zk_get_data(CONTAINER, DATA)                \
 	_Generic((CONTAINER),                       \
-		zk_slist *   : zk_slist_get_data,   \
 		zk_dlist *   : zk_dlist_get_data,   \
 		zk_c_slist * : zk_c_slist_get_data, \
 		zk_c_dlist * : zk_c_dlist_get_data) \
