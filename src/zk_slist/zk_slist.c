@@ -68,22 +68,52 @@ zk_status zk_slist_next(const zk_slist *const list, zk_slist **next)
 	return ZK_OK;
 }
 
+/**
+ * @brief Returns an iterator to the first element of the list.
+ *
+ * @param list Pointer to the list.
+ * @return Iterator to the first element of the list.
+ *
+ * @note Time complexity: O(1)
+ * @note Space complexity: O(1)
+ */
 zk_slist *zk_slist_begin(zk_slist *list)
 {
 	return list;
 }
 
+/**
+ * @brief Returns an iterator to the element following the last element of the list.
+ *
+ * @param list Pointer to the list.
+ * @return Iterator to the element following the last element of the list. For single linked list, this is always NULL.
+ *
+ * @note Time complexity: O(1)
+ * @note Space complexity: O(1)
+ */
 zk_slist *zk_slist_end(zk_slist *list)
 {
 	ZK_UNUSED(list);
 	return NULL;
 }
 
+/**
+ * @brief Applies the given function to each element in the list.
+ *
+ * @param begin Iterator to the first element of the list.
+ * @param end Iterator to the element following the last element of the list.
+ * @param func Pointer to the function to be applied to each element.
+ * @param user_data Pointer to user data to be passed to the function. Can be NULL.
+ *
+ * @note Time complexity: O(n)
+ * @note Space complexity: O(1)
+ */
 void zk_slist_for_each(zk_slist *begin, zk_slist *const end, zk_for_each_func const func, void *const user_data)
 {
-	if (func != NULL) {
-		for (; begin != end; begin = begin->next) {
+	if (func) {
+		while (begin != end) {
 			func(begin->data, user_data);
+			begin = begin->next;
 		}
 	}
 }

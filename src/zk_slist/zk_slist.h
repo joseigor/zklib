@@ -5,8 +5,7 @@
 #include "zk_common/zk_common.h"
 
 /**
- * @brief Singly linked list
- *
+ * @brief Singly linked list node.
  */
 struct zk_slist {
 	void *data;
