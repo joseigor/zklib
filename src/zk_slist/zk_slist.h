@@ -17,8 +17,6 @@ zk_slist *zk_slist_new_node(void *const data);
 
 void zk_slist_free(zk_slist **list_p, zk_destructor_t const func);
 
-zk_status zk_slist_next(const zk_slist *const list, zk_slist **next);
-
 zk_slist *zk_slist_begin(zk_slist *list);
 
 zk_slist *zk_slist_end(zk_slist *list);

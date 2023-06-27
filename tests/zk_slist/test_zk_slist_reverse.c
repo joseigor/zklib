@@ -13,7 +13,7 @@ void test_reverse_when_list_is_null(void)
 
 void test_reverse_when_list_has_one_element(void)
 {
-	zk_slist *list = NULL, *next = NULL;
+	zk_slist *list = NULL;
 	int data = 1;
 
 	list = zk_slist_push_front(list, &data);
@@ -25,8 +25,7 @@ void test_reverse_when_list_has_one_element(void)
 	TEST_ASSERT_EQUAL_PTR(&data, list->data);
 	TEST_ASSERT_EQUAL(data, *(int *)list->data);
 	// next element is always NULL for singly linked list with one element
-	zk_next(list, &next);
-	TEST_ASSERT_NULL(next);
+	TEST_ASSERT_NULL(list->next);
 
 	zk_slist_free(&list, NULL);
 }
