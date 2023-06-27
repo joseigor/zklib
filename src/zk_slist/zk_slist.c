@@ -15,7 +15,7 @@ static void _zk_slist_free(zk_slist **node, zk_destructor_t func)
 
 static zk_slist *zk_slist_last(zk_slist *list)
 {
-	while (list != NULL && list->next != NULL)
+	while (list && list->next)
 		list = list->next;
 
 	return list;
