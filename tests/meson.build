@@ -32,15 +32,6 @@ test_zk_dlist = \
         include_directories : [inc_dir, tests_inc_dir]
     )
 
-test_zk_slist = \
-    executable(
-        'test_zk_slist',
-        sources: ['test_zk_slist.c', tests_src_files],
-        dependencies: [ unity_dep, zklib_dep ],
-        include_directories : [inc_dir, tests_inc_dir]
-    )
-
 test('test_zk_c_dlist', test_zk_c_dlist)
 test('test_zk_c_slist', test_zk_c_slist)
 test('test_zk_dlist', test_zk_dlist)
-test('test_zk_slist', test_zk_slist, suite : 'zk_slist')

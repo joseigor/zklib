@@ -110,6 +110,14 @@ test_zk_slist_for_each = \
         include_directories : [inc_dir]
     )
 
+test_zk_slist_free = \
+    executable(
+        'test_zk_slist_free',
+        sources: ['test_zk_slist_free.c'],
+        dependencies: [ unity_dep, zklib_dep ],
+        include_directories : [inc_dir]
+    )
+
 test('test_zk_slist_reverse', test_zk_slist_reverse, suite: 'zk_slist')
 test('test_zk_slist_size', test_zk_slist_size, suite: 'zk_slist')
 test('test_zk_slist_merge', test_zk_slist_merge, suite: 'zk_slist')
@@ -124,4 +132,5 @@ test('test_zk_slist_new_node', test_zk_slist_new_node, suite: 'zk_slist')
 test('test_zk_slist_begin', test_zk_slist_begin, suite: 'zk_slist')
 test('test_zk_slist_end', test_zk_slist_end, suite: 'zk_slist')
 test('test_zk_slist_for_each', test_zk_slist_for_each, suite: 'zk_slist')
+test('test_zk_slist_free', test_zk_slist_free, suite: 'zk_slist')
 
