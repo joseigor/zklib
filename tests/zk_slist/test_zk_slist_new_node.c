@@ -19,8 +19,7 @@ void test_zk_slist_new_node_when_list_is_null_and_data_is_null(void)
 
 void test_zk_slist_new_node_when_data_is_not_null(void)
 {
-	zk_slist *list = NULL, *next = NULL;
-	void *data = NULL;
+	zk_slist *list = NULL;
 
 	list = zk_slist_new_node("data");
 	TEST_ASSERT_NOT_NULL(list);
@@ -30,7 +29,7 @@ void test_zk_slist_new_node_when_data_is_not_null(void)
 
 	TEST_ASSERT_NULL(list->next);
 
-	zk_free(&list, NULL);
+	zk_slist_free(&list, NULL);
 }
 
 int main(void)
