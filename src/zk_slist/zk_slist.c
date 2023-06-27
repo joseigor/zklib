@@ -58,16 +58,6 @@ void zk_slist_free(zk_slist **list_p, zk_destructor_t const func)
 	}
 }
 
-zk_status zk_slist_get_data(const zk_slist *const list, void **data)
-{
-	if (list == NULL)
-		return ZK_INVALID_ARGUMENT;
-
-	*data = list->data;
-
-	return ZK_OK;
-}
-
 zk_status zk_slist_next(const zk_slist *const list, zk_slist **next)
 {
 	if (list == NULL)
