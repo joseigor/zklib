@@ -66,16 +66,6 @@ void zk_slist_free(zk_slist **list_p, zk_destructor_t const func)
 	}
 }
 
-zk_status zk_slist_next(const zk_slist *const list, zk_slist **next)
-{
-	if (list == NULL)
-		return ZK_INVALID_ARGUMENT;
-
-	*next = list->next;
-
-	return ZK_OK;
-}
-
 /**
  * @brief Returns an iterator to the first element of the list.
  *

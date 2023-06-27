@@ -57,7 +57,6 @@
 
 #define zk_next(CONTAINER, NEXT)                \
 	_Generic((CONTAINER),                   \
-		zk_slist *   : zk_slist_next,   \
 		zk_dlist *   : zk_dlist_next,   \
 		zk_c_slist * : zk_c_slist_next, \
 		zk_c_dlist * : zk_c_dlist_next) \
