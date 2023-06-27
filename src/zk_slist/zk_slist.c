@@ -4,13 +4,10 @@
 
 static void _zk_slist_free(zk_slist **node, zk_destructor_t func)
 {
-	if (node == NULL || *node == NULL) {
+	if (!node || !*node)
 		return;
-	}
-
-	if (func != NULL) {
+	if (func)
 		func((*node)->data);
-	}
 
 	free(*node);
 	*node = NULL;
