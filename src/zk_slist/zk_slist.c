@@ -27,24 +27,24 @@ static void zk_slist_split_left_right_tail(zk_slist **list_p, zk_slist **left_p,
 	*left_p = *list_p;
 	*right_p = NULL;
 	// loop through the list until l_r_size is reached to get the end of the left list
-	for (size_t i = 0; i < l_r_size && *list_p != NULL; i++) {
+	for (size_t i = 0; i < l_r_size && *list_p; i++) {
 		end_node = *list_p;
 		*list_p = (*list_p)->next;
 	}
 
-	if (end_node != NULL)
+	if (end_node)
 		end_node->next = NULL;
 
 	// loop through the list until l_r_size is reached to get the end of the right list
 	*right_p = *list_p;
-	for (size_t j = 0; j < l_r_size && *list_p != NULL; j++) {
+	for (size_t j = 0; j < l_r_size && *list_p; j++) {
 		// TODO: check if we can start merging from here instead of going through the list again
 		// maybe we can we can iterate the left list and the right list at the same time
 		end_node = *list_p;
 		*list_p = (*list_p)->next;
 	}
 
-	if (end_node != NULL)
+	if (end_node)
 		end_node->next = NULL;
 }
 
@@ -91,10 +91,10 @@ zk_slist *zk_slist_end(zk_slist *list)
  */
 zk_slist *zk_slist_find(zk_slist *list, const void *const data, zk_compare_func const func)
 {
-	if (list == NULL || func == NULL)
+	if (!list || !func)
 		return NULL;
 
-	while (list != NULL) {
+	while (list) {
 		if (func(list->data, data) == 0)
 			break;
 		list = list->next;
@@ -115,11 +115,11 @@ zk_slist *zk_slist_find(zk_slist *list, const void *const data, zk_compare_func 
  */
 zk_slist *zk_slist_find_index(zk_slist *list, size_t const index)
 {
-	if (list == NULL)
+	if (!list)
 		return NULL;
 
 	size_t i = 0;
-	while (list != NULL) {
+	while (list) {
 		if (i == index)
 			break;
 		list = list->next;
@@ -189,24 +189,24 @@ void zk_slist_free(zk_slist **list_p, zk_destructor_t const func)
  */
 zk_slist *zk_slist_merge(zk_slist *list, zk_slist *other, zk_compare_func const func)
 {
-	if (func == NULL)
+	if (!func)
 		return NULL;
 
-	if (list == NULL) {
+	if (!list) {
 		list = other;
 		other = NULL;
 		return list;
 	}
 
-	if (other == NULL)
+	if (!other)
 		return list;
 
 	zk_slist *head = NULL;
 	zk_slist *tail = NULL;
 
-	while (list != NULL && other != NULL) {
+	while (list && other) {
 		if (func((list)->data, (other)->data) <= 0) {
-			if (head == NULL) {
+			if (!head) {
 				head = list;
 				tail = list;
 			} else {
@@ -215,7 +215,7 @@ zk_slist *zk_slist_merge(zk_slist *list, zk_slist *other, zk_compare_func const 
 			}
 			list = (list)->next;
 		} else {
-			if (head == NULL) {
+			if (!head) {
 				head = other;
 				tail = other;
 			} else {
@@ -226,9 +226,9 @@ zk_slist *zk_slist_merge(zk_slist *list, zk_slist *other, zk_compare_func const 
 		}
 	}
 
-	if (list != NULL)
+	if (list)
 		tail->next = list;
-	else if (other != NULL)
+	else if (other)
 		tail->next = other;
 
 	list = head;
@@ -274,12 +274,12 @@ zk_slist *zk_slist_pop_back(zk_slist *list, zk_destructor_t const func)
 {
 	if (list) {
 		// list has only one element
-		if (list->next == NULL)
+		if (!list->next)
 			_zk_slist_free(&list, func);
 		else {
 			zk_slist *node = list;
 			// moves node to element before last element
-			while (node->next->next != NULL)
+			while (node->next->next)
 				node = node->next;
 
 			// remove last element from the list
@@ -326,7 +326,7 @@ zk_slist *zk_slist_pop_front(zk_slist *list, zk_destructor_t const func)
 zk_slist *zk_slist_push_back(zk_slist *list, void *const data)
 {
 	zk_slist *tail = zk_slist_new_node(data);
-	if (tail == NULL)
+	if (!tail)
 		return NULL;
 
 	if (list)
@@ -352,7 +352,7 @@ zk_slist *zk_slist_push_back(zk_slist *list, void *const data)
 zk_slist *zk_slist_push_front(zk_slist *list, void *const data)
 {
 	zk_slist *head = zk_slist_new_node(data);
-	if (head == NULL)
+	if (!head)
 		return NULL;
 
 	head->next = list;
@@ -373,7 +373,7 @@ zk_slist *zk_slist_reverse(zk_slist *list)
 {
 	zk_slist *prev = NULL;
 	zk_slist *next = NULL;
-	while (list != NULL) {
+	while (list) {
 		next = list->next;
 		list->next = prev;
 		prev = list;
@@ -396,9 +396,12 @@ zk_slist *zk_slist_reverse(zk_slist *list)
 size_t zk_slist_size(const zk_slist *const list)
 {
 	size_t length = 0;
-	for (const zk_slist *node = list; node != NULL; node = node->next) {
+	const zk_slist *node = list;
+	while (node) {
 		length++;
+		node = node->next;
 	}
+
 	return length;
 }
 
@@ -419,7 +422,7 @@ size_t zk_slist_size(const zk_slist *const list)
  */
 zk_slist *zk_slist_sort(zk_slist *list, zk_compare_func const func)
 {
-	if (func == NULL)
+	if (!func)
 		return list;
 
 	const size_t length = zk_slist_size(list);
@@ -431,12 +434,12 @@ zk_slist *zk_slist_sort(zk_slist *list, zk_compare_func const func)
 		zk_slist *next_head = head;
 		zk_slist *head_tail = NULL;
 		head = NULL; // reset head to NULL for the next pass
-		while (next_head != NULL) {
+		while (next_head) {
 			zk_slist *left = next_head;
 			zk_slist *left_end = left;
 
 			// loop p/2 to get left list and set its last node to null
-			for (size_t i = 0; i < p / 2 && next_head != NULL; i++) {
+			for (size_t i = 0; i < p / 2 && next_head; i++) {
 				left_end = next_head;
 				next_head = next_head->next;
 			}
@@ -447,44 +450,44 @@ zk_slist *zk_slist_sort(zk_slist *list, zk_compare_func const func)
 			zk_slist *merged = NULL;
 			zk_slist *merged_tail = NULL;
 			size_t i = 0;
-			while (i < p / 2 && next_head != NULL && left != NULL) {
+			while (i < p / 2 && next_head && left) {
 				if (func(left->data, next_head->data) <= 0) {
-					if (merged == NULL) {
-						merged = left;
-						merged_tail = left;
-					} else {
+					if (merged)
 						merged_tail->next = left;
-						merged_tail = left;
-					}
+
+					else
+						merged = left;
+
+					merged_tail = left;
 					left = left->next;
 				} else {
-					if (merged == NULL) {
-						merged = next_head;
-						merged_tail = next_head;
-					} else {
+					if (merged)
 						merged_tail->next = next_head;
-						merged_tail = next_head;
-					}
+
+					else
+						merged = next_head;
+
+					merged_tail = next_head;
 					next_head = (next_head)->next;
 					i++;
 				}
 			}
 
 			// check if left node remains else right nodes
-			if (left != NULL) {
+			if (left) {
 				// list only have left side then initialize merged to left
-				if (merged == NULL) {
+				if (!merged) {
 					merged = left;
 					merged_tail = left;
 					left = left->next; // as merge tail point to left, increment left
 				}
-				while (left != NULL) {
+				while (left) {
 					merged_tail->next = left;
 					left = left->next;
 					merged_tail = merged_tail->next;
 				}
 			} else {
-				while (i < p / 2 && next_head != NULL) {
+				while (i < p / 2 && next_head) {
 					merged_tail->next = next_head;
 					next_head = next_head->next;
 					merged_tail = merged_tail->next;
@@ -492,15 +495,13 @@ zk_slist *zk_slist_sort(zk_slist *list, zk_compare_func const func)
 				}
 			}
 
-			// set head to left if it is the first pass
-			if (head == NULL) {
-				head = merged;
-				head_tail = merged_tail;
-			} else {
-				// append left to the end of the previous merged list
-				head_tail->next = merged;
-				head_tail = merged_tail;
-			}
+			if (head)
+				head_tail->next = merged; // append left to the end of the previous merged list
+
+			else
+				head = merged; // set head to left if it is the first pass
+
+			head_tail = merged_tail;
 		}
 	}
 	// if the number of passes is odd, we need to merge the last two lists
