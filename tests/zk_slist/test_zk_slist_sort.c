@@ -53,6 +53,29 @@ void test_zk_slist_sort_when_list_is_empty(void)
 	zk_slist_free(&list, NULL);
 }
 
+void test_zk_list_sort_random_data()
+{
+	zk_slist *list = NULL, *current = NULL;
+	int data[] = { 5, 6, 10, 21, 0, -1, 0, 2, 3 };
+	int expected[] = { -1, 0, 0, 2, 3, 5, 6, 10, 21 };
+	int size = sizeof(data) / sizeof(data[0]);
+
+	for (int i = 0; i < size; i++)
+		list = zk_slist_push_back(list, &data[i]);
+
+	list = zk_slist_sort(list, compare_int);
+
+	current = list;
+	for (int i = 0; i < size; i++) {
+		TEST_ASSERT_EQUAL(expected[i], *(int *)current->data);
+		current = current->next;
+	}
+
+	TEST_ASSERT_EQUAL(size, zk_slist_size(list));
+
+	zk_slist_free(&list, NULL);
+}
+
 void test_zk_list_sort_when_list_has_n_elements()
 {
 	zk_slist *list = NULL, *current = NULL;
@@ -86,6 +109,7 @@ int main(void)
 	RUN_TEST(test_zk_slist_sort_when_list_is_null);
 	RUN_TEST(test_zk_slist_sort_when_function_pointer_is_null);
 	RUN_TEST(test_zk_slist_sort_when_list_is_empty);
+	RUN_TEST(test_zk_list_sort_random_data);
 	RUN_TEST(test_zk_list_sort_when_list_has_n_elements);
 	return UNITY_END();
 }
