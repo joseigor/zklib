@@ -44,7 +44,7 @@ create_builder_container() {
 	docker \
 		run \
 		-it \
-		-v $(pwd):/workdir \
+		-v $(pwd):/zklib \
 		-u "$(id -u):$(id -g)" \
 		--name "${BUILD_CONTAINER_NAME}" \
 		-d "${BUILD_IMAGE_NAME}"
@@ -89,7 +89,7 @@ create_debugger_container() {
 		run \
 		-it \
 		--privileged \
-		-v $(pwd):/workdir \
+		-v $(pwd):/zklib \
 		--name "${DEBUGGER_CONTAINER_NAME}" \
 		-d "${DEBUGGER_IMAGE_NAME}"
 
@@ -128,7 +128,7 @@ create_lint_container() {
 	docker \
 		run \
 		-it \
-		-v $(pwd):/workdir \
+		-v $(pwd):/zklib \
 		-u "$(id -u):$(id -g)" \
 		--name "${LINT_CONTAINER_NAME}" \
 		-d "${LINT_IMAGE_NAME}"
