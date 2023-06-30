@@ -3,6 +3,26 @@ name: CI
 on: [push, pull_request]
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: alpine:latest
+    steps:
+      - name: Install required dependencies
+        run: |
+          apk update
+          apk add --no-cache gcc gcovr meson ninja musl-dev pkgconfig valgrind
+
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Build
+        run: ./build.sh -u -g
+
+      - name: Test
+        run: ./run_tests.sh -c
+
   commitlint:
     runs-on: ubuntu-latest
     container:
