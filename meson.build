@@ -14,7 +14,7 @@ cc = meson.get_compiler('c')
 
 add_project_arguments(cc.get_supported_arguments(project_cflags), language : 'c')
 
-#  options
+# options
 unit_test = get_option('unit_test')
 
 subdir('src')
