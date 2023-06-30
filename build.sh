@@ -17,6 +17,7 @@ usage()
 	echo "    -h   Print this help (usage)."
 	echo "    -f   Incremental build."
 	echo "    -g   Build with Gcov."
+	echo "    -u   Build with unit tests."
 }
 
 cleanup() {
@@ -27,7 +28,7 @@ main()
 {
 	_start_time="$(date "+%s")"
 
-	while getopts ":hfg" _options; do
+	while getopts ":hfgu" _options; do
 		case "${_options}" in
 		h)
 			usage
@@ -39,8 +40,11 @@ main()
 			;;
 		g)
 			build_gcov="true"
-			unit_test="true"
 			echo "info" "Build with Gcov"
+			;;
+		u)
+			unit_test="true"
+			echo "info" "Build with unit tests"
 			;;
 		:)
 			echo "Option -${OPTARG} requires an argument."
