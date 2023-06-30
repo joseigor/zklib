@@ -13,7 +13,9 @@ usage()
 	echo "Available options:"
 	echo "    If no options passed runs all test cases."
 	echo "    -t <test_name>  Runs test specified by <test_name>."
+	echo "    -c              Generate coverage report."
 	echo "    -d <folder>     Folder to save the coverage test report."
+	echo "                    Default folder is: ${UNIT_TEST_REPORT_PATH_DEF}"
 }
 
 cleanup() {
@@ -53,6 +55,10 @@ run_tests() {
 				--error-exitcode=1
 			' \
 		 -C "${BUILDDIR}" "${TEST_NAME:-}"
+}
+
+run_coverage_report(){
+	check_meson_build
 
 	if [ ! -d "$UNIT_TEST_REPORT_PATH_DEF" ]; then
 		mkdir -p "$UNIT_TEST_REPORT_PATH_DEF"
@@ -72,19 +78,19 @@ run_tests() {
 	echo "******************************************************************************************"
 	echo "Please open file: ${UNIT_TEST_REPORT_PATH}test_coverage_report/unit_test_coverage_results.html to see actual unit test report."
 	echo "******************************************************************************************"
-
-
-
-
 }
 
 main()
 {
-	while getopts ":ht:d:" _options; do
+	while getopts ":ht:d:c" _options; do
 		case "${_options}" in
 		h)
 			usage
 			exit 0;
+			;;
+
+		c)
+			generate_coverage_report="true"
 			;;
 
 		t)
@@ -109,6 +115,10 @@ main()
 	shift "$((OPTIND - 1))"
 
 	run_tests "${@}"
+
+	if [ "${generate_coverage_report:-}" = "true" ]; then
+		run_coverage_report
+	fi
 
 	cleanup
 }
