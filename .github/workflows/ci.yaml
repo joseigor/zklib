@@ -1,0 +1,36 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  commitlint:
+    runs-on: ubuntu-latest
+    container:
+      image: alpine:latest
+    steps:
+      - name: Install required dependencies
+        run: |
+          apk update
+          apk add --no-cache git nodejs npm
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - name: Install commitlint
+        run: |
+          npm install -g @commitlint/cli
+          npm install -g @commitlint/config-conventional
+
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Validate current commit (last commit)
+        if: github.event_name == 'push'
+        run: scripts/commitlint.sh --from HEAD~1 --to HEAD --verbose
+
+      - name: Validate PR commits
+        if: github.event_name == 'pull_request'
+        run: |
+          scripts/commitlint.sh \
+            --from ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }} \
+            --to ${{ github.event.pull_request.head.sha }} \
+            --verbose
