@@ -7,6 +7,7 @@ tests_inc_dir += include_directories('.')
 
 subdir('common')
 subdir('zk_slist')
+subdir('zk_vector')
 
 test_zk_c_slist = \
     executable(
