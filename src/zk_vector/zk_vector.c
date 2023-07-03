@@ -1,8 +1,11 @@
+#include <stdbool.h>
 #include <stdlib.h>
 
 #include "zk_vector/zk_vector.h"
 
 #define ZK_VECTOR_DEFAULT_CAPACITY 8
+#define ZK_VECTOR_GROWTH_FACTOR    2
+#define ZK_VECTOR_ELEMENT_SIZE     sizeof(void *)
 
 /**
  * @brief vector struct
@@ -13,6 +16,26 @@ struct zk_vector {
 	void **data;
 };
 typedef struct zk_vector zk_vector;
+
+static bool _zk_vector_needs_resize(zk_vector *vec)
+{
+	return vec ? vec->size == vec->capacity : false;
+}
+
+static bool _zk_vector_resize(zk_vector *vec)
+{
+	if (!vec)
+		return false;
+
+	size_t new_capacity = vec->capacity * ZK_VECTOR_GROWTH_FACTOR;
+	void **new_array = realloc(vec->data, ZK_VECTOR_ELEMENT_SIZE * new_capacity);
+	if (!new_array)
+		return false;
+
+	vec->data = new_array;
+	vec->capacity = new_capacity;
+	return true;
+}
 
 /**
  * @brief Return the capacity of the vector.
@@ -72,7 +95,7 @@ zk_vector *zk_vector_new(void)
 
 	vec->size = 0;
 	vec->capacity = ZK_VECTOR_DEFAULT_CAPACITY;
-	vec->data = malloc(sizeof(void *) * vec->capacity);
+	vec->data = malloc(ZK_VECTOR_ELEMENT_SIZE * vec->capacity);
 	if (!vec->data) {
 		free(vec);
 		return NULL;
@@ -81,6 +104,28 @@ zk_vector *zk_vector_new(void)
 		vec->data[i] = NULL;
 
 	return vec;
+}
+
+/**
+ * @brief Add an element to the end of the vector.
+ *
+ * @param vec The vector
+ * @param data The data to add
+ *
+ * @return None
+ *
+ * @note Time complexity: O(1) amortized
+ * @note Space complexity: O(1) amortized
+ */
+void zk_vector_push_back(zk_vector *vec, void *data)
+{
+	if (!vec)
+		return;
+
+	if (_zk_vector_needs_resize(vec) && !_zk_vector_resize(vec))
+		return;
+
+	vec->data[vec->size++] = data;
 }
 
 /**

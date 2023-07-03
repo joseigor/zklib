@@ -25,6 +25,15 @@ test_zk_vector_new = \
     )
 test('test_zk_vector_new', test_zk_vector_new, suite: 'zk_vector')
 
+test_zk_vector_push_back = \
+    executable(
+        'test_zk_vector_push_back',
+        sources: ['test_zk_vector_push_back.c'],
+        dependencies: [ unity_dep, zklib_dep ],
+        include_directories : [inc_dir]
+    )
+test('test_zk_vector_push_back', test_zk_vector_push_back, suite: 'zk_vector')
+
 test_zk_vector_size = \
     executable(
         'test_zk_vector_size',
