@@ -49,10 +49,7 @@ static bool _zk_vector_resize(zk_vector *vec)
  */
 size_t zk_vector_capacity(const zk_vector *const vector)
 {
-	if (!vector)
-		return 0;
-
-	return vector->capacity;
+	return vector ? vector->capacity : 0;
 }
 
 /**
@@ -157,8 +154,5 @@ void zk_vector_push_back(zk_vector *vec, void *data)
  */
 size_t zk_vector_size(const zk_vector *const vector)
 {
-	if (!vector)
-		return 0;
-
-	return vector->size;
+	return vector ? vector->size : 0;
 }
