@@ -2,7 +2,7 @@ FROM zklib:latest
 
 LABEL maintainer="zklib"
 
-WORKDIR /workdir
+WORKDIR /zklib
 
 RUN \
     apk add --no-cache \
