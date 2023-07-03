@@ -7,6 +7,15 @@ test_zk_vector_capacity = \
     )
 test('test_zk_vector_capacity', test_zk_vector_capacity, suite: 'zk_vector')
 
+test_zk_vector_data = \
+    executable(
+        'test_zk_vector_data',
+        sources: ['test_zk_vector_data.c'],
+        dependencies: [ unity_dep, zklib_dep ],
+        include_directories : [inc_dir]
+    )
+test('test_zk_vector_data', test_zk_vector_data, suite: 'zk_vector')
+
 test_zk_vector_free = \
     executable(
         'test_zk_vector_free',

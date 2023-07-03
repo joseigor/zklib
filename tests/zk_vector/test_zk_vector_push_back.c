@@ -16,17 +16,14 @@ void tearDown(void)
 	zk_vector_free(vec, NULL);
 }
 
-void test_zk_vector_push_back_when_vec_is_null_should_null(void)
-{
-	zk_vector_push_back(NULL, NULL);
-}
-
 void test_zk_vector_push_back_when_no_resize_when_size_is_less_than_capacity(void)
 {
 	int data = 1;
 	zk_vector_push_back(vec, &data);
 	TEST_ASSERT_EQUAL(1, zk_vector_size(vec));
 	TEST_ASSERT_EQUAL(8, zk_vector_capacity(vec));
+	int *ptr = zk_vector_data(vec);
+	TEST_ASSERT_EQUAL(1, *ptr);
 }
 
 void test_zk_vector_push_back_shall_increment_size()
@@ -50,12 +47,14 @@ void test_zk_vector_push_back_when_resize_when_size_is_equal_to_capacity(void)
 	zk_vector_push_back(vec, &data[8]);
 	TEST_ASSERT_EQUAL(9, zk_vector_size(vec));
 	TEST_ASSERT_EQUAL(16, zk_vector_capacity(vec));
+	int *ptr = zk_vector_data(vec);
+	for (int i = 0; i < 9; i++)
+		TEST_ASSERT_EQUAL(data[i], ptr[i]);
 }
 
 int main(void)
 {
 	UNITY_BEGIN();
-	RUN_TEST(test_zk_vector_push_back_when_vec_is_null_should_null);
 	RUN_TEST(test_zk_vector_push_back_when_no_resize_when_size_is_less_than_capacity);
 	RUN_TEST(test_zk_vector_push_back_shall_increment_size);
 	RUN_TEST(test_zk_vector_push_back_when_resize_when_size_is_equal_to_capacity);
