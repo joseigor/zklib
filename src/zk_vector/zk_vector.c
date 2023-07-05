@@ -53,20 +53,20 @@ size_t zk_vector_capacity(const zk_vector *const vector)
 }
 
 /**
- * @brief Return a pointer to the underline array serving as element storage for the vector.
- *       The pointer can be used to access the elements of the vector.
+ * @brief Return a pointer to the underlying array serving as element storage.The pointer is such that range [data();
+ * data() + size()) is always a valid range, even if the container is empty (data() is not dereferenceable in that
+ * case).
  *
  * @param vec The vector
  *
- * @return Pointer to the underline array serving as element storage for the vector. This pointer is valid as long as
- * the vector exists. If the vector is empty, the returned pointer is NULL.
+ * @return A pointer to the underlying element storage
  *
  * @note Time complexity: O(1)
  * @note Space complexity: O(1)
  */
-void *zk_vector_data(const zk_vector *const vec)
+void **zk_vector_data(const zk_vector *const vec)
 {
-	return vec && vec->size ? *vec->data : NULL;
+	return vec ? vec->data : NULL;
 }
 
 /**
