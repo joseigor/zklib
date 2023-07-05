@@ -43,6 +43,16 @@ test_zk_vector_push_back = \
     )
 test('test_zk_vector_push_back', test_zk_vector_push_back, suite: 'zk_vector')
 
+test_zk_vector_push_front = \
+    executable(
+        'test_zk_vector_push_front',
+        sources: ['test_zk_vector_push_front.c'],
+        dependencies: [ unity_dep, zklib_dep ],
+        include_directories : [inc_dir]
+    )
+test('test_zk_vector_push_front', test_zk_vector_push_front, suite: 'zk_vector')
+
+
 test_zk_vector_size = \
     executable(
         'test_zk_vector_size',

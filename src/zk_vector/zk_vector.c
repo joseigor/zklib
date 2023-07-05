@@ -143,6 +143,33 @@ void zk_vector_push_back(zk_vector *vec, void *data)
 }
 
 /**
+ * @brief Add an element to the front of the vector.
+ *
+ * @param vec The vector
+ * @param data The data to add
+ *
+ * @return None
+ *
+ * @note Time complexity: O(n)
+ * @note Space complexity: O(1)
+ */
+void zk_vector_push_front(zk_vector *vec, void *data)
+{
+	if (!vec)
+		return;
+
+	if (_zk_vector_needs_resize(vec) && !_zk_vector_resize(vec))
+		return;
+
+	if (vec->size)
+		for (size_t i = vec->size; i > 0; i--)
+			vec->data[i] = vec->data[i - 1];
+
+	vec->data[0] = data;
+	vec->size++;
+}
+
+/**
  * @brief Return the number of elements in the vector.
  *
  * @param vector The vector
