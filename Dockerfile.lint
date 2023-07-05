@@ -2,7 +2,7 @@ FROM ubuntu:latest
 
 LABEL maintainer="zklib"
 
-WORKDIR /workdir
+WORKDIR /zklib
 
 ENV TZ=Europe/Amsterdam
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
