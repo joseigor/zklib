@@ -161,9 +161,11 @@ void zk_vector_push_front(zk_vector *vec, void *data)
 	if (_zk_vector_needs_resize(vec) && !_zk_vector_resize(vec))
 		return;
 
-	if (vec->size)
-		for (size_t i = vec->size; i > 0; i--)
-			vec->data[i] = vec->data[i - 1];
+	size_t i = vec->size;
+	while (i) {
+		vec->data[i] = vec->data[i - 1];
+		i--;
+	}
 
 	vec->data[0] = data;
 	vec->size++;
