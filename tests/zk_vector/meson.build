@@ -34,6 +34,25 @@ test_zk_vector_new = \
     )
 test('test_zk_vector_new', test_zk_vector_new, suite: 'zk_vector')
 
+
+test_zk_vector_pop_back = \
+    executable(
+        'test_zk_vector_pop_back',
+        sources: ['test_zk_vector_pop_back.c'],
+        dependencies: [ unity_dep, zklib_dep ],
+        include_directories : [inc_dir]
+    )
+test('test_zk_vector_pop_back', test_zk_vector_pop_back, suite: 'zk_vector')
+
+test_zk_vector_pop_front = \
+    executable(
+        'test_zk_vector_pop_front',
+        sources: ['test_zk_vector_pop_front.c'],
+        dependencies: [ unity_dep, zklib_dep ],
+        include_directories : [inc_dir]
+    )
+test('test_zk_vector_pop_front', test_zk_vector_pop_front, suite: 'zk_vector')
+
 test_zk_vector_push_back = \
     executable(
         'test_zk_vector_push_back',

@@ -121,6 +121,59 @@ zk_vector *zk_vector_new(void)
 }
 
 /**
+ * @brief Remove the last element of the vector.
+ *
+ * @param vec The vector
+ * @param func The destructor function to call on the element. It can be NULL.
+ *
+ * @return None
+ *
+ * @note Time complexity: O(1)
+ * @note Space complexity: O(1)
+ */
+void zk_vector_pop_back(zk_vector *vec, zk_destructor_t func)
+{
+	if (!vec)
+		return;
+
+	if (vec->size) {
+		vec->size--;
+		if (func)
+			func(vec->data[vec->size]);
+
+		vec->data[vec->size] = NULL;
+	}
+}
+
+/**
+ * @brief Remove the first element of the vector.
+ *
+ * @param vec The vector
+ * @param func The destructor function to call on the element. It can be NULL.
+ *
+ * @return None
+ *
+ * @note Time complexity: O(n)
+ * @note Space complexity: O(1)
+ */
+void zk_vector_pop_front(zk_vector *vec, zk_destructor_t func)
+{
+	if (!vec)
+		return;
+
+	if (vec->size) {
+		vec->size--;
+		if (func)
+			func(vec->data[0]);
+
+		for (size_t i = 0; i < vec->size; i++)
+			vec->data[i] = vec->data[i + 1];
+
+		vec->data[vec->size] = NULL;
+	}
+}
+
+/**
  * @brief Add an element to the end of the vector.
  *
  * @param vec The vector

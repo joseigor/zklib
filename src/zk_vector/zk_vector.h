@@ -14,6 +14,10 @@ void zk_vector_free(zk_vector *vector, zk_destructor_t func);
 
 zk_vector *zk_vector_new(void);
 
+void zk_vector_pop_back(zk_vector *vec, zk_destructor_t func);
+
+void zk_vector_pop_front(zk_vector *vec, zk_destructor_t func);
+
 void zk_vector_push_back(zk_vector *vec, void *data);
 
 void zk_vector_push_front(zk_vector *vec, void *data);
