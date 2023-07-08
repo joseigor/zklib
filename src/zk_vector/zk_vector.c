@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+#include "zk_common/zk_common.h"
 #include "zk_vector/zk_vector.h"
 
 #define ZK_VECTOR_DEFAULT_CAPACITY 8
@@ -35,6 +36,28 @@ static bool _zk_vector_resize(zk_vector *vec)
 	vec->data = new_array;
 	vec->capacity = new_capacity;
 	return true;
+}
+
+/**
+ * @brief Return a pointer to the element at the specified index in the vector.
+ *
+ * @param vec The vector
+ * @param index The index of the element to return
+ * @param out The pointer that will be set to the element at the specified index
+ *
+ * @return ZK_OK on success, ZK_INVALID_ARGUMENT if the vector is NULL or the index is out of bounds
+ *
+ * @note Time complexity: O(1)
+ * @note Space complexity: O(1)
+ *
+ */
+zk_status zk_vector_at(const zk_vector *const vec, size_t index, void **out)
+{
+	if (!vec || index >= vec->size)
+		return ZK_INVALID_ARGUMENT;
+
+	*out = vec->data[index];
+	return ZK_OK;
 }
 
 /**
@@ -89,6 +112,34 @@ void zk_vector_free(zk_vector *vector, zk_destructor_t func)
 
 	free(vector->data);
 	free(vector);
+}
+
+/**
+ * @brief Insert an element at the specified index in the vector. If the index is out of bounds, the vector is resized.
+ *
+ * @param vec The vector
+ * @param index The index at which to insert the element
+ * @param data The data to insert
+ *
+ * @return  An iterator that points to the inserted element, or NULL on failure.
+ *
+ * @note Time complexity: O(1) amortized
+ * @note Space complexity: O(1)
+ */
+void **zk_vector_insert(zk_vector *vec, size_t index, void *data)
+{
+	if (!vec)
+		return NULL;
+
+	if (index >= vec->size) {
+		vec->capacity = index + 1;
+		vec->size = index + 1;
+		if (!_zk_vector_resize(vec))
+			return NULL;
+	}
+
+	vec->data[index] = data;
+	return &vec->data[index];
 }
 
 /**
