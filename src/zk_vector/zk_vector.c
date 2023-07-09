@@ -1,5 +1,6 @@
 #include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "zk_common/zk_common.h"
 #include "zk_vector/zk_vector.h"
@@ -12,9 +13,14 @@
  * @brief vector struct
  */
 struct zk_vector {
-	size_t size;
-	size_t capacity;
-	void **data;
+	struct zk_vector *self; // pointer to itself, used for chaining vectors together
+	size_t size; // number of elements in the vector
+	size_t capacity; // total capacity of the vector
+	size_t element_size; // size of each element of the vector
+	zk_destructor_t destructor; // destructor function for each element of the vector
+	zk_copy_t copy; // copy function for each element of the vector
+	zk_move_t move; // move function for each element of the vector
+	char *data; // pointer to a blob of memory that holds the elements of the vector
 };
 typedef struct zk_vector zk_vector;
 
@@ -29,7 +35,7 @@ static bool _zk_vector_resize(zk_vector *vec)
 		return false;
 
 	size_t new_capacity = vec->capacity * ZK_VECTOR_GROWTH_FACTOR;
-	void **new_array = realloc(vec->data, ZK_VECTOR_ELEMENT_SIZE * new_capacity);
+	char *new_array = realloc(vec->data, vec->element_size * new_capacity);
 	if (!new_array)
 		return false;
 
@@ -51,14 +57,14 @@ static bool _zk_vector_resize(zk_vector *vec)
  * @note Space complexity: O(1)
  *
  */
-zk_status zk_vector_at(const zk_vector *const vec, size_t index, void **out)
-{
-	if (!vec || index >= vec->size)
-		return ZK_INVALID_ARGUMENT;
+// zk_status zk_vector_at(const zk_vector *const vec, size_t index, void **out)
+// {
+// 	if (!vec || index >= vec->size)
+// 		return ZK_INVALID_ARGUMENT;
 
-	*out = vec->data[index];
-	return ZK_OK;
-}
+// 	*out = vec->data[index];
+// 	return ZK_OK;
+// }
 
 /**
  * @brief Return the capacity of the vector.
@@ -72,7 +78,7 @@ zk_status zk_vector_at(const zk_vector *const vec, size_t index, void **out)
  */
 size_t zk_vector_capacity(const zk_vector *const vector)
 {
-	return vector ? vector->capacity : 0;
+	return vector ? vector->self->capacity : 0;
 }
 
 /**
@@ -87,31 +93,35 @@ size_t zk_vector_capacity(const zk_vector *const vector)
  * @note Time complexity: O(1)
  * @note Space complexity: O(1)
  */
-void **zk_vector_data(const zk_vector *const vec)
+void *zk_vector_data(const zk_vector *const vec)
 {
-	return vec ? vec->data : NULL;
+	return vec ? (void *)vec->self->data : NULL;
 }
 
 /**
  * @brief Free a vector and all of its elements if a destructor function is provided.
  *
- * @param vector The vector to free
+ * @param vec The vector to free
  * @param func The destructor function to call on each element of the vector. It can be NULL.
  *
  * @note Time complexity: O(1)
  * @note Space complexity: O(1)
  */
-void zk_vector_free(zk_vector *vector, zk_destructor_t func)
+void zk_vector_free(zk_vector *vec)
 {
-	if (!vector)
+	if (!vec)
 		return;
 
-	if (func)
-		for (size_t i = 0; i < vector->size; i++)
-			func(vector->data[i]);
+	// This is need because we can have a vector of vectors.
+	// A vector of vectors is a vector of pointers to vectors (zk_vector **) which holds the address of each vector.
+	vec = vec->self;
 
-	free(vector->data);
-	free(vector);
+	if (vec->destructor)
+		for (size_t i = 0; i < vec->size; i++)
+			vec->destructor(&vec->data[i * vec->element_size]);
+
+	free(vec->data);
+	free(vec);
 }
 
 /**
@@ -126,21 +136,21 @@ void zk_vector_free(zk_vector *vector, zk_destructor_t func)
  * @note Time complexity: O(1) amortized
  * @note Space complexity: O(1)
  */
-void **zk_vector_insert(zk_vector *vec, size_t index, void *data)
-{
-	if (!vec)
-		return NULL;
+// void **zk_vector_insert(zk_vector *vec, size_t index, void *data)
+// {
+// 	if (!vec)
+// 		return NULL;
 
-	if (index >= vec->size) {
-		vec->capacity = index + 1;
-		vec->size = index + 1;
-		if (!_zk_vector_resize(vec))
-			return NULL;
-	}
+// 	if (index >= vec->size) {
+// 		vec->capacity = index + 1;
+// 		vec->size = index + 1;
+// 		if (!_zk_vector_resize(vec))
+// 			return NULL;
+// 	}
 
-	vec->data[index] = data;
-	return &vec->data[index];
-}
+// 	vec->data[index] = data;
+// 	return &vec->data[index];
+// }
 
 /**
  * @brief Create a new vector, with a default capacity of 8. All elements are initialized to NULL.
@@ -152,22 +162,25 @@ void **zk_vector_insert(zk_vector *vec, size_t index, void *data)
  * @note Time complexity: O(1)
  * @note Space complexity: O(1)
  */
-zk_vector *zk_vector_new(void)
+zk_vector *zk_vector_new(size_t sizeof_element, zk_destructor_t destructor, zk_copy_t copy, zk_move_t move)
 {
 	zk_vector *vec = malloc(sizeof(zk_vector));
 	if (!vec)
 		return NULL;
 
+	// FIXME: check if all functions are provided otherwise free and return NULL
+	vec->destructor = destructor;
+	vec->copy = copy;
+	vec->move = move;
+	vec->element_size = sizeof_element;
 	vec->size = 0;
 	vec->capacity = ZK_VECTOR_DEFAULT_CAPACITY;
-	vec->data = malloc(ZK_VECTOR_ELEMENT_SIZE * vec->capacity);
+	vec->data = malloc(vec->element_size * vec->capacity);
 	if (!vec->data) {
 		free(vec);
 		return NULL;
 	}
-	for (size_t i = 0; i < ZK_VECTOR_DEFAULT_CAPACITY; i++)
-		vec->data[i] = NULL;
-
+	vec->self = vec;
 	return vec;
 }
 
@@ -182,19 +195,19 @@ zk_vector *zk_vector_new(void)
  * @note Time complexity: O(1)
  * @note Space complexity: O(1)
  */
-void zk_vector_pop_back(zk_vector *vec, zk_destructor_t func)
-{
-	if (!vec)
-		return;
+// void zk_vector_pop_back(zk_vector *vec, zk_destructor_t func)
+// {
+// 	if (!vec)
+// 		return;
 
-	if (vec->size) {
-		vec->size--;
-		if (func)
-			func(vec->data[vec->size]);
+// 	if (vec->size) {
+// 		vec->size--;
+// 		if (func)
+// 			func(vec->data[vec->size]);
 
-		vec->data[vec->size] = NULL;
-	}
-}
+// 		vec->data[vec->size] = NULL;
+// 	}
+// }
 
 /**
  * @brief Remove the first element of the vector.
@@ -207,22 +220,22 @@ void zk_vector_pop_back(zk_vector *vec, zk_destructor_t func)
  * @note Time complexity: O(n)
  * @note Space complexity: O(1)
  */
-void zk_vector_pop_front(zk_vector *vec, zk_destructor_t func)
-{
-	if (!vec)
-		return;
+// void zk_vector_pop_front(zk_vector *vec, zk_destructor_t func)
+// {
+// 	if (!vec)
+// 		return;
 
-	if (vec->size) {
-		vec->size--;
-		if (func)
-			func(vec->data[0]);
+// 	if (vec->size) {
+// 		vec->size--;
+// 		if (func)
+// 			func(vec->data[0]);
 
-		for (size_t i = 0; i < vec->size; i++)
-			vec->data[i] = vec->data[i + 1];
+// 		for (size_t i = 0; i < vec->size; i++)
+// 			vec->data[i] = vec->data[i + 1];
 
-		vec->data[vec->size] = NULL;
-	}
-}
+// 		vec->data[vec->size] = NULL;
+// 	}
+// }
 
 /**
  * @brief Add an element to the end of the vector.
@@ -235,7 +248,7 @@ void zk_vector_pop_front(zk_vector *vec, zk_destructor_t func)
  * @note Time complexity: O(1) amortized
  * @note Space complexity: O(1) amortized
  */
-void zk_vector_push_back(zk_vector *vec, void *data)
+void zk_vector_push_back(zk_vector *vec, void *element, zk_constructor_mode_t mode)
 {
 	if (!vec)
 		return;
@@ -243,7 +256,20 @@ void zk_vector_push_back(zk_vector *vec, void *data)
 	if (_zk_vector_needs_resize(vec) && !_zk_vector_resize(vec))
 		return;
 
-	vec->data[vec->size++] = data;
+	if (mode == ZK_COPY_CONSTRUCTOR) {
+		if (vec->copy)
+			vec->copy(element, &vec->data[vec->size * vec->element_size]);
+		else
+			memcpy(&vec->data[vec->size * vec->element_size], element, vec->element_size);
+	} else if (mode == ZK_MOVE_CONSTRUCTOR) {
+		if (vec->move)
+			vec->move(element, &vec->data[vec->size * vec->element_size]);
+		else
+			memcpy(&vec->data[vec->size * vec->element_size], element, vec->element_size);
+	} else
+		return;
+
+	vec->size++;
 }
 
 /**
@@ -257,23 +283,23 @@ void zk_vector_push_back(zk_vector *vec, void *data)
  * @note Time complexity: O(n)
  * @note Space complexity: O(1)
  */
-void zk_vector_push_front(zk_vector *vec, void *data)
-{
-	if (!vec)
-		return;
+// void zk_vector_push_front(zk_vector *vec, void *data)
+// {
+// 	if (!vec)
+// 		return;
 
-	if (_zk_vector_needs_resize(vec) && !_zk_vector_resize(vec))
-		return;
+// 	if (_zk_vector_needs_resize(vec) && !_zk_vector_resize(vec))
+// 		return;
 
-	size_t i = vec->size;
-	while (i) {
-		vec->data[i] = vec->data[i - 1];
-		i--;
-	}
+// 	size_t i = vec->size;
+// 	while (i) {
+// 		vec->data[i] = vec->data[i - 1];
+// 		i--;
+// 	}
 
-	vec->data[0] = data;
-	vec->size++;
-}
+// 	vec->data[0] = data;
+// 	vec->size++;
+// }
 
 /**
  * @brief Return the number of elements in the vector.
@@ -287,5 +313,5 @@ void zk_vector_push_front(zk_vector *vec, void *data)
  */
 size_t zk_vector_size(const zk_vector *const vector)
 {
-	return vector ? vector->size : 0;
+	return vector ? vector->self->size : 0;
 }
