@@ -5,22 +5,22 @@
 #include "zk_common/zk_common.h"
 #include "zk_vector/zk_vector.h"
 
-#define ZK_VECTOR_DEFAULT_CAPACITY 8
-#define ZK_VECTOR_GROWTH_FACTOR    2
-#define ZK_VECTOR_ELEMENT_SIZE     sizeof(void *)
+#define ZK_VECTOR_DEFAULT_CAPACITY       8
+#define ZK_VECTOR_GROWTH_FACTOR          2
+#define ZK_VECTOR_GET_FROM_DATA(data)    (zk_vector *)((char *)data - sizeof(zk_vector))
+#define ZK_VECTOR_GET_DATA_FROM_VEC(vec) (void *)((char *)vec + sizeof(zk_vector))
+#define ZK_VECTOR_TYPE_SIZE              sizeof(zk_vector)
 
 /**
  * @brief vector struct
  */
 struct zk_vector {
-	struct zk_vector *self; // pointer to itself, used for chaining vectors together
 	size_t size; // number of elements in the vector
 	size_t capacity; // total capacity of the vector
 	size_t element_size; // size of each element of the vector
 	zk_destructor_t destructor; // destructor function for each element of the vector
 	zk_copy_t copy; // copy function for each element of the vector
 	zk_move_t move; // move function for each element of the vector
-	char *data; // pointer to a blob of memory that holds the elements of the vector
 };
 typedef struct zk_vector zk_vector;
 
@@ -35,13 +35,106 @@ static bool _zk_vector_resize(zk_vector *vec)
 		return false;
 
 	size_t new_capacity = vec->capacity * ZK_VECTOR_GROWTH_FACTOR;
-	char *new_array = realloc(vec->data, vec->element_size * new_capacity);
+
+	char *new_array = realloc(vec, ZK_VECTOR_TYPE_SIZE * vec->element_size * new_capacity);
 	if (!new_array)
 		return false;
 
-	vec->data = new_array;
+
 	vec->capacity = new_capacity;
 	return true;
+}
+
+size_t zk_vector_size(void *data)
+{
+	if (!data)
+		return 0;
+
+	zk_vector *vector = ZK_VECTOR_GET_FROM_DATA(data);
+	return vector ? vector->size : 0;
+}
+
+size_t zk_vector_capacity(void *data)
+{
+	if (!data)
+		return 0;
+	zk_vector *vector = ZK_VECTOR_GET_FROM_DATA(data);
+	return vector ? vector->capacity : 0;
+}
+
+void *zk_vector_new(size_t sizeof_element, zk_destructor_t destructor, zk_copy_t copy, zk_move_t move)
+{
+	// FIXME: no need to allocate a vector is can be in the stack
+	zk_vector *vec = malloc(sizeof(zk_vector));
+	if (!vec)
+		return NULL;
+
+	vec->size = 0;
+	vec->capacity = ZK_VECTOR_DEFAULT_CAPACITY;
+	vec->element_size = sizeof_element;
+	vec->destructor = destructor;
+	vec->copy = copy;
+	vec->move = move;
+
+	// create block to hold the vector and the data
+	char *data = malloc(sizeof(zk_vector) + sizeof_element * ZK_VECTOR_DEFAULT_CAPACITY);
+	if (!data) {
+		free(vec);
+		return NULL;
+	}
+
+	// copy the vector into the block
+	memcpy(data, vec, sizeof(zk_vector));
+
+	free(vec);
+
+	return data + sizeof(zk_vector);
+}
+
+void zk_vector_free(void *data)
+{
+	if (!data)
+		return;
+
+	zk_vector *vec = ZK_VECTOR_GET_FROM_DATA(data);
+
+	if (!vec)
+		return;
+
+	if (vec->destructor)
+		for (size_t i = 0; i < vec->size; i++)
+			vec->destructor((char *)data + i * vec->element_size);
+
+	free(vec);
+}
+
+zk_status zk_vector_push_back(void **data, void *element, zk_constructor_mode_t mode)
+{
+	if (!data || !*data)
+		return ZK_INVALID_ARGUMENT;
+
+	zk_vector *vec = ZK_VECTOR_GET_FROM_DATA(*data);
+
+	if (_zk_vector_needs_resize(vec) && !_zk_vector_resize(vec))
+		return ZK_ERROR_ALLOC;
+
+	// set the new head
+	*data = ZK_VECTOR_GET_DATA_FROM_VEC(vec);
+
+	if (mode == ZK_COPY_CONSTRUCTOR) {
+		if (vec->copy)
+			vec->copy(element, (char *)data + vec->size * vec->element_size);
+		else
+			memcpy((char *)data + vec->size * vec->element_size, element, vec->element_size);
+	} else if (mode == ZK_MOVE_CONSTRUCTOR) {
+		if (vec->move)
+			vec->move(element, (char *)data + vec->size * vec->element_size);
+		else
+			memcpy((char *)data + vec->size * vec->element_size, element, vec->element_size);
+	} else
+		return ZK_INVALID_ARGUMENT;
+
+	vec->size++;
 }
 
 /**
@@ -76,10 +169,6 @@ static bool _zk_vector_resize(zk_vector *vec)
  * @note Time complexity: O(1)
  * @note Space complexity: O(1)
  */
-size_t zk_vector_capacity(const zk_vector *const vector)
-{
-	return vector ? vector->self->capacity : 0;
-}
 
 /**
  * @brief Return a pointer to the underlying array serving as element storage.The pointer is such that range [data();
@@ -93,10 +182,12 @@ size_t zk_vector_capacity(const zk_vector *const vector)
  * @note Time complexity: O(1)
  * @note Space complexity: O(1)
  */
-void *zk_vector_data(const zk_vector *const vec)
-{
-	return vec ? (void *)vec->self->data : NULL;
-}
+// void *zk_vector_data(void *data)
+// {
+// 	if (!data)
+// 		return NULL;
+// 	return vec ? (void *)vec->self->data : NULL;
+// }
 
 /**
  * @brief Free a vector and all of its elements if a destructor function is provided.
@@ -107,22 +198,6 @@ void *zk_vector_data(const zk_vector *const vec)
  * @note Time complexity: O(1)
  * @note Space complexity: O(1)
  */
-void zk_vector_free(zk_vector *vec)
-{
-	if (!vec)
-		return;
-
-	// This is need because we can have a vector of vectors.
-	// A vector of vectors is a vector of pointers to vectors (zk_vector **) which holds the address of each vector.
-	vec = vec->self;
-
-	if (vec->destructor)
-		for (size_t i = 0; i < vec->size; i++)
-			vec->destructor(&vec->data[i * vec->element_size]);
-
-	free(vec->data);
-	free(vec);
-}
 
 /**
  * @brief Insert an element at the specified index in the vector. If the index is out of bounds, the vector is resized.
@@ -162,27 +237,6 @@ void zk_vector_free(zk_vector *vec)
  * @note Time complexity: O(1)
  * @note Space complexity: O(1)
  */
-zk_vector *zk_vector_new(size_t sizeof_element, zk_destructor_t destructor, zk_copy_t copy, zk_move_t move)
-{
-	zk_vector *vec = malloc(sizeof(zk_vector));
-	if (!vec)
-		return NULL;
-
-	// FIXME: check if all functions are provided otherwise free and return NULL
-	vec->destructor = destructor;
-	vec->copy = copy;
-	vec->move = move;
-	vec->element_size = sizeof_element;
-	vec->size = 0;
-	vec->capacity = ZK_VECTOR_DEFAULT_CAPACITY;
-	vec->data = malloc(vec->element_size * vec->capacity);
-	if (!vec->data) {
-		free(vec);
-		return NULL;
-	}
-	vec->self = vec;
-	return vec;
-}
 
 /**
  * @brief Remove the last element of the vector.
@@ -248,29 +302,6 @@ zk_vector *zk_vector_new(size_t sizeof_element, zk_destructor_t destructor, zk_c
  * @note Time complexity: O(1) amortized
  * @note Space complexity: O(1) amortized
  */
-void zk_vector_push_back(zk_vector *vec, void *element, zk_constructor_mode_t mode)
-{
-	if (!vec)
-		return;
-
-	if (_zk_vector_needs_resize(vec) && !_zk_vector_resize(vec))
-		return;
-
-	if (mode == ZK_COPY_CONSTRUCTOR) {
-		if (vec->copy)
-			vec->copy(element, &vec->data[vec->size * vec->element_size]);
-		else
-			memcpy(&vec->data[vec->size * vec->element_size], element, vec->element_size);
-	} else if (mode == ZK_MOVE_CONSTRUCTOR) {
-		if (vec->move)
-			vec->move(element, &vec->data[vec->size * vec->element_size]);
-		else
-			memcpy(&vec->data[vec->size * vec->element_size], element, vec->element_size);
-	} else
-		return;
-
-	vec->size++;
-}
 
 /**
  * @brief Add an element to the front of the vector.
@@ -311,7 +342,3 @@ void zk_vector_push_back(zk_vector *vec, void *element, zk_constructor_mode_t mo
  * @note Time complexity: O(1)
  * @note Space complexity: O(1)
  */
-size_t zk_vector_size(const zk_vector *const vector)
-{
-	return vector ? vector->self->size : 0;
-}

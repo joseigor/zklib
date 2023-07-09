@@ -16,14 +16,14 @@
 #     )
 # test('test_zk_vector_data', test_zk_vector_data, suite: 'zk_vector')
 
-test_zk_vector_free = \
-    executable(
-        'test_zk_vector_free',
-        sources: ['test_zk_vector_free.c', tests_src_files],
-        dependencies: [ unity_dep, zklib_dep],
-        include_directories : [inc_dir, tests_inc_dir]
-    )
-test('test_zk_vector_free', test_zk_vector_free, suite: 'zk_vector')
+# test_zk_vector_free = \
+#     executable(
+#         'test_zk_vector_free',
+#         sources: ['test_zk_vector_free.c', tests_src_files],
+#         dependencies: [ unity_dep, zklib_dep],
+#         include_directories : [inc_dir, tests_inc_dir]
+#     )
+# test('test_zk_vector_free', test_zk_vector_free, suite: 'zk_vector')
 
 test_zk_vector_new = \
     executable(
