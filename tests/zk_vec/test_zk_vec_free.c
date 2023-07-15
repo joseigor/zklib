@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 
 #include "unity.h"
 #include "zk/zklib.h"
@@ -8,11 +9,43 @@ typedef struct person {
 	int age;
 } person;
 
-void person_destructor(void *data)
+
+person * person_new(const char *name, int age)
+{
+	person *p = malloc(sizeof(person));
+	p->name = strdup(name);
+	p->age = age;
+	return p;
+}
+
+void person_destructor_internal(void *data)
 {
 	person *p = data;
 	free(p->name);
+}
+
+void person_destructor(void *data)
+{
+	person *p = data;
+	person_destructor_internal(p);
 	free(p);
+}
+
+void person_copy(void *src, void *dst)
+{
+	person *src_person = src;
+	person *dst_person = dst;
+	strcpy(dst_person->name, src_person->name);
+	dst_person->age = src_person->age;
+}
+
+void person_move(void *src, void *dst)
+{
+	person *src_person = src;
+	person *dst_person = dst;
+	dst_person->name = src_person->name;
+	dst_person->age = src_person->age;
+	src_person = NULL;
 }
 
 void setUp(void) {}
