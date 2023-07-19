@@ -8,10 +8,10 @@
             "name": "(gdb) Pipe Launch in already running zklib-debugger-container container",
             "type": "cppdbg",
             "request": "launch",
-            "program": "/workdir/.build/${relativeFileDirname}/${fileBasenameNoExtension}",
+            "program": "/zklib/.build/${relativeFileDirname}/${fileBasenameNoExtension}",
             "args": [],
             "stopAtEntry": true,
-            "cwd": "/workdir",
+            "cwd": "/zklib",
             "environment": [],
             "externalConsole": false,
             "preLaunchTask": "setup_remote_debugging",
@@ -28,7 +28,7 @@
                 "pipeCwd": ""
             },
             "sourceFileMap": {
-                "/workdir": "${workspaceRoot}"
+                "/zklib": "${workspaceRoot}"
             },
             "MIMode": "gdb",
             "setupCommands": [

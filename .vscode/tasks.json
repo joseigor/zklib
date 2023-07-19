@@ -16,7 +16,7 @@
         {
             "label": "build",
             "type": "shell",
-            "command": "docker exec zklib-builder-container ./build.sh -g",
+            "command": "docker exec zklib-builder-container ./build.sh -u",
             "dependsOn": [
                 "create_builder_container",
             ],
